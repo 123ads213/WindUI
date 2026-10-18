@@ -693,6 +693,7 @@ function TabModule:SelectTab(TabIndex)
         child = child.ParentTab
     end
     TabIndex = target.Index
+    if TabModule.SelectedTab == TabIndex then return true end
 	if not TabModule.Tabs[TabIndex].Locked then
 		TabModule.SelectedTab = TabIndex
 
@@ -746,20 +747,20 @@ function TabModule:SelectTab(TabIndex)
         end
 
 
-		task.spawn(function()
-			for _, ContainerObject in next, TabModule.Containers do
-				ContainerObject.AnchorPoint = Vector2.new(0, 0.05)
-				ContainerObject.Visible = false
-			end
-			TabModule.Containers[TabIndex].Visible = true
-			local TweenService = game:GetService("TweenService")
-
-			local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-			local tween = TweenService:Create(TabModule.Containers[TabIndex], tweenInfo, {
-				AnchorPoint = Vector2.new(0, 0),
-			})
-			tween:Play()
-		end)
+        -- Keep upstream page-slide behavior, with the same easing as subtab expansion.
+        -- Cancel the previous page tween so rapid selections cannot finish out of order.
+        if TabModule.PageTween then TabModule.PageTween:Cancel() end
+        for _, container in next, TabModule.Containers do
+            container.Visible = false
+            container.AnchorPoint = Vector2.zero
+        end
+        local container = TabModule.Containers[TabIndex]
+        container.AnchorPoint = Vector2.new(0, 0.05)
+        container.Visible = true
+        TabModule.PageTween = game:GetService("TweenService"):Create(container,
+            TweenInfo.new(0.24, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            { AnchorPoint = Vector2.zero })
+        TabModule.PageTween:Play()
 
 		TabModule.OnChangeFunc(TabIndex)
 	end

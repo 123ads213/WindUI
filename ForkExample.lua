@@ -67,7 +67,7 @@ local Themes = Window:Tab({ Title = 'Themes', Icon = 'palette' })
 local Calls = {}
 Player:Section({ Title = 'Player settings' })
 local Big = Player:Slider({
-    Title = 'Distance', Desc = 'Compact display, numeric callback.',
+    Title = 'Distance', Icon = 'ruler', IconSize = 18, Desc = 'Compact display, numeric callback.',
     Value = { Min = 0, Max = 1e9, Default = 500000 }, Step = 1, IsTooltip = true,
     Callback = function(value) Calls.Distance = value end,
 })
@@ -94,6 +94,12 @@ General:Slider({ Title = 'Unshortened', Compact = false, Width = 170, ValueWidth
     Value = { Min = 0, Max = 1e6, Default = 500000 } })
 General:Slider({ Title = 'Locked', Locked = true, Value = { Min = 0, Max = 1e6, Default = 500000 } })
 General:Slider({ Title = 'Fixed range', Value = { Min = 5, Max = 5, Default = 5 } })
+local TabSelection = General:Dropdown({ Title = 'Tab selection',
+    Values = { 'Player', 'World', 'General', 'Themes' }, Value = 'General',
+    Callback = function(name)
+        local tabs = { Player = Player, World = World, General = General, Themes = Themes }
+        local tab = tabs[name]; if tab then Window:SelectTab(tab.Index) end
+    end })
 Themes:Dropdown({ Title = 'Theme', Values = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' }, Value = 'Dark',
     Callback = function(theme) WindUI:SetTheme(theme) end })
 Themes:Toggle({ Title = 'Preview toggle', Value = true, Callback = function() end })
@@ -104,6 +110,6 @@ Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 
 Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
     Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
-    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection }
+    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, TabSelection = TabSelection }
 Env.__WindUIForkPendingLibrary = nil
 return Window

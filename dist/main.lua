@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.4  |  2026-10-18  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.5  |  2026-10-18  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -26880,7 +26880,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.4",
+    "version": "1.6.66-fork.5",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -28502,6 +28502,7 @@ CheckboxBorderTransparency=0,
 
 Ocean={
 Name="Ocean",
+CleanShapes=true,
 Accent=Color3.fromHex"#102A36",
 Dialog=Color3.fromHex"#183642",
 Outline=Color3.fromHex"#35525F",
@@ -28552,6 +28553,7 @@ CheckboxBorderTransparency=0,
 
 Forest={
 Name="Forest",
+CleanShapes=true,
 Accent=Color3.fromHex"#1D2C23",
 Dialog=Color3.fromHex"#283A2D",
 Outline=Color3.fromHex"#435541",
@@ -28602,6 +28604,7 @@ CheckboxBorderTransparency=0,
 
 Ember={
 Name="Ember",
+CleanShapes=true,
 Accent=Color3.fromHex"#33231B",
 Dialog=Color3.fromHex"#453024",
 Outline=Color3.fromHex"#69503D",
@@ -28652,6 +28655,7 @@ CheckboxBorderTransparency=0,
 
 Orchid={
 Name="Orchid",
+CleanShapes=true,
 Accent=Color3.fromHex"#2A223B",
 Dialog=Color3.fromHex"#392E4B",
 Outline=Color3.fromHex"#5C486F",
@@ -31677,6 +31681,9 @@ end
 end
 am.SliderFrame=a.K(){
 Title=am.Title,
+Image=al.Image or al.Icon,
+ImageSize=al.ImageSize or al.IconSize or 18,
+IconThemed=al.IconThemed,
 Desc=am.Desc,
 Parent=al.Parent,
 TextOffset=am.Width+24,
@@ -36654,6 +36661,7 @@ at.ParentTab:Expand()
 at=at.ParentTab
 end
 ar=as.Index
+if ap.SelectedTab==ar then return true end
 if not ap.Tabs[ar].Locked then
 ap.SelectedTab=ar
 
@@ -36707,20 +36715,20 @@ au=au.ParentTab
 end
 
 
-task.spawn(function()
-for av,aw in next,ap.Containers do
-aw.AnchorPoint=Vector2.new(0,0.05)
-aw.Visible=false
-end
-ap.Containers[ar].Visible=true
-local av=game:GetService"TweenService"
 
-local aw=TweenInfo.new(0.15,Enum.EasingStyle.Quart,Enum.EasingDirection.Out)
-local ax=av:Create(ap.Containers[ar],aw,{
-AnchorPoint=Vector2.new(0,0),
-})
-ax:Play()
-end)
+
+if ap.PageTween then ap.PageTween:Cancel()end
+for av,aw in next,ap.Containers do
+aw.Visible=false
+aw.AnchorPoint=Vector2.zero
+end
+local av=ap.Containers[ar]
+av.AnchorPoint=Vector2.new(0,0.05)
+av.Visible=true
+ap.PageTween=game:GetService"TweenService":Create(av,
+TweenInfo.new(0.24,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
+{AnchorPoint=Vector2.zero})
+ap.PageTween:Play()
 
 ap.OnChangeFunc(ar)
 end

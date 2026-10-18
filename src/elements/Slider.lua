@@ -109,6 +109,9 @@ function Element:New(Config)
 	end
 	Slider.SliderFrame = require("../components/window/Element")({
 		Title = Slider.Title,
+        Image = Config.Image or Config.Icon,
+        ImageSize = Config.ImageSize or Config.IconSize or 18,
+        IconThemed = Config.IconThemed,
 		Desc = Slider.Desc,
 		Parent = Config.Parent,
 		TextOffset = Slider.Width + 24,

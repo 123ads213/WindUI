@@ -10,9 +10,9 @@ local first,last=rows[1].ElementFrame,rows[#rows].ElementFrame
 local before=guiCount(first)
 local ok,err=pcall(function()
  d.Themes:Select()
- for _,theme in ipairs({'Light','Paper','Dark','Ocean','Light'})do
+ for _,theme in ipairs({'Light','Paper','Dark','Ocean','Forest','Ember','Orchid','Light'})do
   d.Library:SetTheme(theme);task.wait(.2)
-  local clean=theme=='Light' or theme=='Paper'
+  local clean=theme~='Dark'
   check(d.Window.UIElements.MainBar.Background:GetAttribute('WindUICleanShape')==clean,'background renderer '..theme)
   check(guiCount(first)==before,'no extra layout children '..theme)
   check(first.AbsoluteSize.Y<100 and first.AbsoluteSize.Y>20,'row height '..theme)

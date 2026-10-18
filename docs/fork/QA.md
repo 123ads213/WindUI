@@ -53,3 +53,18 @@ The earlier boundary assertions assumed origin (0,0). That was insufficient: liv
 - Native OS chrome is outside the scope of ScreenGui rendering. Test results do not claim to draw over the native Roblox title bar.
 
 Final actual captures: `Light-Clean.jpg`, `Viewport-Top.jpg`, `Viewport-Bottom.jpg`. Measured top at -58 relative GUI coordinates (top gap 0); bottom at Y=862 for a 520px-high window (bottom gap 0). Camera viewport 2560×1440. Final compilation check covers 82 Lua files.
+
+## Revision 5 — page selection, coloured-theme contours, title icon
+
+- No edits to `window/Init.lua` sizing, scaling or resize handling in this revision. `SetSize` and `Window:SetUIScale` function bodies also compared byte-for-byte against upstream d2c9bac5 and match. Example remains 740×520; upstream limits 560×350–850×560.
+- Ocean/Forest/Ember/Orchid now opt in to the already tested clean renderer; Light/Paper/Dark settings and all palettes unchanged.
+- Upstream page-anchor slide retained; changed timing to 0.24 seconds Quad Out to match child expansion. Active-page reselect is a no-op; old page tween cancelled on a new selection.
+- `General → Tab selection` demonstrates original `Window:SelectTab(index)` API.
+- Slider forwards `Icon`/`Image` plus size to the existing element-image slot. Example Distance has an 18px ruler. This is not a new global layout.
+- Local NumberFormat, 2001 signed decimal lattice cases and TabTree tests passed; 82 Lua files compiled before adding the new selection test (which was executed successfully on client).
+- Live client runtime regression: **65 checks passed**, including original window limits, GUI-origin bounds, synthetic slider signals and compact values.
+- Live visual regression: **86 checks passed**, cycling Light, Paper, Dark, Ocean, Forest, Ember, Orchid and Light; confirms stable row heights/child counts, joined corners, native theme colours/alpha and toggle edges.
+- New live selection/icon regression: **9 checks passed**: intermediate page anchor, settled anchor, no reselect restart, rapid-selection latest page, example dropdown selects Player, visible 18px title icon, icon/title/control non-overlap.
+- These are synthetic API/GUI-signal checks, not a physical mouse/device compatibility matrix. Actual OS-window Ocean screenshot inspected for native contours and title icon.
+
+![Ocean clean contours and Distance icon](Ocean-Clean-TitleIcon.jpg)

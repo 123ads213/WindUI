@@ -83,6 +83,7 @@ return function(WindUI, Creator)
 
 		Ocean = {
 			Name = "Ocean",
+            CleanShapes = true,
 			Accent = Color3.fromHex("#102A36"),
 			Dialog = Color3.fromHex("#183642"),
 			Outline = Color3.fromHex("#35525F"),
@@ -133,6 +134,7 @@ return function(WindUI, Creator)
 
 		Forest = {
 			Name = "Forest",
+            CleanShapes = true,
 			Accent = Color3.fromHex("#1D2C23"),
 			Dialog = Color3.fromHex("#283A2D"),
 			Outline = Color3.fromHex("#435541"),
@@ -183,6 +185,7 @@ return function(WindUI, Creator)
 
 		Ember = {
 			Name = "Ember",
+            CleanShapes = true,
 			Accent = Color3.fromHex("#33231B"),
 			Dialog = Color3.fromHex("#453024"),
 			Outline = Color3.fromHex("#69503D"),
@@ -233,6 +236,7 @@ return function(WindUI, Creator)
 
 		Orchid = {
 			Name = "Orchid",
+            CleanShapes = true,
 			Accent = Color3.fromHex("#2A223B"),
 			Dialog = Color3.fromHex("#392E4B"),
 			Outline = Color3.fromHex("#5C486F"),

@@ -126,3 +126,27 @@ The example sets `ContentPaddingTop = 10` in CreateWindow (upstream default rema
 ![True viewport top](docs/fork/Viewport-Top.jpg)
 
 ![True viewport bottom](docs/fork/Viewport-Bottom.jpg)
+
+## Tab selection animation
+
+`Window:SelectTab(tab.Index)` and `tab:Select()` use the original WindUI page-slide animation (not a new layout). The duration/easing now match nested expansion: **0.24 seconds, Quad Out**. Repeated selection of the current page does not restart it; rapid switches cancel the previous tween. Try **General → Tab selection** in `ForkExample.lua`, or click sidebar tabs directly.
+
+## Slider title icon
+
+```lua
+Player:Slider({
+    Title = "Distance",
+    Icon = "ruler", -- or Image = "ruler" (Image takes precedence)
+    IconSize = 18, -- or ImageSize = 18
+    Value = { Min = 0, Max = 1e9, Default = 500000 },
+    Callback = function(value) print(value) end,
+})
+```
+
+The icon occupies the existing WindUI element-image slot before the title/description; text reserves its width. It is separate from `Icons = { From = ..., To = ... }`, which places endpoint icons by the slider track. Omitting `Icon`/`Image` preserves the existing title layout. This title-icon configuration is supported on Slider; do not assume every other element forwards it.
+
+## Window sizing and revision 5 contours
+
+Window default size, min/max limits, auto-scaling, resize handles and fullscreen sizing code remain upstream behavior. The example still requests 740×520; minimum 560×350 and maximum 850×560 are unchanged. No new auto-size or scale rule was added for theme/animation fixes. LockOffscreen only clamps position to the GUI rectangle.
+
+Ocean, Forest, Ember and Orchid now use the same clean native contour renderer as Light/Paper. Their palettes are unchanged. Dark retains its upstream panel rendering.
