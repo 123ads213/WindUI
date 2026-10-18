@@ -14,7 +14,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
         IconThemed = SectionConfig.IconThemed,
         Opened = SectionConfig.Opened or false,
         
-        HeaderSize = 42,
+        HeaderSize = SectionConfig.HeaderSize or 42,
         IconSize = 18,
         
         Expandable = false,

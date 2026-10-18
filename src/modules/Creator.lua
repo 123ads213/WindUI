@@ -627,7 +627,7 @@ function Creator.SetDraggable(can)
 	Creator.CanDraggable = can
 end
 
-function Creator.Drag(mainFrame, dragFrames, ondrag)
+function Creator.Drag(mainFrame, dragFrames, ondrag, constrainPosition)
 	local CurInput = WindUI.GenerateGUID()
 
 	local currentDragFrame = nil
@@ -649,14 +649,10 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
 		end
 
 		local delta = input.Position - dragStart
-		Creator.Tween(mainFrame, 0.02, {
-			Position = UDim2.new(
-				startPos.X.Scale,
-				startPos.X.Offset + delta.X,
-				startPos.Y.Scale,
-				startPos.Y.Offset + delta.Y
-			),
-		}):Play()
+        local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        if constrainPosition then position = constrainPosition(position) end
+        Creator.Tween(mainFrame, 0.02, { Position = position }):Play()
 	end
 
 	for _, dragFrame in pairs(dragFrames) do

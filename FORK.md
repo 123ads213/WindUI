@@ -4,7 +4,7 @@ Fork of [WindUI by Footagesus](https://github.com/Footagesus/WindUI), based on u
 
 ## Scope
 
-The original WindUI element layout, slider position, buttons, window sizing, sidebar sections and horizontal containers are retained. No layout based on the second reference image is applied. Changes are limited to compact numeric displays, nested tabs, numerical/interaction fixes needed by those features, and curated themes.
+The original WindUI element layout, slider position, buttons, window sizing, sidebar sections and horizontal containers are retained. No layout based on the second reference image is applied. Changes are limited to compact numeric displays, nested tabs, numerical/interaction fixes needed by those features, curated themes, optional offscreen locking and animated subtab expansion.
 
 ## Run
 
@@ -40,8 +40,23 @@ World:Toggle({ Title = "Shadows", Value = true, Callback = function(value) end }
 - Click Visuals again to collapse; reopening restores its last selected child.
 - `Visuals:SubTab({...})` is an alias for `Visuals:Tab({...})`.
 - `:Select()` / `Window:SelectTab(index)` resolve parent tabs to the last/first unlocked child. Selecting a child directly opens its ancestors.
-- `:Expand()` / `:Collapse()` control the child list without changing content.
+- `:Expand()` / `:Collapse()` control the child list without changing content. Height and chevron rotation animate over 0.24 seconds; rapid reversals cancel the previous transition.
 - Ordinary tabs and `Window:Section` keep their upstream behavior. Child tabs can also have children; locked branches are skipped.
+
+## Lock Offscreen
+
+```lua
+local Window = WindUI:CreateWindow({
+    Title = "My window",
+    Size = UDim2.fromOffset(740, 520),
+    LockOffscreen = true,
+})
+Window:SetLockOffscreen(false) -- runtime toggle
+Window:SetLockOffscreen(true)  -- also brings an offscreen window back
+Window:SetPosition(UDim2.fromScale(.5, .5))
+```
+
+Opt-in (default false) to preserve upstream behavior. The example enables it and includes a **General → Lock Offscreen** toggle. Dragging stops at the Roblox viewport edges, using the actual rendered window size and UIScale. Resizing and viewport changes re-clamp the position as well. This constrains the WindUI window, not the operating-system Roblox window. A manually configured window larger than the viewport must be resized/scaled to fit; locking its position does not override your chosen size.
 
 ## Compact numeric displays
 
@@ -52,7 +67,7 @@ Sliders (including their floating tooltips) and ProgressBar Value/Fraction modes
 - Focus the number to edit its full value. Plain values, `500k`, `1.25m` and scientific notation are accepted; invalid text restores the previous value.
 - `Format = function(number) return ... end` overrides slider text and tooltip. ProgressBar keeps its existing Format signature.
 - `WindUI.NumberFormat.Format(number, options)` is available for custom counters. User-authored text is not automatically converted.
-- Sliders retain upstream inline positioning and `Width` (default 130). The fixed `ValueWidth` (default 48) prevents text changes from moving the track. Use a larger Width/ValueWidth for long custom formats or full precision readouts.
+- Sliders retain upstream inline positioning and `Width` (compact default 184; Compact=false keeps 130). The fixed `ValueWidth` (compact default 72; otherwise 48) prevents text changes from moving the track. Use a larger Width/ValueWidth for long custom formats or full precision readouts.
 - Drag geometry is stable while digits/suffixes change; drag updates are not repeatedly tweened. Connections and scroll lock are cleaned on release, lock and destruction.
 - Added `:Get()` and `:SetRange(min,max)`. Non-finite values are ignored; reversed/equal bounds are handled. Fractional callbacks are not truncated to two decimals.
 - Roblox doubles cannot represent every integer above 2^53.
@@ -75,4 +90,13 @@ npm run build
 - `tests/TabTree.luau`: standalone nested selection routing tests.
 - `tests/ForkRuntime.lua`: run after ForkExample inside Roblox; tests parent/child clicks, content-page isolation, selection memory, numeric input/dragging and upstream window limits. These are synthetic GUI-signal tests, not a physical input/device matrix.
 
-See [current QA status](docs/fork/QA.md). Screenshots of the rejected custom-layout version have been removed rather than presented as evidence for this revision.
+See [current QA status](docs/fork/QA.md). The screenshots below are actual captures from revision 2, not the rejected dashboard layout.
+
+![Original inline controls and real nested tabs](docs/fork/Player-Dark.jpg)
+
+![Separate World page](docs/fork/World-Dark.jpg)
+
+
+## Requested spacing adjustments
+
+The example sets `ContentPaddingTop = 10` in CreateWindow (upstream default remains 20 for a panel background), and `HeaderSize = 28` for COMMON (section default remains 42). You can use these explicit settings in your own windows without changing other upstream spacing. The compact slider reserves a fixed 72-pixel value slot plus 12-pixel gap and a 100-pixel track by default; its geometry never changes with the current value.

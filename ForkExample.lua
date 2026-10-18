@@ -15,9 +15,9 @@ end
 local Window = WindUI:CreateWindow({
     Title = 'WindUI', Author = 'Footagesus · Extended fork',
     Folder = 'WindUI-fork', Icon = 'panels-top-left', Theme = 'Dark',
-    NewElements = true, Size = UDim2.fromOffset(740, 520),
+    ContentPaddingTop = 10, LockOffscreen = true, NewElements = true, Size = UDim2.fromOffset(740, 520),
 })
-Window:Section({ Title = 'COMMON' })
+Window:Section({ Title = 'COMMON', HeaderSize = 28 })
 local Visuals = Window:Tab({ Title = 'Visuals', Icon = 'image' })
 local Player = Visuals:Tab({ Title = 'Player', Icon = 'user' })
 local World = Visuals:Tab({ Title = 'World', Icon = 'globe' })
@@ -47,6 +47,8 @@ local Collection = World:ProgressBar({ Title = 'Collection', DisplayMode = 'Frac
     Value = { Min = 0, Max = 1e9, Default = 250000000 } })
 World:Toggle({ Title = 'Shadows', Value = true, Callback = function() end })
 
+General:Toggle({ Title = 'Lock Offscreen', Value = true,
+    Callback = function(value) Window:SetLockOffscreen(value) end })
 General:Paragraph({ Title = 'Nested tabs', Desc = 'Click Visuals to expand Player and World. Each child has its own page; the last selected child is remembered.' })
 General:Slider({ Title = 'Unshortened', Compact = false, Width = 170, ValueWidth = 72,
     Value = { Min = 0, Max = 1e6, Default = 500000 } })

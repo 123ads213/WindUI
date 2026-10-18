@@ -33,8 +33,8 @@ function Element:New(Config)
 		UIElements = {},
 		IsFocusing = false,
 
-		Width = math.max(Numbers.Finite(Config.Width) or 130, 100),
-		TextBoxWidth = math.max(30, Numbers.Finite(Config.ValueWidth) or 48),
+		Width = math.max(Numbers.Finite(Config.Width) or (Config.Compact ~= false and 184 or 130), 100),
+		TextBoxWidth = math.max(30, Numbers.Finite(Config.ValueWidth) or (Config.Compact ~= false and 72 or 48)),
 		ThumbSize = 13,
 		IconSize = 26,
 	}
@@ -172,7 +172,7 @@ function Element:New(Config)
 		Parent = Slider.SliderFrame.UIElements.Main,
 	}, {
 		New("UIListLayout", {
-			Padding = UDim.new(0, Slider.Title ~= nil and 8 or 12),
+			Padding = UDim.new(0, 12),
 			FillDirection = "Horizontal",
 			VerticalAlignment = "Center",
 			HorizontalAlignment = Slider.Icons
@@ -227,7 +227,7 @@ function Element:New(Config)
         if Destroyed then return end
         local text = Slider.IsFocusing and tostring(LastValue) or Display(LastValue)
         TextBox.Text = text
-        local gap = Slider.Title ~= nil and 8 or 12
+        local gap = 12
         local gapWidth = gap * (IconCount + (Slider.IsTextbox and 1 or 0))
         -- Fixed value slot: never shift the track as digits/suffixes change during drag.
         TextBox.Size = UDim2.new(0, Slider.TextBoxWidth, 0, 0)

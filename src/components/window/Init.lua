@@ -62,6 +62,8 @@ return function(Config)
 		IgnoreAlerts = Config.IgnoreAlerts or false,
 		HidePanelBackground = Config.HidePanelBackground or false,
 		AutoScale = Config.AutoScale ~= false,
+        LockOffscreen = Config.LockOffscreen == true,
+        ContentPaddingTop = Config.ContentPaddingTop,
 		OpenButton = Config.OpenButton,
 		DragFrameSize = 160,
 
@@ -1065,6 +1067,45 @@ return function(Config)
 
 	-- local Dragged = false
 
+    -- Rendered bounds are used so resizing, anchor points and UIScale are respected.
+    local correctingPosition = false
+    local function constrainWindowPosition(position)
+        if not Window.LockOffscreen then return position end
+        local main = Window.UIElements.Main
+        local available, origin = Config.WindUI.ScreenGui.AbsoluteSize, Vector2.zero
+        local current = main.Position
+        local proposed = main.AbsolutePosition + Vector2.new(
+            (position.X.Scale-current.X.Scale)*available.X + position.X.Offset-current.X.Offset,
+            (position.Y.Scale-current.Y.Scale)*available.Y + position.Y.Offset-current.Y.Offset)
+        local size = main.AbsoluteSize
+        local x = math.clamp(proposed.X, origin.X, origin.X + math.max(0, available.X-size.X))
+        local y = math.clamp(proposed.Y, origin.Y, origin.Y + math.max(0, available.Y-size.Y))
+        return UDim2.new(position.X.Scale, position.X.Offset+x-proposed.X,
+            position.Y.Scale, position.Y.Offset+y-proposed.Y)
+    end
+    local function keepOnscreen()
+        if correctingPosition or Window.Destroyed or not Window.LockOffscreen then return end
+        local main = Window.UIElements.Main
+        correctingPosition = true
+        local position = constrainWindowPosition(main.Position)
+        if position ~= main.Position then main.Position = position end
+        Window.Position = main.Position
+        correctingPosition = false
+    end
+    function Window:SetLockOffscreen(enabled)
+        Window.LockOffscreen = enabled == true
+        keepOnscreen()
+        return Window
+    end
+    function Window:SetPosition(position)
+        Window.UIElements.Main.Position = constrainWindowPosition(position)
+        Window.Position = Window.UIElements.Main.Position
+        return Window
+    end
+    Creator.AddSignal(Window.UIElements.Main:GetPropertyChangedSignal("AbsolutePosition"), keepOnscreen)
+    Creator.AddSignal(Window.UIElements.Main:GetPropertyChangedSignal("AbsoluteSize"), keepOnscreen)
+    Creator.AddSignal(Config.WindUI.ScreenGui:GetPropertyChangedSignal("AbsoluteSize"), keepOnscreen)
+
 	local WindowDragModule = Creator.Drag(
 		Window.UIElements.Main,
 		{ Window.UIElements.Main.Main.Topbar, BottomDragFrame.Frame },
@@ -1078,7 +1119,8 @@ return function(Config)
 				Window.Position = Window.UIElements.Main.Position
 				Window.Dragging = dragging
 			end
-		end
+		end,
+        constrainWindowPosition
 	)
 
 	if not IsVideoBG and Window.Background and typeof(Window.Background) == "table" then

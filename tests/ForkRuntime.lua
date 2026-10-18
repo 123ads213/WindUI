@@ -22,6 +22,41 @@ local ok, err = pcall(function()
     check(not d.Visuals.SubTabsOpened,'parent click collapses')
     firesignal(d.Visuals.UIElements.Main.MouseButton1Click);task.wait(.2)
     check(d.Visuals.SubTabsOpened and d.Window.TabModule.SelectedTab==d.Player.Index,'parent click restores child')
+    d.Visuals:Collapse();task.wait(.3)
+    local holder=d.Visuals.UIElements.SubTabs
+    check(not holder.Visible and holder.Size.Y.Offset==0,'collapsed holder hidden')
+    d.Visuals:Expand();task.wait(.06)
+    local mid=holder.AbsoluteSize.Y
+    task.wait(.3)
+    check(mid>0 and mid<holder.AbsoluteSize.Y,'expansion has intermediate heights')
+    local full=holder.AbsoluteSize.Y
+    d.Visuals:Collapse();task.wait(.06)
+    check(holder.AbsoluteSize.Y>0 and holder.AbsoluteSize.Y<full,'collapse has intermediate heights')
+    d.Visuals:Expand();task.wait(.04);d.Visuals:Collapse();task.wait(.04);d.Visuals:Expand();task.wait(.35)
+    check(holder.Visible and d.Visuals.SubTabsOpened and holder.AbsoluteSize.Y>=full-.5,'rapid reversal ends expanded')
+    local window=d.Window
+    window:SetLockOffscreen(true)
+    local main=window.UIElements.Main
+    for _,scale in ipairs({.75,1}) do
+        window:SetUIScale(scale);task.wait(.3)
+        for _,pos in ipairs({Vector2.new(-10000,-10000),Vector2.new(10000,-10000),Vector2.new(-10000,10000),Vector2.new(10000,10000)}) do
+            window:SetPosition(UDim2.fromOffset(pos.X,pos.Y));task.wait(.05)
+            local p,z,view=main.AbsolutePosition,main.AbsoluteSize,d.Library.ScreenGui.AbsoluteSize
+            check(p.X>=-.5 and p.Y>=-.5 and p.X+z.X<=view.X+.5 and p.Y+z.Y<=view.Y+.5,'locked bounds at scale '..scale)
+        end
+    end
+    window:SetLockOffscreen(false);window:SetPosition(UDim2.fromOffset(-2000,-2000));task.wait(.05)
+    check(main.AbsolutePosition.X<0,'offscreen allowed when disabled')
+    window:SetLockOffscreen(true);task.wait(.05)
+    check(main.AbsolutePosition.X>=-.5 and main.AbsolutePosition.Y>=-.5,'enabling rescues offscreen window')
+    window:SetPosition(UDim2.fromScale(.5,.5))
+    local valueBox=b.UIElements.SliderContainer.TextBox
+    b:Set(283780000);task.wait(.1)
+    check(valueBox.Text=='283.78m','long compact number')
+    check(valueBox.TextBounds.X<=valueBox.AbsoluteSize.X,'long compact text fits fixed slot')
+    check(b.UIElements.SliderIcon.AbsoluteSize.X>=99,'usable fixed track width')
+    check(b.UIElements.SliderIcon.AbsolutePosition.X>=valueBox.AbsolutePosition.X+valueBox.AbsoluteSize.X+11,'value/track breathing room')
+    check(d.General.UIElements.ContainerFrame.UIPadding.PaddingTop.Offset==10,'requested compact top inset')
     b:Set(500000);check(b.UIElements.SliderContainer.TextBox.Text=='500k','compact value')
     b:Set(1000000);check(type(d.Calls.Distance)=='number' and d.Calls.Distance==1000000,'numeric callback')
     b:Set(-1);check(b:Get()==0,'minimum clamp')
@@ -53,6 +88,7 @@ local ok, err = pcall(function()
     end
 end)
 b:Lock();b:Unlock();b:SetRange(0,1e9);b:Set(500000)
+d.Window:SetLockOffscreen(true);d.Window:SetUIScale(1);d.Window:SetPosition(UDim2.fromScale(.5,.5))
 d.Window:SetSize(UDim2.fromOffset(740,520));d.Player:Select()
 return {status=ok and 'pass' or 'fail',passed=passed,error=not ok and tostring(err) or nil,
     interaction='synthetic GUI signals',sizes='original limits: 560x350, 740x520, 850x560'}

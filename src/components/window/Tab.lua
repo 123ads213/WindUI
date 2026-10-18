@@ -92,10 +92,10 @@ function TabModule.New(Config, UIScale)
 
     -- Transparent hierarchy wrapper; the upstream tab button itself is unchanged.
     Tab.UIElements.SidebarItem = New("Frame", {
-        Name = "TabItem", BackgroundTransparency = 1,
+        Name = "TabItem_" .. TabIndex, BackgroundTransparency = 1,
         Size = UDim2.new(1, 0, 0, 0), AutomaticSize = "Y", Parent = Config.Parent,
     }, {
-        New("UIListLayout", { SortOrder = "LayoutOrder", Padding = UDim.new(0, Window.Gap) }),
+        New("UIListLayout", { SortOrder = "LayoutOrder", Padding = UDim.new(0, 0) }),
     })
 
 	Tab.UIElements.Main = Creator.NewRoundFrame(Tab.UICorner, "Squircle", {
@@ -277,7 +277,7 @@ function TabModule.New(Config, UIScale)
 		ScrollingDirection = "Y",
 	}, {
 		New("UIPadding", {
-			PaddingTop = UDim.new(0, not Window.HidePanelBackground and 20 or 10),
+			PaddingTop = UDim.new(0, Config.ContentPaddingTop or Window.ContentPaddingTop or (not Window.HidePanelBackground and 20 or 10)),
 			PaddingLeft = UDim.new(0, not Window.HidePanelBackground and 20 or 10),
 			PaddingRight = UDim.new(0, not Window.HidePanelBackground and 20 or 10),
 			PaddingBottom = UDim.new(0, not Window.HidePanelBackground and 20 or 10),
@@ -520,19 +520,42 @@ function TabModule.New(Config, UIScale)
 		return UnlockedElements
 	end
 
+    local subTabTween, chevronTween, transitionId = nil, nil, 0
+    local function contentHeight()
+        local content = Tab.UIElements.SubTabsContent
+        if not content then return 0 end
+        local scale = WindUI.UIScaleObj.Scale
+        return content.UIListLayout.AbsoluteContentSize.Y / math.max(scale, .001) + Window.Gap
+    end
+    local function animateSubTabs(open)
+        local holder = Tab.UIElements.SubTabs
+        if not holder then return end
+        if Tab.SubTabsOpened == open then return end
+        Tab.SubTabsOpened = open
+        transitionId += 1
+        local id = transitionId
+        if subTabTween then subTabTween:Cancel() end
+        if chevronTween then chevronTween:Cancel() end
+        holder.Visible = true
+        subTabTween = Creator.Tween(holder, .24, {
+            Size = UDim2.new(1, 0, 0, open and contentHeight() or 0),
+        }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        chevronTween = Creator.Tween(Tab.UIElements.SubTabChevron.ImageLabel, .24,
+            { Rotation = open and 90 or 0 }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        subTabTween.Completed:Once(function(state)
+            if id ~= transitionId or state ~= Enum.PlaybackState.Completed then return end
+            subTabTween = nil
+            if not Tab.SubTabsOpened then holder.Visible = false end
+        end)
+        subTabTween:Play()
+        chevronTween:Play()
+    end
     function Tab:Expand()
-        if not Tab.UIElements.SubTabs then return self end
-        Tab.SubTabsOpened = true
-        Tab.UIElements.SubTabs.Visible = true
-        Tab.UIElements.SubTabChevron.ImageLabel.Rotation = 90
+        animateSubTabs(true)
         return self
     end
-
     function Tab:Collapse()
-        if not Tab.UIElements.SubTabs then return self end
-        Tab.SubTabsOpened = false
-        Tab.UIElements.SubTabs.Visible = false
-        Tab.UIElements.SubTabChevron.ImageLabel.Rotation = 0
+        animateSubTabs(false)
         return self
     end
 
@@ -540,13 +563,27 @@ function TabModule.New(Config, UIScale)
         SubConfig = SubConfig or {}
         if not Tab.UIElements.SubTabs then
             Tab.UIElements.SubTabs = New("Frame", {
-                Name = "SubTabs", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = "Y",
+                Name = "SubTabs", Size = UDim2.new(1, 0, 0, 0), ClipsDescendants = true,
                 BackgroundTransparency = 1, Visible = false, LayoutOrder = 1,
                 Parent = Tab.UIElements.SidebarItem,
+            })
+            Tab.UIElements.SubTabsContent = New("Frame", {
+                Name = "Content", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = "Y",
+                BackgroundTransparency = 1, Parent = Tab.UIElements.SubTabs,
             }, {
-                New("UIPadding", { PaddingLeft = UDim.new(0, 16) }),
+                New("UIPadding", { PaddingLeft = UDim.new(0, 16), PaddingTop = UDim.new(0, Window.Gap) }),
                 New("UIListLayout", { SortOrder = "LayoutOrder", Padding = UDim.new(0, Window.Gap) }),
             })
+            Creator.AddSignal(Tab.UIElements.SubTabsContent.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
+                if not Tab.SubTabsOpened then return end
+                -- Descendant animations already produce smooth height changes. Do not chase them with new tweens.
+                if subTabTween then
+                    transitionId += 1
+                    subTabTween:Cancel()
+                    subTabTween = nil
+                end
+                Tab.UIElements.SubTabs.Size = UDim2.new(1, 0, 0, contentHeight())
+            end)
             local chevron = Creator.Image("chevron-right", "SubTabChevron", 0,
                 Window.Folder, "Tab", true, true, "TabIcon")
             chevron.Size = UDim2.fromOffset(14, 14)
@@ -556,7 +593,7 @@ function TabModule.New(Config, UIScale)
             local text = Tab.UIElements.Main.Frame.TextLabel
             text.Size = UDim2.new(1, text.Size.X.Offset - 22, 0, 0)
         end
-        SubConfig.Parent = Tab.UIElements.SubTabs
+        SubConfig.Parent = Tab.UIElements.SubTabsContent
         SubConfig.ParentTab = Tab
         local child = TabModule.New(SubConfig, UIScale)
         child.UIElements.SidebarItem.LayoutOrder = #Tab.SubTabs + 1
