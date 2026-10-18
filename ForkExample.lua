@@ -1,22 +1,62 @@
 -- WindUI by Footagesus (MIT). Fork: compact numbers, nested tabs and curated themes.
 -- All element positions and window behavior use the original WindUI layout.
 local Env = getgenv and getgenv() or _G
-if Env.WindUIForkDemo then
-    Env.WindUIForkDemo.Window:Destroy()
-    task.wait(0.7)
-    Env.WindUIForkDemo = nil
+Env.__WindUIForkRunId = (Env.__WindUIForkRunId or 0) + 1
+local RunId = Env.__WindUIForkRunId
+local function disposeLibrary(library)
+    if not library then return end
+    for _,key in ipairs({ 'ScreenGui', 'NotificationGui', 'DropdownGui', 'TooltipGui' }) do
+        local gui=library[key]
+        if gui then gui:Destroy() end
+    end
 end
 local WindUI = Env.__WindUIForkInjectedLibrary
 Env.__WindUIForkInjectedLibrary = nil
+local previous = Env.WindUIForkDemo
+local pending = Env.__WindUIForkPendingLibrary
+Env.WindUIForkDemo = nil
+Env.__WindUIForkPendingLibrary = nil
+if previous and previous.Window and not previous.Window.Destroyed then
+    previous.Window:Destroy()
+    task.wait(0.7)
+end
+if pending and (not previous or pending ~= previous.Library) then disposeLibrary(pending) end
+if RunId ~= Env.__WindUIForkRunId then disposeLibrary(WindUI);return end
 if not WindUI then
     WindUI = assert(loadstring(game:HttpGet(
         'https://raw.githubusercontent.com/123ads213/WindUI/206c7fcc40ee892d9339d490e984eda899c2185a/dist/main.lua')))()
+end
+if RunId ~= Env.__WindUIForkRunId then disposeLibrary(WindUI);return end
+Env.__WindUIForkPendingLibrary = WindUI
+WindUI.ScreenGui:SetAttribute('WindUIForkExample', true)
+-- Migrate stranded demo roots from older examples. Never delete unrelated WindUI windows.
+for _,root in ipairs(WindUI.ScreenGui.Parent:GetChildren()) do
+    if root ~= WindUI.ScreenGui and root:IsA('ScreenGui') and root.Name == 'WindUI' then
+        local owned = root:GetAttribute('WindUIForkExample') == true
+        local folder = root:FindFirstChild('Window')
+        if not owned and folder then
+            for _,frame in ipairs(folder:GetChildren()) do
+                local main=frame:FindFirstChild('Main')
+                local top=main and main:FindFirstChild('Topbar')
+                local left=top and top:FindFirstChild('Left')
+                local title=left and left:FindFirstChild('Title')
+                if title then
+                    for _,label in ipairs(title:GetChildren()) do
+                        if label:IsA('TextLabel') and label.Text=='Footagesus · Extended fork' then owned=true end
+                    end
+                end
+            end
+        end
+        if owned then root:Destroy() end
+    end
 end
 local Window = WindUI:CreateWindow({
     Title = 'WindUI', Author = 'Footagesus · Extended fork',
     Folder = 'WindUI-fork', Icon = 'panels-top-left', Theme = 'Dark',
     ContentPaddingTop = 10, LockOffscreen = true, NewElements = true, Size = UDim2.fromOffset(740, 520),
 })
+-- Register immediately: even a later setup error remains cleanable on rerun.
+Env.WindUIForkDemo = { Library = WindUI, Window = Window }
 Window:Section({ Title = 'COMMON', HeaderSize = 28 })
 local Visuals = Window:Tab({ Title = 'Visuals', Icon = 'image' })
 local Player = Visuals:Tab({ Title = 'Player', Icon = 'user' })
@@ -65,4 +105,5 @@ Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
     Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
     World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection }
+Env.__WindUIForkPendingLibrary = nil
 return Window

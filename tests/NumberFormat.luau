@@ -19,3 +19,16 @@ assert(N.Snap(0/0,0,1,1)==nil)
 assert(N.Snap(10,0,10,3)==10)
 assert(N.Snap(2.4,1,10,2)==3)
 print('PASS NumberFormat: '..#cases..' display cases + parsing, bounds, fractional precision')
+
+-- Cancellation around a negative minimum used to expose -0.0232599999999999.
+assert(N.Snap(-.02326,-1,1,.00001)==-.02326)
+assert(N.Format(N.Snap(-.02326,-1,1,.00001))=='-0.02326')
+assert(N.Snap(.000000003,0,1,1e-9)==.000000003)
+assert(N.Snap(.12346,.00001,1,.00003)==.12346)
+for i=-1000,1000 do
+    local expected=i/100000
+    local snapped=N.Snap(expected,-1,1,.00001)
+    assert(snapped==expected,tostring(i))
+    assert(N.Format(snapped)==N.Plain(expected),tostring(i))
+end
+print('PASS decimal lattice: 2001 signed values + negative-minimum/scientific-step regressions')

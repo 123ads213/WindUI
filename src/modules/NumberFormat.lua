@@ -54,13 +54,26 @@ function NumberFormat.Parse(value)
     return nil
 end
 
+-- Decimal precision belongs to the step lattice, not to floating-point subtraction noise.
+local function decimalPlaces(value)
+    local text = string.format("%.15g", value)
+    local mantissa, exponent = text:match("^([^e]+)e([+-]?%d+)$")
+    local fraction = (mantissa or text):match("%.(%d+)")
+    return math.max(0, (fraction and #fraction or 0) - (tonumber(exponent) or 0))
+end
+
 -- A lattice anchored at Min; clamp again because the nearest step can exceed Max.
 function NumberFormat.Snap(value, minimum, maximum, step)
     local n = NumberFormat.Finite(value)
     if not n then return nil end
     n = math.clamp(n, minimum, maximum)
     if n == minimum or n == maximum then return n end
-    return math.clamp(minimum + math.floor((n - minimum) / step + 0.5) * step, minimum, maximum)
+    local snapped = minimum + math.floor((n - minimum) / step + 0.5) * step
+    local precision = math.max(decimalPlaces(minimum), decimalPlaces(step))
+    if precision <= 15 and math.abs(snapped) < 1e15 then
+        snapped = tonumber(string.format("%." .. precision .. "f", snapped))
+    end
+    return math.clamp(snapped, minimum, maximum)
 end
 
 function NumberFormat.Ratio(value, minimum, maximum)

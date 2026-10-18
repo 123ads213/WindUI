@@ -225,7 +225,7 @@ function Element:New(Config)
 
     local function Render(instant)
         if Destroyed then return end
-        local text = Slider.IsFocusing and tostring(LastValue) or Display(LastValue)
+        local text = Slider.IsFocusing and Numbers.Plain(LastValue) or Display(LastValue)
         TextBox.Text = text
         local gap = 12
         local gapWidth = gap * (IconCount + (Slider.IsTextbox and 1 or 0))

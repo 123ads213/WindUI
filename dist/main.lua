@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.2  |  2026-10-18  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.3  |  2026-10-18  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -26268,12 +26268,25 @@ return nil
 end
 
 
+local function decimalPlaces(e)
+local f=string.format("%.15g",e)
+local g,h=f:match"^([^e]+)e([+-]?%d+)$"
+local i=(g or f):match"%.(%d+)"
+return math.max(0,(i and#i or 0)-(tonumber(h)or 0))
+end
+
+
 function b.Snap(e,f,g,h)
 local i=b.Finite(e)
 if not i then return nil end
 i=math.clamp(i,f,g)
 if i==f or i==g then return i end
-return math.clamp(f+math.floor((i-f)/h+0.5)*h,f,g)
+local l=f+math.floor((i-f)/h+0.5)*h
+local m=math.max(decimalPlaces(f),decimalPlaces(h))
+if m<=15 and math.abs(l)<1e15 then
+l=tonumber(string.format("%."..m.."f",l))
+end
+return math.clamp(l,f,g)
 end
 
 function b.Ratio(e,f,g)
@@ -26797,7 +26810,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.2",
+    "version": "1.6.66-fork.3",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -31698,7 +31711,7 @@ local h=false
 
 local function Render(i)
 if h then return end
-local l=am.IsFocusing and tostring(ar)or Display(ar)
+local l=am.IsFocusing and af.Plain(ar)or Display(ar)
 az.Text=l
 local m=12
 local p=m*(ax+(am.IsTextbox and 1 or 0))
