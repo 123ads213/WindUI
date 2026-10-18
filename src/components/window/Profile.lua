@@ -53,7 +53,7 @@ function Profile.New(Window, WindUI, Config)
     local days=text(card,'Remaining','',56,31,-82,18,12,true)
     icon(card,'chevron-right',Window.SideBarWidth-37,22,16)
 
-    local menu=New('CanvasGroup',{Parent=parent,Name='ProfileMenu',Visible=false,Size=UDim2.fromOffset(304,252),
+    local menu=New('CanvasGroup',{Parent=parent,Name='ProfileMenu',Visible=false,Size=UDim2.fromOffset(304,304),
         GroupTransparency=1,ThemeTag={BackgroundColor3='Dialog'},ZIndex=200,Active=true})
     corner(menu,14)
     New('UIStroke',{Parent=menu,Thickness=1,Transparency=.92,ThemeTag={Color='Outline'}})
@@ -79,10 +79,81 @@ function Profile.New(Window, WindUI, Config)
     local styleButton=button(header,'Style','Style','palette',152)
     local styleValue=text(styleButton,'Value',WindUI:GetCurrentTheme(),142,0,80,42,13,true)
     styleValue.TextXAlignment='Right'
-    icon(styleButton,'settings',230,13,16)
     icon(styleButton,'chevron-right',252,13,16)
-    local historyButton=button(header,'History','History','history',198)
+    local historyButton=button(header,'History','History','history',244)
     icon(historyButton,'chevron-right',252,13,16)
+
+    local scheduleClose
+    local transparencyButton=button(header,'Transparency','Transparency','blend',198)
+    transparencyButton.Label.Size=UDim2.fromOffset(120,42)
+    local hit=New('TextButton',{Parent=transparencyButton,Name='TrackInput',Text='',AutoButtonColor=false,
+        Position=UDim2.fromOffset(164,6),Size=UDim2.fromOffset(104,30),BackgroundTransparency=1,ZIndex=204,Active=true})
+    local track=New('Frame',{Parent=hit,Name='Track',Position=UDim2.new(0,2,.5,-2),Size=UDim2.new(1,-4,0,4),
+        BorderSizePixel=0,BackgroundTransparency=.83,ThemeTag={BackgroundColor3='Icon'},ZIndex=204})
+    corner(track,2)
+    local fill=New('Frame',{Parent=track,Name='Fill',Size=UDim2.fromScale(0,1),BorderSizePixel=0,
+        ThemeTag={BackgroundColor3='Slider'},ZIndex=205})
+    corner(fill,2)
+    local tip=New('TextLabel',{Parent=transparencyButton,Name='HoverValue',Text='0',Visible=false,
+        AnchorPoint=Vector2.new(.5,1),Size=UDim2.fromOffset(44,24),Position=UDim2.fromOffset(188,3),
+        BackgroundTransparency=0,TextSize=13,FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium),
+        ThemeTag={BackgroundColor3='Dialog',TextColor3='Text'},ZIndex=208})
+    corner(tip,7)
+    New('UIStroke',{Parent=tip,Thickness=1,Transparency=.94,ThemeTag={Color='Outline'}})
+    local transparency=Window.Transparent and WindUI.TransparencyValue or 0
+    local overTrack,dragging,dragInput=false,false,nil
+    local dragToken={}
+    local tipTween
+    local function showTip(show)
+        if tipTween then tipTween:Cancel()end
+        if show then tip.Visible=true end
+        tipTween=Tween(tip,.12,{TextTransparency=show and 0 or 1,BackgroundTransparency=show and 0 or 1});tipTween:Play()
+        if not show then task.delay(.12,function()if not self.Destroyed and not overTrack and not dragging then tip.Visible=false end end)end
+    end
+    function self:SetTransparency(value)
+        value=tonumber(value)
+        if not value or value~=value or math.abs(value)==math.huge then return transparency end
+        transparency=math.round(math.clamp(value,0,1)*100)/100
+        WindUI.TransparencyValue=transparency
+        Window:ToggleTransparency(transparency>0)
+        fill.Size=UDim2.fromScale(transparency,1)
+        tip.Text=string.format('%.2f',transparency):gsub('0+$',''):gsub('%.$','')
+        tip.Position=UDim2.fromOffset(166+math.clamp(transparency*100,22,78),3)
+        return transparency
+    end
+    function self:GetTransparency()return transparency end
+    local function readTrack(input)
+        local x=input.Position.X
+        local width=track.AbsoluteSize.X
+        if width>0 then self:SetTransparency((x-track.AbsolutePosition.X)/width)end
+    end
+    local function stopDrag()
+        if not dragging then return end
+        dragging=false;dragInput=nil
+        if WindUI.CurrentInput==dragToken then WindUI.CurrentInput=nil end
+        if not overTrack then showTip(false);if self.Opened and scheduleClose then scheduleClose()end end
+    end
+    connect(hit.MouseEnter,function()overTrack=true;showTip(true);self:CloseFlyout()end)
+    connect(hit.MouseLeave,function()overTrack=false;if not dragging then showTip(false)end end)
+    connect(hit.InputBegan,function(input)
+        if input.UserInputType~=Enum.UserInputType.MouseButton1 and input.UserInputType~=Enum.UserInputType.Touch then return end
+        if WindUI.CurrentInput and WindUI.CurrentInput~=dragToken then return end
+        dragging=true;dragInput=input;WindUI.CurrentInput=dragToken;showTip(true);self:CloseFlyout();readTrack(input)
+    end)
+    connect(Input.InputChanged,function(input)
+        if dragging and ((dragInput.UserInputType==Enum.UserInputType.Touch and input==dragInput) or
+            (dragInput.UserInputType==Enum.UserInputType.MouseButton1 and input.UserInputType==Enum.UserInputType.MouseMovement))then readTrack(input)end
+    end)
+    connect(Input.InputEnded,function(input)
+        if dragging and (input==dragInput or (dragInput.UserInputType==Enum.UserInputType.MouseButton1 and input.UserInputType==Enum.UserInputType.MouseButton1))then stopDrag()end
+    end)
+    connect(Input.WindowFocusReleased,stopDrag)
+    self.UIElements.TransparencyButton=transparencyButton
+    self.UIElements.TransparencyInput=hit
+    self.UIElements.TransparencyTrack=track
+    self.UIElements.TransparencyFill=fill
+    self.UIElements.TransparencyTooltip=tip
+    self:SetTransparency(transparency)
 
     local function backHeader(page,title)
         local b=button(page,'Back',title,'arrow-left',10)
@@ -222,9 +293,14 @@ function Profile.New(Window, WindUI, Config)
         if self.Destroyed then return end
         local scale=WindUI.UIScaleObj.Scale
         local width,height=main.AbsoluteSize.X/scale,main.AbsoluteSize.Y/scale
-        local x=math.clamp(Window.SideBarWidth+8,8,math.max(8,width-312))
-        local y=math.max(8,height-260)
-        menu.Position=UDim2.fromOffset(x,y)
+        local origin,available=WindUI.ScreenGui.AbsolutePosition,WindUI.ScreenGui.AbsoluteSize
+        local minX=(origin.X-main.AbsolutePosition.X)/scale+8
+        local maxX=(origin.X+available.X-main.AbsolutePosition.X)/scale-menu.Size.X.Offset-8
+        local minY=(origin.Y-main.AbsolutePosition.Y)/scale+8
+        local maxY=(origin.Y+available.Y-main.AbsolutePosition.Y)/scale-menu.Size.Y.Offset-8
+        -- Keep the old header anchor; the longer list may extend below the window, never outside the viewport.
+        menu.Position=UDim2.fromOffset(math.clamp(Window.SideBarWidth+8,minX,math.max(minX,maxX)),
+            math.clamp(math.max(8,height-260),minY,math.max(minY,maxY)))
     end
     local function highlight(on)Tween(card,.18,{BackgroundTransparency=on and 0 or 1}):Play()end
     local pageTween
@@ -249,16 +325,16 @@ function Profile.New(Window, WindUI, Config)
         anim:Play();move:Play()
     end
     function self:Close()
-        serial+=1;local id=serial;self.Opened=false;highlight(false)
+        serial+=1;local id=serial;self.Opened=false;stopDrag();overTrack=false;showTip(false);highlight(false)
         self:CloseFlyout()
         if anim then anim:Cancel()end;if move then move:Cancel()end
         anim=Tween(menu,.18,{GroupTransparency=1});anim:Play()
         task.delay(.18,function()if not self.Destroyed and serial==id and not self.Opened then menu.Visible=false end end)
     end
-    local function scheduleClose()
+    scheduleClose=function()
         serial+=1;local id=serial
         task.delay(.3,function()
-            if not self.Destroyed and serial==id and not hoverCard and not hoverMenu and not hoverFlyout and not hoverRow then self:Close()end
+            if not self.Destroyed and serial==id and not hoverCard and not hoverMenu and not hoverFlyout and not hoverRow and not dragging then self:Close()end
         end)
     end
     connect(card.MouseEnter,function()hoverCard=true;serial+=1;self:Open()end)
@@ -286,7 +362,8 @@ function Profile.New(Window, WindUI, Config)
     connect(main:GetPropertyChangedSignal('AbsolutePosition'),function()if self.Opened then place();if self.FlyoutKind then placeFlyout()end end end)
     connect(main:GetPropertyChangedSignal('AbsoluteSize'),function()if self.Opened then place();if self.FlyoutKind then placeFlyout()end end end)
     connect(WindUI.UIScaleObj:GetPropertyChangedSignal('Scale'),function()if self.Opened then place();if self.FlyoutKind then placeFlyout()end end end)
-    connect(WindUI.ScreenGui:GetPropertyChangedSignal('AbsoluteSize'),function()if scaleMode=='Auto'then applyScale('Auto')end end)
+    connect(WindUI.ScreenGui:GetPropertyChangedSignal('AbsoluteSize'),function()if scaleMode=='Auto'then applyScale('Auto')end;if self.Opened then place();if self.FlyoutKind then placeFlyout()end end end)
+    connect(WindUI.ScreenGui:GetPropertyChangedSignal('AbsolutePosition'),function()if self.Opened then place();if self.FlyoutKind then placeFlyout()end end end)
     function self:SetSubscription(info)
         self.Subscription=info or {};local value=self.Subscription
         local label,untilText
@@ -305,7 +382,8 @@ function Profile.New(Window, WindUI, Config)
     self:SetSubscription(Config)
     function self:Destroy()
         if self.Destroyed then return end
-        self.Destroyed=true;serial+=1
+        stopDrag();self.Destroyed=true;serial+=1
+        if tipTween then tipTween:Cancel()end
         if anim then anim:Cancel()end;if move then move:Cancel()end
         if pageTween then pageTween:Cancel()end
         for _,c in ipairs(signals)do c:Disconnect()end

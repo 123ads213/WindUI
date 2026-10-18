@@ -28,7 +28,7 @@ local ok,err=pcall(function()
  firesignal(p.UIElements.Card.MouseLeave);task.wait(.35)
  check(p.Opened,'pointer can move from card to popup')
  firesignal(p.UIElements.StyleButton.MouseButton1Click)
- check(p.FlyoutKind=='Style' and p.UIElements.Flyout.Visible,'gear opens side theme list')
+ check(p.FlyoutKind=='Style' and p.UIElements.Flyout.Visible,'Style opens side theme list')
  p.ThemeControl:Select('Ocean');task.wait(.3)
  check(d.Library:GetCurrentTheme()=='Ocean' and d.Themes.Elements[1].Value=='Ocean','style dropdown changes theme and syncs example')
  p:CloseFlyout()
@@ -48,9 +48,9 @@ local ok,err=pcall(function()
  p.ScaleControl:Select('100%');task.wait(.3)
  for _,size in ipairs({Vector2.new(560,350),Vector2.new(740,520),Vector2.new(850,560)})do
   d.Window.UIElements.Main.Size=UDim2.fromOffset(size.X,size.Y);task.wait(.15);p:Open()
-  local menu,main=p.UIElements.Menu,d.Window.UIElements.Main
-  check(menu.AbsolutePosition.X>=main.AbsolutePosition.X and menu.AbsolutePosition.Y>=main.AbsolutePosition.Y,'popup inside top/left at '..tostring(size))
-  check(menu.AbsolutePosition.X+menu.AbsoluteSize.X<=main.AbsolutePosition.X+main.AbsoluteSize.X+.5 and menu.AbsolutePosition.Y+menu.AbsoluteSize.Y<=main.AbsolutePosition.Y+main.AbsoluteSize.Y+.5,'popup inside bottom/right at '..tostring(size))
+  local menu,main=p.UIElements.Menu,d.Library.ScreenGui
+  check(menu.AbsolutePosition.X>=main.AbsolutePosition.X and menu.AbsolutePosition.Y>=main.AbsolutePosition.Y,'popup inside viewport top/left at '..tostring(size))
+  check(menu.AbsolutePosition.X+menu.AbsoluteSize.X<=main.AbsolutePosition.X+main.AbsoluteSize.X+.5 and menu.AbsolutePosition.Y+menu.AbsoluteSize.Y<=main.AbsolutePosition.Y+main.AbsoluteSize.Y+.5,'popup inside viewport bottom/right at '..tostring(size))
  end
  d.Window.UIElements.Main.Size=UDim2.fromOffset(740,520);task.wait(.2)
  for _,theme in ipairs({'Dark','Light','Ocean','Forest','Ember','Orchid','Paper'})do

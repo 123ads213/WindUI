@@ -53,7 +53,7 @@ end
 local Window = WindUI:CreateWindow({
     Title = 'WindUI', Author = 'Footagesus · Extended fork',
     Folder = 'WindUI-fork', Icon = 'panels-top-left', Theme = 'Dark',
-    ContentPaddingTop = 10, LockOffscreen = true, NewElements = true, Size = UDim2.fromOffset(740, 520),
+    ContentPaddingTop = 10, HideSearchBar = false, LockOffscreen = true, NewElements = true, Size = UDim2.fromOffset(740, 520),
 })
 -- Register immediately: even a later setup error remains cleanable on rerun.
 Env.WindUIForkDemo = { Library = WindUI, Window = Window }
@@ -106,6 +106,7 @@ local Profile = Window:CreateProfile({
     Themes = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' },
     OnThemeChanged = function(theme) Themes.Elements[1]:Select(theme) end,
     History = {
+        { Version = '1.6.66-fork.7', Date = '2026-10-18', Title = 'Search & transparency', Description = 'Original WindUI Search above COMMON. Longer preferences menu, clean Style row and thumb-free Transparency bar with a hover-only value.' },
         { Version = '1.6.66-fork.6', Date = '2026-10-18', Title = 'Profile & preferences', Description = 'Themed profile menu, subscription display, Renew, menu scaling, Style and scrollable update history. Animated Appearance tab section and centred title icons.' },
         { Version = '1.6.66-fork.5', Date = '2026-10-18', Title = 'Tabs & clean themes', Description = 'Smooth page switching and clean Ocean, Forest, Ember and Orchid contours. Slider title icon support.' },
         { Version = '1.6.66-fork.4', Date = '2026-10-18', Title = 'Viewport & controls', Description = 'Offscreen boundaries now use the actual GUI origin. Clean toggle thumb and Light/Paper outlines.' },

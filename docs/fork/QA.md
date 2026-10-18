@@ -101,3 +101,22 @@ A cleanup regression surfaced queued native-shape property events after a UICorn
 ![Scrollable update history](Profile-History.jpg)
 
 ![English link-copied notification](Profile-Notification.jpg)
+
+## Revision 7 — native Search and thumb-free Transparency
+
+- Enabled upstream Search in the example using `HideSearchBar = false`; `src/components/search/Init.lua` and the window sizing implementation are unchanged in this revision.
+- Removed Style's gear while preserving its right chevron and hover theme flyout.
+- Profile menu is now 304px high. Its existing header anchor is retained, so the longer list can extend below the main WindUI window. Position is clamped to the actual ScreenGui viewport, not the main window's rectangle. This supersedes revision 6's inside-main-window popup checks.
+- Added Transparency before History (last row): a 4px themed fill/track, no thumb, expanded invisible input target, value tooltip above the track only on hover/drag. Values clamp to 0–1 and use the original `Window:ToggleTransparency` window-background API. No group transparency is applied to labels or controls.
+- Live sequential suites passed: Runtime 65, Visual 86, Selection 10, Profile 39, Polish 18, Flyout 13, Preferences 33 — **264 assertions total**.
+- New checks cover 0.7 by track input, clamped drag, release ownership, closing during drag, tooltip hiding, stable bar ratio at 75/100/125% DPI, all seven theme colours, viewport limits, actual native Search opening, finding Distance under Player, and result navigation into that nested page.
+- Early new-test failures were incorrect test assumptions (icon wrapper names and unordered results where “Reset distance” preceded “Distance”), not counted as successful tests. Tests now identify the relevant positioned icon and exact result title.
+- Local NumberFormat / 2001 signed-lattice / TabTree suites passed; **88 Lua files compile**. Interactions are synthetic GUI/API checks, not a physical device compatibility matrix.
+
+- Final repeated-start/controlled-failure/concurrent-start suite: **7 passed**. Actual OS screenshots individually inspected: Dark with hover-only 0.7 value, Light with no resting number, original Search with nested Player results. No main-window resize or theme palette edits in this revision.
+
+![Transparency 0.7 appears above the thumb-free bar on hover](Preferences-Transparency-Dark.jpg)
+
+![Light preferences: no gear, no resting numeric label, History last](Preferences-Light.jpg)
+
+![Original Search finds Distance inside Player](Native-Search.jpg)
