@@ -5,6 +5,7 @@ local WindUI = {
 	LocalizationModule = require("./modules/Localization"),
 	NotificationModule = require("./components/Notification"),
 	Themes = nil,
+	NumberFormat = require("./modules/NumberFormat"),
 	Transparent = false,
 
 	TransparencyValue = 0.15,

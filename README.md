@@ -1,3 +1,16 @@
+> **WindUI Extended — community fork**
+> Based on WindUI 1.6.66 by [Footagesus](https://github.com/Footagesus/WindUI), MIT. Original authorship and license retained.
+>
+> **[Fork features, API, setup and test notes](FORK.md)** · **[Complete example](ForkExample.lua)**
+>
+> Compact numbers, full-width responsive sliders, sidebar groups and seven curated themes.
+
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/123ads213/WindUI/main/ForkExample.lua"))()
+```
+
+---
+
 <!--<h1 align="center">WindUI</h1> -->
 
 <!--

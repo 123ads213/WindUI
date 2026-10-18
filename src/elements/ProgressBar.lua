@@ -1,4 +1,5 @@
 local Creator = require("../modules/Creator")
+local Numbers = require("../modules/NumberFormat")
 local New = Creator.New
 local Tween = Creator.Tween
 
@@ -13,13 +14,6 @@ local function ToFiniteNumber(Value)
 	return Number
 end
 
-local function FormatNumber(Value)
-	if Value % 1 == 0 then
-		return tostring(Value)
-	end
-
-	return tostring(tonumber(string.format("%.2f", Value)))
-end
 
 function Element:New(Config)
 	local ValueConfig = typeof(Config.Value) == "table" and Config.Value or {}
@@ -43,7 +37,10 @@ function Element:New(Config)
 		ShowValue = not Indeterminate
 	end
 
-	local ValueWidth = math.max(ToFiniteNumber(Config.ValueWidth) or 44, 0)
+	local ValueWidth = math.max(ToFiniteNumber(Config.ValueWidth) or (Config.DisplayMode == "Fraction" and 96 or 56), 0)
+	local function FormatNumber(value)
+		return Numbers.Format(value, { Compact = Config.Compact ~= false, Decimals = Config.Decimals or 2 })
+	end
 
 	local ProgressBar = {
 		__type = "ProgressBar",

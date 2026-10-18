@@ -4,12 +4,12 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66  |  2026-10-07  |  Roblox UI Library for scripts
+    v1.6.66-fork.1  |  2026-10-18  |  WindUI Extended — compact numbers, sidebar groups and curated themes. Based on WindUI by Footagesus.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
     Author: Footagesus (Footages, .ftgs, oftgs)
-    Github: https://github.com/Footagesus/WindUI
+    Github: https://github.com/123ads213/WindUI
     Discord: https://discord.gg/ftgs-development-hub-1300692552005189632
     License: MIT
 ]]
@@ -25,7 +25,7 @@ Window:any,
 WindUI:any,
 Tab:any,
 Parent:Instance,
-}local a a={cache={}, load=function(b)if not a.cache[b]then a.cache[b]={c=a[b]()}end return a.cache[b].c end}do function a.a()
+}local a={cache={}::any}do do local function __modImpl()
 
 local b
 
@@ -247,7 +247,7 @@ end)
 return r,m
 end
 
-return d end function a.b()
+return d end function a.a():typeof(__modImpl())local b=a.cache.a if not b then b={c=__modImpl()}a.cache.a=b end return b.c end end do local function __modImpl()
 
 
 
@@ -1967,7 +1967,7 @@ return{
 ["zodiac-scorpio"]="rbxassetid://113640924054631",
 ["zodiac-taurus"]="rbxassetid://123053219704400",
 ["zodiac-virgo"]="rbxassetid://99462994613661",
-}end function a.c()
+}end function a.b():typeof(__modImpl())local b=a.cache.b if not b then b={c=__modImpl()}a.cache.b=b end return b.c end end do local function __modImpl()
 
 
 
@@ -9303,7 +9303,7 @@ return{
 ["zip-file-line-duotone"]="rbxassetid://130242676531637",
 ["zip-file-linear"]="rbxassetid://102428358345128",
 ["zip-file-outline"]="rbxassetid://134842241804608",
-}end function a.d()
+}end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
 
 
 
@@ -14311,7 +14311,7 @@ ImageRectSize=Vector2.new(96,96),
 Image=10,
 },
 }
-}end function a.e()
+}end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
 
 
 
@@ -16680,7 +16680,7 @@ ImageRectPosition=Vector2.new(0,256),
 ImageRectSize=Vector2.new(128,128),
 },
 }
-}end function a.f()
+}end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
 
 
 
@@ -23670,7 +23670,7 @@ return{
 "rbxassetid://119287314704938",zrButtonRoundedtopHorizontalFill=
 "rbxassetid://137388293496371",zzz=
 "rbxassetid://80729085783608",
-}end function a.g()
+}end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
 
 
 
@@ -24456,7 +24456,7 @@ return{
 "rbxassetid://116696831480300",
 ["xmark-shape"]="rbxassetid://113332623964226",
 ["xmark-shape-fill"]="rbxassetid://102835594333260",
-}end function a.h()
+}end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
 
 
 
@@ -24506,22 +24506,22 @@ IconThemeTag=nil,
 Icons={
 lucide=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/lucide/dist/Icons.lua"
-)()or a.load'b',
+)()or a.b(),
 solar=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/solar/dist/Icons.lua"
-)()or a.load'c',
+)()or a.c(),
 craft=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/craft/dist/Icons.lua"
-)()or a.load'd',
+)()or a.d(),
 geist=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/geist/dist/Icons.lua"
-)()or a.load'e',
+)()or a.e(),
 sfsymbols=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/sfsymbols/dist/Icons.lua"
-)()or a.load'f',
+)()or a.f(),
 gravity=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/gravity/dist/Icons.lua"
-)()or a.load'g',
+)()or a.g(),
 },
 }
 
@@ -24721,7 +24721,7 @@ end
 return h
 end
 
-return f end function a.i()
+return f end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
 
 return function(b)
 return{
@@ -24764,6 +24764,7 @@ TabTextTransparency=0.3,
 TabTextTransparencyActive=0,
 TabTitle="Text",
 TabIcon="Icon",
+TabIconActive="TabIcon",
 TabIconTransparency=0.4,
 TabIconTransparencyActive=0.1,
 TabBorderTransparency=1,
@@ -24852,7 +24853,7 @@ LabelBackgroundTransparency=0.95,
 ViewportBackground="ElementBackground",
 ViewportBackgroundTransparency="ElementBackgroundTransparency",
 }
-end end function a.j()
+end end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
 
 local b=(cloneref or clonereference or function(b)
 return b
@@ -24864,13 +24865,13 @@ local f=b(game:GetService"TweenService")
 local g=b(game:GetService"LocalizationService")
 local h=b(game:GetService"HttpService")
 
-local i=a.load'a'local j=
+local i=a.a()local j=
 
 d.Heartbeat
 
 
 
-local l=a.load'h'
+local l=a.h()
 
 l.SetIconsType"lucide"
 
@@ -24985,7 +24986,7 @@ ThemeChangeCallbacks={},
 function p.Init(r)
 m=r
 
-p.ThemeFallbacks=a.load'i'(p)
+p.ThemeFallbacks=a.i()(p)
 
 p.UIScale=r.UIScale
 
@@ -25866,7 +25867,7 @@ end
 return nil,4
 end
 
-return p end function a.k()
+return p end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -25891,8 +25892,8 @@ end
 
 
 
-return b end function a.l()
-local b=a.load'j'
+return b end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=__modImpl()}a.cache.k=b end return b.c end end do local function __modImpl()
+local b=a.j()
 local d=b.New
 local e=b.Tween
 
@@ -26212,7 +26213,79 @@ end
 return h
 end
 
-return f end function a.m()
+return f end function a.l():typeof(__modImpl())local b=a.cache.l if not b then b={c=__modImpl()}a.cache.l=b end return b.c end end do local function __modImpl()
+
+
+local b={}
+local d={"k","m","b","t","qa","qi","sx","sp","oc","no","dc"}
+
+function b.Finite(e)
+local f=tonumber(e)
+if f==nil or f~=f or math.abs(f)==math.huge then return nil end
+return f
+end
+
+function b.Plain(e)
+return string.format("%.15g",e)
+end
+
+function b.Format(e,f)
+f=f or{}
+local g=b.Finite(e)
+if not g then return"—"end
+if f.Compact==false then return b.Plain(g)end
+local h=math.clamp(math.floor(tonumber(f.Decimals)or 2),0,6)
+local i=math.abs(g)
+if i<1000 then return b.Plain(g)end
+if i>=1e36 then return string.format("%."..h.."e",g)end
+local l=0
+local m=g
+while math.abs(m)>=1000 and l<#d do
+l+=1
+m/=1000
+end
+local p=10^h
+if math.floor(math.abs(m)*p+0.5)/p>=1000 then
+if l==#d then return string.format("%."..h.."e",g)end
+l+=1
+m/=1000
+end
+m=(m<0 and-1 or 1)*math.floor(math.abs(m)*p+0.5)/p
+local r=string.format("%."..h.."f",m)
+if h>0 then r=r:gsub("0+$",""):gsub("%.$","")end
+return r..d[l]
+end
+
+function b.Parse(e)
+if type(e)=="number"then return b.Finite(e)end
+if type(e)~="string"then return nil end
+local f=e:lower():match"^%s*(.-)%s*$"
+local g=b.Finite(f)
+if g then return g end
+local h,i=f:match"^(.-)%s*([a-z]+)$"
+local l=h and b.Finite(h)
+if not l then return nil end
+for m,p in ipairs(d)do
+if p==i then return b.Finite(l*1000^m)end
+end
+return nil
+end
+
+
+function b.Snap(e,f,g,h)
+local i=b.Finite(e)
+if not i then return nil end
+i=math.clamp(i,f,g)
+if i==f or i==g then return i end
+return math.clamp(f+math.floor((i-f)/h+0.5)*h,f,g)
+end
+
+function b.Ratio(e,f,g)
+if g==f then return 1 end
+return math.clamp((e-f)/(g-f),0,1)
+end
+
+return b end function a.m():typeof(__modImpl())local b=a.cache.m if not b then b={c=__modImpl()}a.cache.m=b end return b.c end end do local function __modImpl()
 
 
 
@@ -26495,7 +26568,7 @@ Copy=au,
 end
 
 
-return X end function a.n()
+return X end function a.n():typeof(__modImpl())local aa=a.cache.n if not aa then aa={c=__modImpl()}a.cache.n=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26581,7 +26654,7 @@ Copy=CopyLink,
 }
 end
 
-return ac end function a.o()
+return ac end function a.o():typeof(__modImpl())local aa=a.cache.o if not aa then aa={c=__modImpl()}a.cache.o=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26624,7 +26697,7 @@ Copy=CopyLink,
 }
 end
 
-return aa end function a.p()
+return aa end function a.p():typeof(__modImpl())local aa=a.cache.p if not aa then aa={c=__modImpl()}a.cache.p=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26686,7 +26759,7 @@ Copy=copyLink
 }
 end
 
-return aa end function a.q()
+return aa end function a.q():typeof(__modImpl())local aa=a.cache.q if not aa then aa={c=__modImpl()}a.cache.q=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26696,44 +26769,44 @@ Name="Platoboost",
 Icon="rbxassetid://75920162824531",
 Args={"ServiceId","Secret"},
 
-New=a.load'm'.New
+New=a.n().New
 },
 pandadevelopment={
 Name="Panda Development",
 Icon="panda",
 Args={"ServiceId"},
 
-New=a.load'n'.New
+New=a.o().New
 },
 luarmor={
 Name="Luarmor",
 Icon="rbxassetid://130918283130165",
 Args={"ScriptId","Discord"},
 
-New=a.load'o'.New
+New=a.p().New
 },
 junkiedevelopment={
 Name="Junkie Development",
 Icon="rbxassetid://106310347705078",
 Args={"ServiceId","ApiKey","Provider"},
 
-New=a.load'p'.New
+New=a.q().New
 },
 
 
-}end function a.r()
+}end function a.r():typeof(__modImpl())local aa=a.cache.r if not aa then aa={c=__modImpl()}a.cache.r=aa end return aa.c end end do local function __modImpl()
 
 
 
 return[[
 {
     "name": "windui",
-    "version": "1.6.66",
+    "version": "1.6.66-fork.1",
     "main": "./dist/main.lua",
-    "repository": "https://github.com/Footagesus/WindUI",
+    "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
     "author": "Footagesus",
-    "description": "Roblox UI Library for scripts",
+    "description": "WindUI Extended \u2014 compact numbers, sidebar groups and curated themes. Based on WindUI by Footagesus.",
     "license": "MIT",
     "scripts": {
         "dev": "bash build/build.sh dev $INPUT_FILE",
@@ -26742,7 +26815,8 @@ return[[
         "watch": "chokidar . -i 'node_modules' -i 'dist' -i 'build' -c 'npm run dev --'",
         "live-build": "concurrently \"npm run live\" \"npm run watch --\"",
         "example-live-build": "INPUT_FILE=main_example.lua npm run live-build",
-        "updater": "python3 updater/main.py"
+        "updater": "python3 updater/main.py",
+        "test": "luau tests/NumberFormat.luau"
     },
     "keywords": [
         "ui-library",
@@ -26756,11 +26830,11 @@ return[[
         "concurrently": "^9.2.0"
     }
 }
-]]end function a.s()
+]]end function a.s():typeof(__modImpl())local aa=a.cache.s if not aa then aa={c=__modImpl()}a.cache.s=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -26904,11 +26978,11 @@ end)
 return ap
 end
 
-return aa end function a.t()
+return aa end function a.t():typeof(__modImpl())local aa=a.cache.t if not aa then aa={c=__modImpl()}a.cache.t=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New local ad=
 ab.Tween
 
@@ -27030,9 +27104,9 @@ end
 return as
 end
 
-return aa end function a.u()
+return aa end function a.u():typeof(__modImpl())local aa=a.cache.u if not aa then aa={c=__modImpl()}a.cache.u=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local ab=aa.New
 local ac=aa.Tween
 
@@ -27211,19 +27285,19 @@ end
 return aj
 end
 
-return ad end function a.v()
+return ad end function a.v():typeof(__modImpl())local aa=a.cache.v if not aa then aa={c=__modImpl()}a.cache.v=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
-local ae=a.load's'.New
-local af=a.load't'.New
+local ae=a.t().New
+local af=a.u().New
 
 function aa.new(ag,ah,ai,aj)
-local ak=a.load'u'
+local ak=a.v()
 local al=ak.Create(true,"Popup",ag.Window,ag.WindUI,ag.WindUI.ScreenGui.KeySystem)
 
 local am={}
@@ -27719,7 +27793,7 @@ aA.Position=UDim2.new(1,0,0.5,0)
 al:Open()
 end
 
-return aa end function a.w()
+return aa end function a.w():typeof(__modImpl())local aa=a.cache.w if not aa then aa={c=__modImpl()}a.cache.w=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -27741,18 +27815,18 @@ local ab=aa(game:GetService"Workspace").CurrentCamera.ViewportSize.Y
 return map(ab,0,2560,8,56)
 end
 
-return{viewportPointToWorld,getOffset}end function a.x()
+return{viewportPointToWorld,getOffset}end function a.x():typeof(__modImpl())local aa=a.cache.x if not aa then aa={c=__modImpl()}a.cache.x=aa end return aa.c end end do local function __modImpl()
 
 
 
 local aa=(cloneref or clonereference or function(aa)return aa end)
 
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 
 
-local ad,ae=unpack(a.load'w')
+local ad,ae=unpack(a.x())
 local af=Instance.new("Folder",aa(game:GetService"Workspace").CurrentCamera)
 
 
@@ -27888,11 +27962,11 @@ ah.Frame=ak
 ah.Model=aj
 
 return ah
-end end function a.y()
+end end function a.y():typeof(__modImpl())local aa=a.cache.y if not aa then aa={c=__modImpl()}a.cache.y=aa end return aa.c end end do local function __modImpl()
 
 
-local aa=a.load'j'
-local ab=a.load'x'
+local aa=a.j()
+local ab=a.y()
 
 local ac=aa.New
 
@@ -28012,7 +28086,7 @@ ae.SetVisibility=af.SetVisibility
 end
 
 return ae,af
-end end function a.z()
+end end function a.z():typeof(__modImpl())local aa=a.cache.z if not aa then aa={c=__modImpl()}a.cache.z=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -28020,9 +28094,9 @@ local aa=(cloneref or clonereference or function(aa)return aa end)
 
 
 local ab={
-AcrylicBlur=a.load'x',
+AcrylicBlur=a.y(),
 
-AcrylicPaint=a.load'y',
+AcrylicPaint=a.z(),
 }
 
 function ab.init()
@@ -28069,11 +28143,11 @@ registerDefaults()
 ab.Enable()
 end
 
-return ab end function a.A()
+return ab end function a.A():typeof(__modImpl())local aa=a.cache.A if not aa then aa={c=__modImpl()}a.cache.A=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New local ad=
 ab.Tween
 
@@ -28090,7 +28164,7 @@ Buttons=ae.Buttons,
 IconSize=22,
 }
 
-local ah=a.load'u'
+local ah=a.v()
 local ai=ah.Create(true,"Popup",ae.WindUI.Window,ae.WindUI,af)
 
 local aj=200
@@ -28251,7 +28325,7 @@ PaddingBottom=UDim.new(0,16),
 }),
 })
 
-local as=a.load's'.New
+local as=a.t().New
 
 for at,au in next,ag.Buttons do
 as(au.Title,au.Icon,au.Callback,au.Variant,aq,ai)
@@ -28263,7 +28337,8 @@ ai:Open()
 return ag
 end
 
-return aa end function a.B()
+return aa end function a.B():typeof(__modImpl())local aa=a.cache.B if not aa then aa={c=__modImpl()}a.cache.B=aa end return aa.c end end do local function __modImpl()
+
 return function(aa,ab)
 return{
 Dark={
@@ -28297,357 +28372,309 @@ ElementBackgroundTransparency=0,
 
 Light={
 Name="Light",
-
-Accent=Color3.fromHex"#efefef",
-Dialog=Color3.fromHex"#f4f4f5",
-Outline=Color3.fromHex"#ffffff",
-Text=Color3.fromHex"#000000",
-Placeholder=Color3.fromHex"#555555",
-Background=Color3.fromHex"#FFFFFF",
-Button=Color3.fromHex"#18181b",
-Icon=Color3.fromHex"#52525b",
-Toggle=Color3.fromHex"#33C759",
-Slider=Color3.fromHex"#0091FF",
-Checkbox=Color3.fromHex"#0091FF",
-
-DropdownTabBackground=Color3.fromHex"#bebebe",
-DropdownBackground=Color3.fromHex"#ffffff",
-
-TabBackground=Color3.fromHex"#ffffff",
-TabBackgroundHover=Color3.fromHex"#f3f3f3",
-TabBackgroundHoverTransparency=0,
-TabBackgroundActive=Color3.fromHex"#efefef",
-TabBackgroundActiveTransparency=0,
-
-PanelBackground=Color3.fromHex"#efefef",
-PanelBackgroundTransparency=0,
-
-LabelBackground=Color3.fromHex"#efefef",
-LabelBackgroundTransparency=0,
-
-ElementBackground=Color3.fromHex"#ffffff",
-ElementBackgroundTransparency=0,
-},
-
-Rose={
-Name="Rose",
-
-Accent=Color3.fromHex"#be185d",
-Dialog=Color3.fromHex"#4c0519",
-
-Text=Color3.fromHex"#fdf2f8",
-Placeholder=Color3.fromHex"#d67aa6",
-Background=Color3.fromHex"#1f0308",
-Button=Color3.fromHex"#e95f74",
-Icon=Color3.fromHex"#fb7185",
-
-ElementBackground=Color3.fromHex"#381E23",
-ElementBackgroundTransparency=0,
-},
-
-Plant={
-Name="Plant",
-
-Accent=Color3.fromHex"#166534",
-Dialog=Color3.fromHex"#052e16",
-
-Text=Color3.fromHex"#f0fdf4",
-Placeholder=Color3.fromHex"#4fbf7a",
-Background=Color3.fromHex"#0a1b0f",
-Button=Color3.fromHex"#16a34a",
-Icon=Color3.fromHex"#4ade80",
-
-ElementBackground=Color3.fromHex"#28342A",
-ElementBackgroundTransparency=0,
-},
-
-Red={
-Name="Red",
-
-Accent=Color3.fromHex"#991b1b",
-Dialog=Color3.fromHex"#450a0a",
-
-Text=Color3.fromHex"#fef2f2",
-Placeholder=Color3.fromHex"#d95353",
-Background=Color3.fromHex"#1c0606",
-Button=Color3.fromHex"#dc2626",
-Icon=Color3.fromHex"#ef4444",
-
-ElementBackground=Color3.fromHex"#322221",
-ElementBackgroundTransparency=0,
-},
-
-Indigo={
-Name="Indigo",
-
-Accent=Color3.fromHex"#3730a3",
-Dialog=Color3.fromHex"#1e1b4b",
-
-Text=Color3.fromHex"#f1f5f9",
-Placeholder=Color3.fromHex"#7078d9",
-Background=Color3.fromHex"#0f0a2e",
-Button=Color3.fromHex"#4f46e5",
-Icon=Color3.fromHex"#6366f1",
-
-ElementBackground=Color3.fromHex"#282543",
-ElementBackgroundTransparency=0,
-},
-
-Sky={
-Name="Sky",
-
-Accent=Color3.fromHex"#00d4ff",
-Dialog=Color3.fromHex"#0a4d66",
-
-Text=Color3.fromHex"#e6f7ff",
-Placeholder=Color3.fromHex"#66b3cc",
-Background=Color3.fromHex"#051a26",
-Button=Color3.fromHex"#00a8cc",
-Icon=Color3.fromHex"#2db8d9",
-
-Toggle=Color3.fromHex"#00d9d9",
-Slider=Color3.fromHex"#00d4ff",
-Checkbox=Color3.fromHex"#00d4ff",
-
-PanelBackground=Color3.fromHex"#0d3a47",
-PanelBackgroundTransparency=0.8,
-
-ElementBackground=Color3.fromHex"#172E3B",
-ElementBackgroundTransparency=0,
-},
-
-Violet={
-Name="Violet",
-
-Accent=Color3.fromHex"#6d28d9",
-Dialog=Color3.fromHex"#3c1361",
-
-Text=Color3.fromHex"#faf5ff",
-Placeholder=Color3.fromHex"#8f7ee0",
-Background=Color3.fromHex"#1e0a3e",
-Button=Color3.fromHex"#7c3aed",
-Icon=Color3.fromHex"#8b5cf6",
-
-ElementBackground=Color3.fromHex"#342650",
-ElementBackgroundTransparency=0,
-},
-
-Amber={
-Name="Amber",
-
-Accent=aa:Gradient({
-["0"]={Color=Color3.fromHex"#b45309",Transparency=0},
-["100"]={Color=Color3.fromHex"#d97706",Transparency=0},
-},{Rotation=45}),
-
-Dialog=aa:Gradient({
-["0"]={Color=Color3.fromHex"#451a03",Transparency=0},
-["100"]={Color=Color3.fromHex"#6b2e05",Transparency=0},
-},{Rotation=90}),
-
-
-
-
-
-
-Text=aa:Gradient({
-["0"]={Color=Color3.fromHex"#fffbeb",Transparency=0},
-["100"]={Color=Color3.fromHex"#fff7ed",Transparency=0},
-},{Rotation=45}),
-
-Placeholder=aa:Gradient({
-["0"]={Color=Color3.fromHex"#d1a326",Transparency=0},
-["100"]={Color=Color3.fromHex"#fbbf24",Transparency=0},
-},{Rotation=45}),
-
-Background=aa:Gradient({
-["0"]={Color=Color3.fromHex"#1c1003",Transparency=0},
-["100"]={Color=Color3.fromHex"#3f210d",Transparency=0},
-},{Rotation=90}),
-
-Button=aa:Gradient({
-["0"]={Color=Color3.fromHex"#d97706",Transparency=0},
-["100"]={Color=Color3.fromHex"#f59e0b",Transparency=0},
-},{Rotation=45}),
-
-Icon=Color3.fromHex"#f59e0b",
-
-Toggle=aa:Gradient({
-["0"]={Color=Color3.fromHex"#d97706",Transparency=0},
-["100"]={Color=Color3.fromHex"#f59e0b",Transparency=0},
-},{Rotation=45}),
-
-Slider=Color3.fromHex"#d97706",
-
-Checkbox=aa:Gradient({
-["0"]={Color=Color3.fromHex"#d97706",Transparency=0},
-["100"]={Color=Color3.fromHex"#fbbf24",Transparency=0},
-},{Rotation=45}),
-
+Accent=Color3.fromHex"#FFFFFF",
+Dialog=Color3.fromHex"#FFFFFF",
+Outline=Color3.fromHex"#CBD3DD",
+Text=Color3.fromHex"#17212D",
+Placeholder=Color3.fromHex"#596678",
+Background=Color3.fromHex"#F5F6F8",
+Button=Color3.fromHex"#E8EDF4",
+Icon=Color3.fromHex"#596678",
+TabIconActive="Primary",
+Primary=Color3.fromHex"#2563EB",
+Toggle=Color3.fromHex"#2563EB",
+Slider=Color3.fromHex"#2563EB",
+Checkbox=Color3.fromHex"#2563EB",
+SliderThumb=Color3.fromHex"#2563EB",
+SliderIcon=Color3.fromHex"#596678",
+ProgressBar=Color3.fromHex"#2563EB",
 PanelBackground=Color3.fromHex"#FFFFFF",
-PanelBackgroundTransparency=0.95,
-
-ElementBackground=Color3.fromHex"#3A2E22",
+ElementBackground=Color3.fromHex"#EEF1F6",
+TabBackground=Color3.fromHex"#FFFFFF",
+TabBackgroundHover=Color3.fromHex"#E8EDF4",
+TabBackgroundActive=Color3.fromHex"#DDE7F6",
+TabBorder=Color3.fromHex"#CBD3DD",
+DropdownTabBackground=Color3.fromHex"#E8EDF4",
+DropdownBackground=Color3.fromHex"#FFFFFF",
+DropdownTabBorder=Color3.fromHex"#CBD3DD",
+LabelBackground=Color3.fromHex"#E8EDF4",
+SearchBarBorder=Color3.fromHex"#CBD3DD",
+NotificationBorder=Color3.fromHex"#CBD3DD",
+SectionBoxBorder=Color3.fromHex"#CBD3DD",
+Tooltip=Color3.fromHex"#17212D",
+TooltipText=Color3.fromHex"#F5F6F8",
+TooltipSecondary=Color3.fromHex"#2563EB",
+TooltipSecondaryText=Color3.fromHex"#FFFFFF",
+CheckboxBorder=Color3.fromHex"#CBD3DD",
+CheckboxIcon=Color3.fromHex"#FFFFFF",
+PanelBackgroundTransparency=0,
 ElementBackgroundTransparency=0,
+TabBackgroundHoverTransparency=0,
+TabBackgroundActiveTransparency=0,
+TabBorderTransparency=1,
+TabBorderTransparencyActive=1,
+LabelBackgroundTransparency=0,
+SearchBarBorderTransparency=0.25,
+NotificationBorderTransparency=0.25,
+SectionBoxBorderTransparency=0.25,
+CheckboxBorderTransparency=0,
 },
 
-Emerald={
-Name="Emerald",
-
-Accent=Color3.fromHex"#047857",
-Dialog=Color3.fromHex"#022c22",
-
-Text=Color3.fromHex"#ecfdf5",
-Placeholder=Color3.fromHex"#3fbf8f",
-Background=Color3.fromHex"#011411",
-Button=Color3.fromHex"#059669",
-Icon=Color3.fromHex"#10b981",
-
-ElementBackground=Color3.fromHex"#202E2A",
+Ocean={
+Name="Ocean",
+Accent=Color3.fromHex"#102A36",
+Dialog=Color3.fromHex"#183642",
+Outline=Color3.fromHex"#35525F",
+Text=Color3.fromHex"#ECF7FA",
+Placeholder=Color3.fromHex"#A4C2CD",
+Background=Color3.fromHex"#091A23",
+Button=Color3.fromHex"#173D4B",
+Icon=Color3.fromHex"#A4C2CD",
+TabIconActive="Primary",
+Primary=Color3.fromHex"#43C8DE",
+Toggle=Color3.fromHex"#43C8DE",
+Slider=Color3.fromHex"#43C8DE",
+Checkbox=Color3.fromHex"#43C8DE",
+SliderThumb=Color3.fromHex"#FFFFFF",
+SliderIcon=Color3.fromHex"#A4C2CD",
+ProgressBar=Color3.fromHex"#43C8DE",
+PanelBackground=Color3.fromHex"#102A36",
+ElementBackground=Color3.fromHex"#183642",
+TabBackground=Color3.fromHex"#102A36",
+TabBackgroundHover=Color3.fromHex"#173D4B",
+TabBackgroundActive=Color3.fromHex"#225267",
+TabBorder=Color3.fromHex"#35525F",
+DropdownTabBackground=Color3.fromHex"#173D4B",
+DropdownBackground=Color3.fromHex"#183642",
+DropdownTabBorder=Color3.fromHex"#35525F",
+LabelBackground=Color3.fromHex"#173D4B",
+SearchBarBorder=Color3.fromHex"#35525F",
+NotificationBorder=Color3.fromHex"#35525F",
+SectionBoxBorder=Color3.fromHex"#35525F",
+Tooltip=Color3.fromHex"#ECF7FA",
+TooltipText=Color3.fromHex"#091A23",
+TooltipSecondary=Color3.fromHex"#43C8DE",
+TooltipSecondaryText=Color3.fromHex"#091A23",
+CheckboxBorder=Color3.fromHex"#35525F",
+CheckboxIcon=Color3.fromHex"#091A23",
+PanelBackgroundTransparency=0,
 ElementBackgroundTransparency=0,
+TabBackgroundHoverTransparency=0,
+TabBackgroundActiveTransparency=0,
+TabBorderTransparency=1,
+TabBorderTransparencyActive=1,
+LabelBackgroundTransparency=0,
+SearchBarBorderTransparency=0.25,
+NotificationBorderTransparency=0.25,
+SectionBoxBorderTransparency=0.25,
+CheckboxBorderTransparency=0,
 },
 
-Midnight={
-Name="Midnight",
-
-Accent=Color3.fromHex"#1e3a8a",
-Dialog=Color3.fromHex"#0c1e42",
-
-Text=Color3.fromHex"#dbeafe",
-Placeholder=Color3.fromHex"#2f74d1",
-Background=Color3.fromHex"#0a0f1e",
-Button=Color3.fromHex"#2563eb",
-Primary=Color3.fromHex"#2563eb",
-Icon=Color3.fromHex"#5591f4",
-
-ElementBackground=Color3.fromHex"#242836",
+Forest={
+Name="Forest",
+Accent=Color3.fromHex"#1D2C23",
+Dialog=Color3.fromHex"#283A2D",
+Outline=Color3.fromHex"#435541",
+Text=Color3.fromHex"#F0F3E6",
+Placeholder=Color3.fromHex"#B4C4A8",
+Background=Color3.fromHex"#121D17",
+Button=Color3.fromHex"#283E2D",
+Icon=Color3.fromHex"#B4C4A8",
+TabIconActive="Primary",
+Primary=Color3.fromHex"#AEC978",
+Toggle=Color3.fromHex"#AEC978",
+Slider=Color3.fromHex"#AEC978",
+Checkbox=Color3.fromHex"#AEC978",
+SliderThumb=Color3.fromHex"#FFFFFF",
+SliderIcon=Color3.fromHex"#B4C4A8",
+ProgressBar=Color3.fromHex"#AEC978",
+PanelBackground=Color3.fromHex"#1D2C23",
+ElementBackground=Color3.fromHex"#283A2D",
+TabBackground=Color3.fromHex"#1D2C23",
+TabBackgroundHover=Color3.fromHex"#283E2D",
+TabBackgroundActive=Color3.fromHex"#385238",
+TabBorder=Color3.fromHex"#435541",
+DropdownTabBackground=Color3.fromHex"#283E2D",
+DropdownBackground=Color3.fromHex"#283A2D",
+DropdownTabBorder=Color3.fromHex"#435541",
+LabelBackground=Color3.fromHex"#283E2D",
+SearchBarBorder=Color3.fromHex"#435541",
+NotificationBorder=Color3.fromHex"#435541",
+SectionBoxBorder=Color3.fromHex"#435541",
+Tooltip=Color3.fromHex"#F0F3E6",
+TooltipText=Color3.fromHex"#121D17",
+TooltipSecondary=Color3.fromHex"#AEC978",
+TooltipSecondaryText=Color3.fromHex"#121D17",
+CheckboxBorder=Color3.fromHex"#435541",
+CheckboxIcon=Color3.fromHex"#121D17",
+PanelBackgroundTransparency=0,
 ElementBackgroundTransparency=0,
+TabBackgroundHoverTransparency=0,
+TabBackgroundActiveTransparency=0,
+TabBorderTransparency=1,
+TabBorderTransparencyActive=1,
+LabelBackgroundTransparency=0,
+SearchBarBorderTransparency=0.25,
+NotificationBorderTransparency=0.25,
+SectionBoxBorderTransparency=0.25,
+CheckboxBorderTransparency=0,
 },
 
-Crimson={
-Name="Crimson",
-
-Accent=Color3.fromHex"#b91c1c",
-Dialog=Color3.fromHex"#450a0a",
-
-Text=Color3.fromHex"#fef2f2",
-Placeholder=Color3.fromHex"#6f757b",
-Background=Color3.fromHex"#0c0404",
-Button=Color3.fromHex"#991b1b",
-Icon=Color3.fromHex"#dc2626",
-
-ElementBackground=Color3.fromHex"#251F1F",
+Ember={
+Name="Ember",
+Accent=Color3.fromHex"#33231B",
+Dialog=Color3.fromHex"#453024",
+Outline=Color3.fromHex"#69503D",
+Text=Color3.fromHex"#FFF0DF",
+Placeholder=Color3.fromHex"#D1B39A",
+Background=Color3.fromHex"#231713",
+Button=Color3.fromHex"#493021",
+Icon=Color3.fromHex"#D1B39A",
+TabIconActive="Primary",
+Primary=Color3.fromHex"#F2AC68",
+Toggle=Color3.fromHex"#F2AC68",
+Slider=Color3.fromHex"#F2AC68",
+Checkbox=Color3.fromHex"#F2AC68",
+SliderThumb=Color3.fromHex"#FFFFFF",
+SliderIcon=Color3.fromHex"#D1B39A",
+ProgressBar=Color3.fromHex"#F2AC68",
+PanelBackground=Color3.fromHex"#33231B",
+ElementBackground=Color3.fromHex"#453024",
+TabBackground=Color3.fromHex"#33231B",
+TabBackgroundHover=Color3.fromHex"#493021",
+TabBackgroundActive=Color3.fromHex"#5A3B27",
+TabBorder=Color3.fromHex"#69503D",
+DropdownTabBackground=Color3.fromHex"#493021",
+DropdownBackground=Color3.fromHex"#453024",
+DropdownTabBorder=Color3.fromHex"#69503D",
+LabelBackground=Color3.fromHex"#493021",
+SearchBarBorder=Color3.fromHex"#69503D",
+NotificationBorder=Color3.fromHex"#69503D",
+SectionBoxBorder=Color3.fromHex"#69503D",
+Tooltip=Color3.fromHex"#FFF0DF",
+TooltipText=Color3.fromHex"#231713",
+TooltipSecondary=Color3.fromHex"#F2AC68",
+TooltipSecondaryText=Color3.fromHex"#231713",
+CheckboxBorder=Color3.fromHex"#69503D",
+CheckboxIcon=Color3.fromHex"#231713",
+PanelBackgroundTransparency=0,
 ElementBackgroundTransparency=0,
+TabBackgroundHoverTransparency=0,
+TabBackgroundActiveTransparency=0,
+TabBorderTransparency=1,
+TabBorderTransparencyActive=1,
+LabelBackgroundTransparency=0,
+SearchBarBorderTransparency=0.25,
+NotificationBorderTransparency=0.25,
+SectionBoxBorderTransparency=0.25,
+CheckboxBorderTransparency=0,
 },
 
-MonokaiPro={
-Name="Monokai Pro",
-
-Accent=Color3.fromHex"#fc9867",
-Dialog=Color3.fromHex"#1e1e1e",
-
-Text=Color3.fromHex"#fcfcfa",
-Placeholder=Color3.fromHex"#afafaf",
-Background=Color3.fromHex"#191622",
-Button=Color3.fromHex"#ab9df2",
-Icon=Color3.fromHex"#a9dc76",
-
-ElementBackground=Color3.fromHex"#323039",
+Orchid={
+Name="Orchid",
+Accent=Color3.fromHex"#2A223B",
+Dialog=Color3.fromHex"#392E4B",
+Outline=Color3.fromHex"#5C486F",
+Text=Color3.fromHex"#F4EDFC",
+Placeholder=Color3.fromHex"#C1AFD3",
+Background=Color3.fromHex"#1D1729",
+Button=Color3.fromHex"#3D2D51",
+Icon=Color3.fromHex"#C1AFD3",
+TabIconActive="Primary",
+Primary=Color3.fromHex"#CA9EEF",
+Toggle=Color3.fromHex"#CA9EEF",
+Slider=Color3.fromHex"#CA9EEF",
+Checkbox=Color3.fromHex"#CA9EEF",
+SliderThumb=Color3.fromHex"#FFFFFF",
+SliderIcon=Color3.fromHex"#C1AFD3",
+ProgressBar=Color3.fromHex"#CA9EEF",
+PanelBackground=Color3.fromHex"#2A223B",
+ElementBackground=Color3.fromHex"#392E4B",
+TabBackground=Color3.fromHex"#2A223B",
+TabBackgroundHover=Color3.fromHex"#3D2D51",
+TabBackgroundActive=Color3.fromHex"#503966",
+TabBorder=Color3.fromHex"#5C486F",
+DropdownTabBackground=Color3.fromHex"#3D2D51",
+DropdownBackground=Color3.fromHex"#392E4B",
+DropdownTabBorder=Color3.fromHex"#5C486F",
+LabelBackground=Color3.fromHex"#3D2D51",
+SearchBarBorder=Color3.fromHex"#5C486F",
+NotificationBorder=Color3.fromHex"#5C486F",
+SectionBoxBorder=Color3.fromHex"#5C486F",
+Tooltip=Color3.fromHex"#F4EDFC",
+TooltipText=Color3.fromHex"#1D1729",
+TooltipSecondary=Color3.fromHex"#CA9EEF",
+TooltipSecondaryText=Color3.fromHex"#1D1729",
+CheckboxBorder=Color3.fromHex"#5C486F",
+CheckboxIcon=Color3.fromHex"#1D1729",
+PanelBackgroundTransparency=0,
 ElementBackgroundTransparency=0,
-
-Metadata={
-PullRequest=23,
+TabBackgroundHoverTransparency=0,
+TabBackgroundActiveTransparency=0,
+TabBorderTransparency=1,
+TabBorderTransparencyActive=1,
+LabelBackgroundTransparency=0,
+SearchBarBorderTransparency=0.25,
+NotificationBorderTransparency=0.25,
+SectionBoxBorderTransparency=0.25,
+CheckboxBorderTransparency=0,
 },
-},
 
-CottonCandy={
-Name="Cotton Candy",
-
-Accent=Color3.fromHex"#ec4899",
-Dialog=Color3.fromHex"#2d1b3d",
-
-Text=Color3.fromHex"#fdf2f8",
-Placeholder=Color3.fromHex"#8a5fd3",
-Background=Color3.fromHex"#1a0b2e",
-Button=Color3.fromHex"#d946ef",
-Slider=Color3.fromHex"#d946ef",
-Icon=Color3.fromHex"#06b6d4",
-
-ElementBackground=Color3.fromHex"#312643",
+Paper={
+Name="Paper",
+Accent=Color3.fromHex"#FAF5E9",
+Dialog=Color3.fromHex"#FFFFFF",
+Outline=Color3.fromHex"#C5BBA9",
+Text=Color3.fromHex"#302D27",
+Placeholder=Color3.fromHex"#6E6558",
+Background=Color3.fromHex"#F1EBDD",
+Button=Color3.fromHex"#E8DFCD",
+Icon=Color3.fromHex"#6E6558",
+TabIconActive="Primary",
+Primary=Color3.fromHex"#885430",
+Toggle=Color3.fromHex"#885430",
+Slider=Color3.fromHex"#885430",
+Checkbox=Color3.fromHex"#885430",
+SliderThumb=Color3.fromHex"#885430",
+SliderIcon=Color3.fromHex"#6E6558",
+ProgressBar=Color3.fromHex"#885430",
+PanelBackground=Color3.fromHex"#FAF5E9",
+ElementBackground=Color3.fromHex"#FFFFFF",
+TabBackground=Color3.fromHex"#FAF5E9",
+TabBackgroundHover=Color3.fromHex"#E8DFCD",
+TabBackgroundActive=Color3.fromHex"#DDCCAF",
+TabBorder=Color3.fromHex"#C5BBA9",
+DropdownTabBackground=Color3.fromHex"#E8DFCD",
+DropdownBackground=Color3.fromHex"#FFFFFF",
+DropdownTabBorder=Color3.fromHex"#C5BBA9",
+LabelBackground=Color3.fromHex"#E8DFCD",
+SearchBarBorder=Color3.fromHex"#C5BBA9",
+NotificationBorder=Color3.fromHex"#C5BBA9",
+SectionBoxBorder=Color3.fromHex"#C5BBA9",
+Tooltip=Color3.fromHex"#302D27",
+TooltipText=Color3.fromHex"#F1EBDD",
+TooltipSecondary=Color3.fromHex"#885430",
+TooltipSecondaryText=Color3.fromHex"#FFFFFF",
+CheckboxBorder=Color3.fromHex"#C5BBA9",
+CheckboxIcon=Color3.fromHex"#FFFFFF",
+PanelBackgroundTransparency=0,
 ElementBackgroundTransparency=0,
-},
-
-Mellowsi={
-Name="Mellowsi",
-
-Accent=Color3.fromHex"#342A1E",
-Dialog=Color3.fromHex"#291C13",
-
-Text=Color3.fromHex"#F5EBDD",
-Placeholder=Color3.fromHex"#9C8A73",
-Background=Color3.fromHex"#1C1002",
-Button=Color3.fromHex"#342A1E",
-Icon=Color3.fromHex"#C9B79C",
-
-Toggle=Color3.fromHex"#a9873f",
-Slider=Color3.fromHex"#C9A24D",
-Checkbox=Color3.fromHex"#C9A24D",
-
-ElementBackground=Color3.fromHex"#33291E",
-ElementBackgroundTransparency=0,
-
-Metadata={
-PullRequest=52,
-},
-},
-
-Rainbow={
-Name="Rainbow",
-
-Accent=aa:Gradient({
-["0"]={Color=Color3.fromHex"#00ff41",Transparency=0},
-["33"]={Color=Color3.fromHex"#00ffff",Transparency=0},
-["66"]={Color=Color3.fromHex"#0080ff",Transparency=0},
-["100"]={Color=Color3.fromHex"#8000ff",Transparency=0},
-},{Rotation=45}),
-
-Dialog=aa:Gradient({
-["0"]={Color=Color3.fromHex"#ff0080",Transparency=0},
-["25"]={Color=Color3.fromHex"#8000ff",Transparency=0},
-["50"]={Color=Color3.fromHex"#0080ff",Transparency=0},
-["75"]={Color=Color3.fromHex"#00ff80",Transparency=0},
-["100"]={Color=Color3.fromHex"#ff8000",Transparency=0},
-},{Rotation=135}),
-
-
-Text=Color3.fromHex"#ffffff",
-Placeholder=Color3.fromHex"#00ff80",
-
-Background=aa:Gradient({
-["0"]={Color=Color3.fromHex"#ff0040",Transparency=0},
-["20"]={Color=Color3.fromHex"#ff4000",Transparency=0},
-["40"]={Color=Color3.fromHex"#ffff00",Transparency=0},
-["60"]={Color=Color3.fromHex"#00ff40",Transparency=0},
-["80"]={Color=Color3.fromHex"#0040ff",Transparency=0},
-["100"]={Color=Color3.fromHex"#4000ff",Transparency=0},
-},{Rotation=90}),
-
-Button=aa:Gradient({
-["0"]={Color=Color3.fromHex"#ff0080",Transparency=0},
-["25"]={Color=Color3.fromHex"#ff8000",Transparency=0},
-["50"]={Color=Color3.fromHex"#ffff00",Transparency=0},
-["75"]={Color=Color3.fromHex"#80ff00",Transparency=0},
-["100"]={Color=Color3.fromHex"#00ffff",Transparency=0},
-},{Rotation=60}),
-
-Icon=Color3.fromHex"#ffffff",
+TabBackgroundHoverTransparency=0,
+TabBackgroundActiveTransparency=0,
+TabBorderTransparency=1,
+TabBorderTransparencyActive=1,
+LabelBackgroundTransparency=0,
+SearchBarBorderTransparency=0.25,
+NotificationBorderTransparency=0.25,
+SectionBoxBorderTransparency=0.25,
+CheckboxBorderTransparency=0,
 },
 }
-end end function a.C()
+end end function a.C():typeof(__modImpl())local aa=a.cache.C if not aa then aa={c=__modImpl()}a.cache.C=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New local ad=
 ab.Tween
 
@@ -28735,7 +28762,7 @@ an,
 return ao
 end
 
-return aa end function a.D()
+return aa end function a.D():typeof(__modImpl())local aa=a.cache.D if not aa then aa={c=__modImpl()}a.cache.D=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
@@ -28744,7 +28771,7 @@ return ab
 end
 local ac=ab(game:GetService"UserInputService")
 
-local ad=a.load'j'
+local ad=a.j()
 local ae=ad.New
 
 function aa.New(af,ag,ah,ai,aj)
@@ -28884,11 +28911,11 @@ UpdateVisuals()
 return ak
 end
 
-return aa end function a.E()
+return aa end function a.E():typeof(__modImpl())local aa=a.cache.E if not aa then aa={c=__modImpl()}a.cache.E=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -29053,7 +29080,7 @@ end)
 return ah
 end
 
-return aa end function a.F()
+return aa end function a.F():typeof(__modImpl())local aa=a.cache.F if not aa then aa={c=__modImpl()}a.cache.F=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)return aa end)
 
@@ -29434,10 +29461,10 @@ function ae.GetConfig(af,ag)
 return ae.Configs[ag]
 end
 
-return ae end function a.G()
+return ae end function a.G():typeof(__modImpl())local aa=a.cache.G if not aa then aa={c=__modImpl()}a.cache.G=aa end return aa.c end end do local function __modImpl()
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -29720,10 +29747,10 @@ end
 
 
 
-return aa end function a.H()
+return aa end function a.H():typeof(__modImpl())local aa=a.cache.H if not aa then aa={c=__modImpl()}a.cache.H=aa end return aa.c end end do local function __modImpl()
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -29882,9 +29909,9 @@ end
 
 
 
-return aa end function a.I()
+return aa end function a.I():typeof(__modImpl())local aa=a.cache.I if not aa then aa={c=__modImpl()}a.cache.I=aa end return aa.c end end do local function __modImpl()
 game:GetService"ReplicatedStorage"
-local aa=a.load'j'
+local aa=a.j()
 local ab=aa.New
 local ac=aa.NewRoundFrame
 local ad=aa.Tween
@@ -29895,7 +29922,7 @@ end)
 
 ae(game:GetService"UserInputService")
 
-local af=a.load'E'
+local af=a.F()
 
 local function Color3ToHSB(ag)
 local ah,ai,aj=ag.R,ag.G,ag.B
@@ -30599,14 +30626,14 @@ end
 
 
 return ah
-end end function a.J()
+end end function a.J():typeof(__modImpl())local aa=a.cache.J if not aa then aa={c=__modImpl()}a.cache.J=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local ab=aa.New
 
 local ac={}
 
-local ad=a.load's'.New
+local ad=a.t().New
 
 function ac.New(ae,af)
 af.Hover=false
@@ -30621,7 +30648,7 @@ Desc=af.Desc or nil,
 
 Locked=af.Locked or false,
 }
-local ah=a.load'I'(af)
+local ah=a.J()(af)
 
 ag.ParagraphFrame=ah
 if af.Buttons and#af.Buttons>0 then
@@ -30656,9 +30683,9 @@ end
 return ag.__type,ag
 end
 
-return ac end function a.K()
+return ac end function a.K():typeof(__modImpl())local aa=a.cache.K if not aa then aa={c=__modImpl()}a.cache.K=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'local ab=
+local aa=a.j()local ab=
 aa.New
 
 local ac={}
@@ -30682,7 +30709,7 @@ UIElements={},
 
 local ag=true
 
-af.ButtonFrame=a.load'I'{
+af.ButtonFrame=a.J(){
 Title=af.Title,
 Desc=af.Desc,
 Parent=ae.Parent,
@@ -30765,11 +30792,11 @@ end)
 return af.__type,af
 end
 
-return ac end function a.L()
+return ac end function a.L():typeof(__modImpl())local aa=a.cache.L if not aa then aa={c=__modImpl()}a.cache.L=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -31174,11 +31201,11 @@ end
 return aq,am
 end
 
-return aa end function a.M()
+return aa end function a.M():typeof(__modImpl())local aa=a.cache.M if not aa then aa={c=__modImpl()}a.cache.M=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'local ac=
+local ab=a.j()local ac=
 ab.New
 local ad=ab.Tween
 
@@ -31275,13 +31302,13 @@ return an,ak
 end
 
 
-return aa end function a.N()
-local aa=a.load'j'local ab=
+return aa end function a.N():typeof(__modImpl())local aa=a.cache.N if not aa then aa={c=__modImpl()}a.cache.N=aa end return aa.c end end do local function __modImpl()
+local aa=a.j()local ab=
 aa.New local ac=
 aa.Tween
 
-local ad=a.load'L'.New
-local ae=a.load'M'.New
+local ad=a.M().New
+local ae=a.N().New
 
 local af={}
 
@@ -31299,7 +31326,7 @@ Type=ah.Type or"Toggle",
 Callback=ah.Callback or function()end,
 UIElements={},
 }
-ai.ToggleFrame=a.load'I'{
+ai.ToggleFrame=a.J(){
 Title=ai.Title,
 Desc=ai.Desc,
 
@@ -31418,7 +31445,7 @@ end
 return ai.__type,ai
 end
 
-return af end function a.O()
+return af end function a.O():typeof(__modImpl())local aa=a.cache.O if not aa then aa={c=__modImpl()}a.cache.O=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -31427,122 +31454,126 @@ end)
 local ac=aa(game:GetService"UserInputService")
 local ad=aa(game:GetService"RunService")
 
-local ae=a.load'j'
-local af=ae.New
-local ag=ae.Tween
+local ae=a.j()
+local af=a.m()
+local ag=ae.New
+local ah=ae.Tween
 
-local ah={}
+local ai={}
 
-local ai=false
+local aj=false
 
-function ah.New(aj,ak)
-local al={
+function ai.New(ak,al)
+local am={
 __type="Slider",
-Title=ak.Title or nil,
-Desc=ak.Desc or nil,
-Locked=ak.Locked or nil,
-LockedTitle=ak.LockedTitle,
-Value=ak.Value or{},
-Icons=ak.Icons or nil,
-IsTooltip=ak.IsTooltip or false,
-IsTextbox=ak.IsTextbox,
-Step=ak.Step or 1,
-Callback=ak.Callback or function()end,
+Title=al.Title or nil,
+Desc=al.Desc or nil,
+Locked=al.Locked or nil,
+LockedTitle=al.LockedTitle,
+Value=al.Value or{},
+Icons=al.Icons or nil,
+IsTooltip=al.IsTooltip or false,
+IsTextbox=al.IsTextbox,
+Step=math.max(af.Finite(al.Step)or 1,1e-9),
+Compact=al.Compact~=false,
+Decimals=al.Decimals or 2,
+Format=al.Format,
+Callback=al.Callback or function()end,
 UIElements={},
 IsFocusing=false,
 
-Width=ak.Width or 130,
-TextBoxWidth=ak.Window.NewElements and 40 or 30,
+Width=math.max(af.Finite(al.Width)or 190,100),
+TextBoxWidth=math.max(40,af.Finite(al.ValueWidth)or 80),
+Layout=al.Layout or(al.Window.NewElements and"Stacked"or"Inline"),
 ThumbSize=13,
 IconSize=26,
 }
-if al.Icons=={}then
-al.Icons={
+if type(am.Icons)=="table"and next(am.Icons)==nil then
+am.Icons={
 From="sfsymbols:sunMinFill",
 To="sfsymbols:sunMaxFill",
 }
 end
-if al.IsTextbox==nil and al.Title==nil then
-al.IsTextbox=false
+if am.IsTextbox==nil and am.Title==nil then
+am.IsTextbox=false
 else
-al.IsTextbox=al.IsTextbox~=false
+am.IsTextbox=am.IsTextbox~=false
 end
 
-local am
 local an
 local ao
-local ap=al.Value.Default or al.Value.Min or 0
-
-local aq=ap
-local ar=(ap-(al.Value.Min or 0))/((al.Value.Max or 100)-(al.Value.Min or 0))
-
-local as=true
-local at=al.Step%1~=0
-
-local function FormatValue(au)
-if at then
-return tonumber(string.format("%.2f",au))
+local ap
+am.Value.Min=af.Finite(am.Value.Min)or 0
+am.Value.Max=af.Finite(am.Value.Max)or 100
+if am.Value.Min>am.Value.Max then
+am.Value.Min,am.Value.Max=am.Value.Max,am.Value.Min
 end
-return math.floor(au+0.5)
+local aq=af.Snap(af.Finite(am.Value.Default)or am.Value.Min,
+am.Value.Min,am.Value.Max,am.Step)
+am.Value.Default=aq
+local ar=aq
+local as=af.Ratio(aq,am.Value.Min,am.Value.Max)
+local at=true
+local function Display(au)
+if type(am.Format)=="function"then
+local av,aw=pcall(am.Format,au)
+if av and aw~=nil then return tostring(aw)end
 end
-
-local function CalculateValue(au)
-if at then
-return math.floor(au/al.Step+0.5)*al.Step
-else
-return math.floor(au/al.Step+0.5)*al.Step
-end
+return af.Format(au,{Compact=am.Compact,Decimals=am.Decimals})
 end
 
 local au,av
-local aw=32
-if al.Icons then
-if al.Icons.From then
+local aw=0
+local ax=0
+if am.Icons then
+if am.Icons.From then
 au=ae.Image(
-al.Icons.From,
-al.Icons.From,
+am.Icons.From,
+am.Icons.From,
 0,
-ak.Window.Folder,
+al.Window.Folder,
 "SliderIconFrom",
 true,
 true,
 "SliderIconFrom"
 )
-au.Size=UDim2.new(0,al.IconSize,0,al.IconSize)
-aw=aw+al.IconSize-2
+au.Size=UDim2.new(0,am.IconSize,0,am.IconSize)
+aw=aw+am.IconSize
+ax+=1
 end
-if al.Icons.To then
+if am.Icons.To then
 av=ae.Image(
-al.Icons.To,
-al.Icons.To,
+am.Icons.To,
+am.Icons.To,
 0,
-ak.Window.Folder,
+al.Window.Folder,
 "SliderIconTo",
 true,
 true,
 "SliderIconTo"
 )
-av.Size=UDim2.new(0,al.IconSize,0,al.IconSize)
-aw=aw+al.IconSize-2
+av.Size=UDim2.new(0,am.IconSize,0,am.IconSize)
+aw=aw+am.IconSize
+ax+=1
 end
 end
-al.SliderFrame=a.load'I'{
-Title=al.Title,
-Desc=al.Desc,
-Parent=ak.Parent,
-TextOffset=al.Width,
+am.SliderFrame=a.J(){
+Title=am.Title,
+Desc=am.Desc,
+Parent=al.Parent,
+TextOffset=am.Width+32,
 Hover=false,
-Tab=ak.Tab,
-Index=ak.Index,
-Window=ak.Window,
-ElementTable=al,
-ParentConfig=ak,
-Tags=ak.Tags,
+Tab=al.Tab,
+Index=al.Index,
+Window=al.Window,
+ElementTable=am,
+ParentConfig=al,
+Tags=al.Tags,
 }
 
-al.UIElements.SliderIcon=ae.NewRoundFrame(99,"Squircle",{
+am.UIElements.SliderIcon=ae.NewRoundFrame(99,"Squircle",{
 ImageTransparency=0.95,
-Size=UDim2.new(1,not al.IsTextbox and-aw or(-al.TextBoxWidth-8),0,4),
+Size=UDim2.new(1,0,0,4),
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
 Name="Frame",
@@ -31552,7 +31583,7 @@ ImageColor3="Text",
 },{
 ae.NewRoundFrame(99,"Squircle",{
 Name="Frame",
-Size=UDim2.new(ar,0,1,0),
+Size=UDim2.new(as,0,1,0),
 ImageTransparency=0.1,
 ThemeTag={
 ImageColor3="Slider",
@@ -31561,9 +31592,9 @@ ImageColor3="Slider",
 ae.NewRoundFrame(99,"Squircle",{
 Size=UDim2.new(
 0,
-ak.Window.NewElements and(al.ThumbSize*2)or(al.ThumbSize+2),
+al.Window.NewElements and(am.ThumbSize*2)or(am.ThumbSize+2),
 0,
-ak.Window.NewElements and(al.ThumbSize+4)or(al.ThumbSize+2)
+al.Window.NewElements and(am.ThumbSize+4)or(am.ThumbSize+2)
 ),
 Position=UDim2.new(1,0,0.5,0),
 AnchorPoint=Vector2.new(0.5,0.5),
@@ -31582,29 +31613,31 @@ ImageTransparency=0.5,
 }),
 })
 
-al.UIElements.SliderContainer=af("Frame",{
-Size=UDim2.new(al.Title==nil and 1 or 0,al.Title==nil and 0 or al.Width,0,0),
+am.UIElements.SliderContainer=ag("Frame",{
+Size=UDim2.new(am.Title==nil and 1 or 0,am.Title==nil and 0 or am.Width,0,0),
 AutomaticSize="Y",
-Position=UDim2.new(1,al.IsTextbox and(ak.Window.NewElements and-16 or 0)or 0,0.5,0),
+Position=UDim2.new(1,am.IsTextbox and(al.Window.NewElements and-16 or 0)or 0,0.5,0),
 AnchorPoint=Vector2.new(1,0.5),
 BackgroundTransparency=1,
-Parent=al.SliderFrame.UIElements.Main,
+Parent=am.SliderFrame.UIElements.Main,
 },{
-af("UIListLayout",{
-Padding=UDim.new(0,al.Title~=nil and 8 or 12),
+ag("UIListLayout",{
+Padding=UDim.new(0,am.Title~=nil and 8 or 12),
 FillDirection="Horizontal",
 VerticalAlignment="Center",
-HorizontalAlignment=al.Icons
-and(al.Icons.From and(al.Icons.To and"Center"or"Left")or al.Icons.To and"Right")
+HorizontalAlignment=am.Icons
+and(am.Icons.From and(am.Icons.To and"Center"or"Left")or am.Icons.To and"Right")
 or"Center",
 }),
 au,
-al.UIElements.SliderIcon,
+am.UIElements.SliderIcon,
 av,
-af("TextBox",{
-Size=UDim2.new(0,al.TextBoxWidth,0,0),
-TextXAlignment="Left",
-Text=FormatValue(ap),
+ag("TextBox",{
+Size=UDim2.new(0,am.TextBoxWidth,0,0),
+TextXAlignment="Right",
+Text=Display(aq),
+ClearTextOnFocus=false,
+ClipsDescendants=true,
 ThemeTag={
 TextColor3="Text",
 },
@@ -31613,369 +31646,327 @@ AutomaticSize="Y",
 TextSize=15,
 FontFace=Font.new(ae.Font,Enum.FontWeight.Medium),
 BackgroundTransparency=1,
-LayoutOrder=-1,
-Visible=al.IsTextbox,
+LayoutOrder=3,
+Visible=am.IsTextbox,
 }),
 })
 
-local ax
-if al.IsTooltip then
-ax=a.load'H'.New(
-ap,
-al.UIElements.SliderIcon.Frame.Thumb,
+am.UIElements.SliderIcon.LayoutOrder=1
+if au then au.LayoutOrder=0 end
+if av then av.LayoutOrder=2 end
+am.UIElements.SliderContainer.UIListLayout.SortOrder="LayoutOrder"
+local ay=am.SliderFrame.UIElements.Container
+if am.Layout=="Stacked"or am.Title==nil then
+
+ay.Size=UDim2.new(1,0,0,0)
+ay.TitleFrame.Size=UDim2.new(1,0,0,0)
+ay.TitleFrame.Visible=am.Title~=nil
+ay.UIListLayout.Padding=UDim.new(0,6)
+ay.UIListLayout.SortOrder="LayoutOrder"
+local az=am.UIElements.SliderContainer
+az.Parent=ay
+az.Size=UDim2.new(1,0,0,28)
+az.AutomaticSize="None"
+az.Position=UDim2.new(0,0,0,0)
+az.AnchorPoint=Vector2.new(0,0)
+az.LayoutOrder=10
+ag("UIPadding",{Parent=az,PaddingLeft=UDim.new(0,8),PaddingRight=UDim.new(0,8)})
+end
+
+local az
+if am.IsTooltip then
+az=a.I().New(
+Display(aq),
+am.UIElements.SliderIcon.Frame.Thumb,
 true,
 "Secondary",
 "Small",
 false
 )
-ax.Container.AnchorPoint=Vector2.new(0.5,1)
-ax.Container.Position=UDim2.new(0.5,0,0,-8)
+az.Container.AnchorPoint=Vector2.new(0.5,1)
+az.Container.Position=UDim2.new(0.5,0,0,-8)
 end
 
-function al.Lock(ay)
-al.Locked=true
-as=false
-return al.SliderFrame:Lock(al.LockedTitle)
-end
-function al.Unlock(ay)
-al.Locked=false
-as=true
-return al.SliderFrame:Unlock()
-end
+local aA=am.UIElements.SliderContainer.TextBox
+local aB=al.Tab.UIElements.ContainerFrame
+local b=al.WindUI.GenerateGUID()
+local d
+local f,g
+local h=false
+local i=false
 
-if al.Locked then
-al:Lock()
-end
+local function Render(l)
+if i then return end
+local m=am.IsFocusing and af.Plain(ar)or Display(ar)
+aA.Text=m
+local p=am.Title~=nil and 8 or 12
+local r=p*(ax+(am.IsTextbox and 1 or 0))
 
-
-local ay=ak.Tab.UIElements.ContainerFrame
-
-function al.Set(az,aA,aB)
-if as then
-if
-not al.IsFocusing
-and not ai
-and(
-not aB
-or(
-aB.UserInputType==Enum.UserInputType.MouseButton1
-or aB.UserInputType==Enum.UserInputType.Touch
-)
-)
-then
-if aB then
-am=(aB.UserInputType==Enum.UserInputType.Touch)
-ay.ScrollingEnabled=false
-ai=true
-
-local b=am and aB.Position.X or ac:GetMouseLocation().X
-local d=math.clamp(
-(b-al.UIElements.SliderIcon.AbsolutePosition.X)
-/al.UIElements.SliderIcon.AbsoluteSize.X,
-0,
-1
-)
-aA=CalculateValue(al.Value.Min+d*(al.Value.Max-al.Value.Min))
-aA=math.clamp(aA,al.Value.Min or 0,al.Value.Max or 100)
-
-if aA~=aq then
-ag(al.UIElements.SliderIcon.Frame,0.05,{Size=UDim2.new(d,0,1,0)}):Play()
-al.UIElements.SliderContainer.TextBox.Text=FormatValue(aA)
-if ax then
-ax.TitleFrame.Text=FormatValue(aA)
-end
-al.Value.Default=FormatValue(aA)
-aq=aA
-ae.SafeCallback(al.Callback,FormatValue(aA))
+aA.Size=UDim2.new(0,am.TextBoxWidth,0,20)
+am.UIElements.SliderIcon.Size=UDim2.new(1,
+-aw-r-(am.IsTextbox and am.TextBoxWidth or 0),0,4)
+local u=UDim2.new(af.Ratio(ar,am.Value.Min,am.Value.Max),0,1,0)
+if l or h then am.UIElements.SliderIcon.Frame.Size=u
+else ah(am.UIElements.SliderIcon.Frame,0.05,{Size=u}):Play()end
+if az then az.TitleFrame.Text=Display(ar)end
 end
 
-an=ad.RenderStepped:Connect(function()
-local f=am and aB.Position.X or ac:GetMouseLocation().X
-local g=math.clamp(
-(f-al.UIElements.SliderIcon.AbsolutePosition.X)
-/al.UIElements.SliderIcon.AbsoluteSize.X,
-0,
-1
-)
-aA=CalculateValue(al.Value.Min+g*(al.Value.Max-al.Value.Min))
-
-if aA~=aq then
-ag(al.UIElements.SliderIcon.Frame,0.05,{Size=UDim2.new(g,0,1,0)}):Play()
-al.UIElements.SliderContainer.TextBox.Text=FormatValue(aA)
-if ax then
-ax.TitleFrame.Text=FormatValue(aA)
-end
-al.Value.Default=FormatValue(aA)
-aq=aA
-ae.SafeCallback(al.Callback,FormatValue(aA))
-end
-end)
-
-
-ao=ac.InputEnded:Connect(function(f)
-if
-(
-f.UserInputType==Enum.UserInputType.MouseButton1
-or f.UserInputType==Enum.UserInputType.Touch
-)and aB==f
-then
-an:Disconnect()
-ao:Disconnect()
-ai=false
-ay.ScrollingEnabled=true
-
-ak.WindUI.CurrentInput=nil
-
-if ak.Window.NewElements then
-ag(al.UIElements.SliderIcon.Frame.Thumb,0.2,{
+local function StopDrag()
+if ao then ao:Disconnect();ao=nil end
+if ap then ap:Disconnect();ap=nil end
+if not h then return end
+h=false
+aj=false
+aB.ScrollingEnabled=d
+if al.WindUI.CurrentInput==b then al.WindUI.CurrentInput=nil end
+if not i then
+if al.Window.NewElements then
+ah(am.UIElements.SliderIcon.Frame.Thumb,0.2,{
 ImageTransparency=0,
-Size=UDim2.new(
-0,
-ak.Window.NewElements and(al.ThumbSize*2)or(al.ThumbSize+2),
-0,
-ak.Window.NewElements and(al.ThumbSize+4)or(al.ThumbSize+2)
-),
-},Enum.EasingStyle.Quint,Enum.EasingDirection.InOut):Play()
+Size=UDim2.new(0,am.ThumbSize*2,0,am.ThumbSize+4),
+}):Play()
 end
-if ax then
-ax:Close(false)
+if az then az:Close(false)end
 end
 end
+
+function am.Set(l,m)
+if not at or i then return ar end
+local p=af.Snap(m,am.Value.Min,am.Value.Max,am.Step)
+if not p then Render(true);return ar end
+local r=p~=ar
+ar=p
+aq=p
+am.Value.Default=p
+Render(not r)
+if r then ae.SafeCallback(am.Callback,p)end
+return p
+end
+
+function am.Get(l)return ar end
+
+function am.SetRange(l,m,p)
+m,p=af.Finite(m),af.Finite(p)
+if not m or not p then return am.Value.Min,am.Value.Max end
+if m>p then m,p=p,m end
+am.Value.Min,am.Value.Max=m,p
+
+local r=af.Snap(ar,m,p,am.Step)
+local u=r~=ar
+ar,aq,am.Value.Default=r,r,r
+Render(false)
+if u and at then ae.SafeCallback(am.Callback,r)end
+return m,p
+end
+
+function am.SetMin(l,m)
+m=af.Finite(m)
+if m then am:SetRange(m,math.max(m,am.Value.Max))end
+return am.Value.Min
+end
+function am.SetMax(l,m)
+m=af.Finite(m)
+if m then am:SetRange(math.min(am.Value.Min,m),m)end
+return am.Value.Max
+end
+function am.Lock(l)
+StopDrag()
+am.Locked,at=true,false
+aA.TextEditable=false
+return am.SliderFrame:Lock(am.LockedTitle)
+end
+function am.Unlock(l)
+am.Locked,at=false,true
+aA.TextEditable=true
+return am.SliderFrame:Unlock()
+end
+
+ae.AddSignal(aA.Focused,function()
+if am.Locked then aA:ReleaseFocus();return end
+am.IsFocusing=true
+Render(true)
 end)
-else
-aA=math.clamp(aA,al.Value.Min or 0,al.Value.Max or 100)
-
-local b=math.clamp(
-(aA-(al.Value.Min or 0))/((al.Value.Max or 100)-(al.Value.Min or 0)),
-0,
-1
-)
-aA=CalculateValue(al.Value.Min+b*(al.Value.Max-al.Value.Min))
-
-if aA~=aq then
-ag(al.UIElements.SliderIcon.Frame,0.05,{Size=UDim2.new(b,0,1,0)}):Play()
-al.UIElements.SliderContainer.TextBox.Text=FormatValue(aA)
-if ax then
-ax.TitleFrame.Text=FormatValue(aA)
-end
-al.Value.Default=FormatValue(aA)
-aq=aA
-ae.SafeCallback(al.Callback,FormatValue(aA))
-end
-end
-end
-end
-end
-
-function al.SetMax(az,aA)
-al.Value.Max=aA
-
-local aB=tonumber(al.Value.Default)or aq
-if aB>aA then
-al:Set(aA)
-else
-local b=
-math.clamp((aB-(al.Value.Min or 0))/(aA-(al.Value.Min or 0)),0,1)
-ag(al.UIElements.SliderIcon.Frame,0.1,{Size=UDim2.new(b,0,1,0)}):Play()
-end
-end
-
-function al.SetMin(az,aA)
-al.Value.Min=aA
-
-local aB=tonumber(al.Value.Default)or aq
-if aB<aA then
-al:Set(aA)
-else
-local b=math.clamp((aB-aA)/((al.Value.Max or 100)-aA),0,1)
-ag(al.UIElements.SliderIcon.Frame,0.1,{Size=UDim2.new(b,0,1,0)}):Play()
-end
-end
-
-ae.AddSignal(al.UIElements.SliderContainer.TextBox.FocusLost,function(az)
-local aA=tonumber(al.UIElements.SliderContainer.TextBox.Text)
-if aA then
-al:Set(aA)
-else
-al.UIElements.SliderContainer.TextBox.Text=FormatValue(aq)
-if ax then
-ax.TitleFrame.Text=FormatValue(aq)
-end
-end
+ae.AddSignal(aA.FocusLost,function()
+local l=af.Parse(aA.Text)
+am.IsFocusing=false
+if l then am:Set(l)end
+Render(true)
 end)
 
-local az=ak.WindUI.GenerateGUID()
-
-ae.AddSignal(al.UIElements.SliderContainer.InputBegan,function(aA)
-if al.Locked or ai then
-return
+local function ReadPointer(l)
+local m=an and l.Position.X or ac:GetMouseLocation().X local p=
+am.UIElements.SliderIcon
+if not g or g<=0 then return end
+local r=math.clamp((m-f)/g,0,1)
+am:Set(am.Value.Min+r*(am.Value.Max-am.Value.Min))
 end
-if
-aA.UserInputType==Enum.UserInputType.MouseButton1
-or aA.UserInputType==Enum.UserInputType.Touch
-then
-if ak.WindUI.CurrentInput and ak.WindUI.CurrentInput~=az then
-return
-end
-ak.WindUI.CurrentInput=az
+ae.AddSignal(am.UIElements.SliderContainer.InputBegan,function(l)
+if am.Locked or am.IsFocusing or aj then return end
+if l.UserInputType~=Enum.UserInputType.MouseButton1
+and l.UserInputType~=Enum.UserInputType.Touch then return end
 
-al:Set(ap,aA)
-
-
-if ak.Window.NewElements then
-ag(al.UIElements.SliderIcon.Frame.Thumb,0.24,{
-ImageTransparency=0.85,
-Size=UDim2.new(
-0,
-(ak.Window.NewElements and(al.ThumbSize*2)or al.ThumbSize)+8,
-0,
-al.ThumbSize+8
-),
-},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-end
-if ax then
-ax:Open()
-end
-
+local m=l.Position
+if am.IsTextbox and m.X>=aA.AbsolutePosition.X
+and m.X<=aA.AbsolutePosition.X+aA.AbsoluteSize.X
+and m.Y>=aA.AbsolutePosition.Y
+and m.Y<=aA.AbsolutePosition.Y+aA.AbsoluteSize.Y then return end
+if al.WindUI.CurrentInput and al.WindUI.CurrentInput~=b then return end
+al.WindUI.CurrentInput=b
+h,aj=true,true
+an=l.UserInputType==Enum.UserInputType.Touch
+d=aB.ScrollingEnabled
+aB.ScrollingEnabled=false
+f=am.UIElements.SliderIcon.AbsolutePosition.X
+g=am.UIElements.SliderIcon.AbsoluteSize.X
+ReadPointer(l)
+ao=ad.RenderStepped:Connect(function()ReadPointer(l)end)
+ap=ac.InputEnded:Connect(function(p)
+if(an and p==l)or(not an and p.UserInputType==Enum.UserInputType.MouseButton1)then
+StopDrag()
 end
 end)
-
-return al.__type,al
+if az then az:Open()end
+end)
+ae.AddSignal(am.UIElements.SliderContainer:GetPropertyChangedSignal"AbsoluteSize",function()Render(true)end)
+ae.AddSignal(am.UIElements.SliderContainer.Destroying,function()
+i=true
+StopDrag()
+end)
+Render(true)
+if am.Locked then am:Lock()end
+return am.__type,am
 end
 
-return ah end function a.P()
+return ai end function a.P():typeof(__modImpl())local aa=a.cache.P if not aa then aa={c=__modImpl()}a.cache.P=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
-local ac=aa.New
-local ad=aa.Tween
+local aa=a.j()
+local ac=a.m()
+local ad=aa.New
+local ae=aa.Tween
 
-local ae={}
+local af={}
 
-local function ToFiniteNumber(af)
-local ag=tonumber(af)
-if ag==nil or ag~=ag or math.abs(ag)==math.huge then
+local function ToFiniteNumber(ag)
+local ah=tonumber(ag)
+if ah==nil or ah~=ah or math.abs(ah)==math.huge then
 return nil
 end
 
-return ag
+return ah
 end
 
-local function FormatNumber(af)
-if af%1==0 then
-return tostring(af)
+
+function af.New(ag,ah)
+local ai=typeof(ah.Value)=="table"and ah.Value or{}
+local aj=ToFiniteNumber(ai.Min)or ToFiniteNumber(ah.Min)or 0
+local ak=ToFiniteNumber(ai.Max)or ToFiniteNumber(ah.Max)or 100
+
+if aj>ak then
+aj,ak=ak,aj
 end
 
-return tostring(tonumber(string.format("%.2f",af)))
-end
-
-function ae.New(af,ag)
-local ah=typeof(ag.Value)=="table"and ag.Value or{}
-local ai=ToFiniteNumber(ah.Min)or ToFiniteNumber(ag.Min)or 0
-local aj=ToFiniteNumber(ah.Max)or ToFiniteNumber(ag.Max)or 100
-
-if ai>aj then
-ai,aj=aj,ai
-end
-
-local ak=typeof(ag.Value)=="number"and ag.Value
+local al=typeof(ah.Value)=="number"and ah.Value
+or ToFiniteNumber(ai.Default)
 or ToFiniteNumber(ah.Default)
-or ToFiniteNumber(ag.Default)
-or ai
-ak=ToFiniteNumber(ak)or ai
+or aj
+al=ToFiniteNumber(al)or aj
 
-local al=ag.Indeterminate==true
+local am=ah.Indeterminate==true
 
-local am=ag.ShowValue
-if am==nil then
-am=not al
+local an=ah.ShowValue
+if an==nil then
+an=not am
 end
 
-local an=math.max(ToFiniteNumber(ag.ValueWidth)or 44,0)
+local ao=math.max(ToFiniteNumber(ah.ValueWidth)or(ah.DisplayMode=="Fraction"and 96 or 56),0)
+local function FormatNumber(ap)
+return ac.Format(ap,{Compact=ah.Compact~=false,Decimals=ah.Decimals or 2})
+end
 
-local ao={
+local ap={
 __type="ProgressBar",
-Title=ag.Title or"Progress",
-Desc=ag.Desc or nil,
+Title=ah.Title or"Progress",
+Desc=ah.Desc or nil,
 Value={
-Min=ai,
-Max=aj,
-Default=math.clamp(ak,ai,aj),
+Min=aj,
+Max=ak,
+Default=math.clamp(al,aj,ak),
 },
-ShowValue=am,
-DisplayMode=ag.DisplayMode or"Percent",
-Format=ag.Format,
-Animate=ag.Animate~=false,
-AnimationDuration=math.max(ToFiniteNumber(ag.AnimationDuration)or 0.15,0),
-Indeterminate=al,
-IndeterminateText=ag.IndeterminateText or"",
-Speed=math.max(ToFiniteNumber(ag.Speed)or 1,0.01),
-ControlGap=math.max(ToFiniteNumber(ag.ControlGap)or 16,0),
+ShowValue=an,
+DisplayMode=ah.DisplayMode or"Percent",
+Format=ah.Format,
+Animate=ah.Animate~=false,
+AnimationDuration=math.max(ToFiniteNumber(ah.AnimationDuration)or 0.15,0),
+Indeterminate=am,
+IndeterminateText=ah.IndeterminateText or"",
+Speed=math.max(ToFiniteNumber(ah.Speed)or 1,0.01),
+ControlGap=math.max(ToFiniteNumber(ah.ControlGap)or 16,0),
 UIElements={},
 
-Width=math.max(ToFiniteNumber(ag.Width)or 160,0),
-ValueWidth=an,
+Width=math.max(ToFiniteNumber(ah.Width)or 160,0),
+ValueWidth=ao,
 }
 
-local function GetRatio(ap)
-if ao.Value.Max==ao.Value.Min then
-return ap>=ao.Value.Max and 1 or 0
+local function GetRatio(aq)
+if ap.Value.Max==ap.Value.Min then
+return aq>=ap.Value.Max and 1 or 0
 end
 
-return math.clamp((ap-ao.Value.Min)/(ao.Value.Max-ao.Value.Min),0,1)
+return math.clamp((aq-ap.Value.Min)/(ap.Value.Max-ap.Value.Min),0,1)
 end
 
-local function GetValueText(ap,aq)
-if ao.Indeterminate then
-return tostring(ao.IndeterminateText)
+local function GetValueText(aq,ar)
+if ap.Indeterminate then
+return tostring(ap.IndeterminateText)
 end
 
-local ar=aq*100
+local as=ar*100
 
-if typeof(ao.Format)=="function"then
-local as,at=
-pcall(ao.Format,ap,ar,ao.Value.Min,ao.Value.Max)
+if typeof(ap.Format)=="function"then
+local at,au=
+pcall(ap.Format,aq,as,ap.Value.Min,ap.Value.Max)
 
-if as and at~=nil then
-return tostring(at)
+if at and au~=nil then
+return tostring(au)
 end
 end
 
-if ao.DisplayMode=="Value"then
-return FormatNumber(ap)
-elseif ao.DisplayMode=="Fraction"then
-return FormatNumber(ap).."/"..FormatNumber(ao.Value.Max)
+if ap.DisplayMode=="Value"then
+return FormatNumber(aq)
+elseif ap.DisplayMode=="Fraction"then
+return FormatNumber(aq).."/"..FormatNumber(ap.Value.Max)
 end
 
-return tostring(math.floor(ar+0.5)).."%"
+return tostring(math.floor(as+0.5)).."%"
 end
 
-ao.ProgressBarFrame=a.load'I'{
-Title=ao.Title,
-Desc=ao.Desc,
-Parent=ag.Parent,
-TextOffset=ao.Width+ao.ControlGap,
+ap.ProgressBarFrame=a.J(){
+Title=ap.Title,
+Desc=ap.Desc,
+Parent=ah.Parent,
+TextOffset=ap.Width+ap.ControlGap,
 Hover=false,
-Tab=ag.Tab,
-Index=ag.Index,
-Window=ag.Window,
-ElementTable=ao,
-ParentConfig=ag,
-Tags=ag.Tags,
+Tab=ah.Tab,
+Index=ah.Index,
+Window=ah.Window,
+ElementTable=ap,
+ParentConfig=ah,
+Tags=ah.Tags,
 }
 
-ao.UIElements.Fill=aa.NewRoundFrame(99,"Squircle",{
+ap.UIElements.Fill=aa.NewRoundFrame(99,"Squircle",{
 Name="Fill",
-Size=ao.Indeterminate and UDim2.new(0.3,0,1,0)
-or UDim2.new(GetRatio(ao.Value.Default),0,1,0),
-Position=ao.Indeterminate and UDim2.new(-0.3,0,0,0)or UDim2.new(0,0,0,0),
+Size=ap.Indeterminate and UDim2.new(0.3,0,1,0)
+or UDim2.new(GetRatio(ap.Value.Default),0,1,0),
+Position=ap.Indeterminate and UDim2.new(-0.3,0,0,0)or UDim2.new(0,0,0,0),
 ThemeTag={
 ImageColor3="ProgressBar",
 },
 })
 
-ao.UIElements.Bar=aa.NewRoundFrame(99,"Squircle",{
+ap.UIElements.Bar=aa.NewRoundFrame(99,"Squircle",{
 Name="Bar",
-Size=UDim2.new(1,ao.ShowValue and-(ao.ValueWidth+8)or 0,0,6),
+Size=UDim2.new(1,ap.ShowValue and-(ap.ValueWidth+8)or 0,0,6),
 ClipsDescendants=true,
 ImageTransparency=0.9,
 ThemeTag={
@@ -31983,146 +31974,146 @@ ImageColor3="ProgressBarTrack",
 ImageTransparency="ProgressBarTrackTransparency",
 },
 },{
-ao.UIElements.Fill,
+ap.UIElements.Fill,
 })
 
-ao.UIElements.Value=ac("TextLabel",{
+ap.UIElements.Value=ad("TextLabel",{
 Name="Value",
-Size=UDim2.new(0,ao.ValueWidth,0,20),
+Size=UDim2.new(0,ap.ValueWidth,0,20),
 BackgroundTransparency=1,
 FontFace=Font.new(aa.Font,Enum.FontWeight.Medium),
-Text=GetValueText(ao.Value.Default,GetRatio(ao.Value.Default)),
+Text=GetValueText(ap.Value.Default,GetRatio(ap.Value.Default)),
 TextSize=14,
 TextTransparency=0.25,
 TextTruncate="AtEnd",
 TextXAlignment="Right",
-Visible=ao.ShowValue,
+Visible=ap.ShowValue,
 ThemeTag={
 TextColor3="ProgressBarText",
 },
 })
 
-ao.UIElements.Container=ac("Frame",{
+ap.UIElements.Container=ad("Frame",{
 Name="ProgressBarContainer",
-Size=UDim2.new(0,ao.Width,0,36),
-Position=UDim2.new(1,0,ag.Window.NewElements and 0 or 0.5,0),
-AnchorPoint=Vector2.new(1,ag.Window.NewElements and 0 or 0.5),
+Size=UDim2.new(0,ap.Width,0,36),
+Position=UDim2.new(1,0,ah.Window.NewElements and 0 or 0.5,0),
+AnchorPoint=Vector2.new(1,ah.Window.NewElements and 0 or 0.5),
 BackgroundTransparency=1,
-Parent=ao.ProgressBarFrame.UIElements.Main,
+Parent=ap.ProgressBarFrame.UIElements.Main,
 },{
-ac("UIListLayout",{
+ad("UIListLayout",{
 Padding=UDim.new(0,8),
 FillDirection="Horizontal",
 HorizontalAlignment="Right",
 VerticalAlignment="Center",
 }),
-ao.UIElements.Bar,
-ao.UIElements.Value,
+ap.UIElements.Bar,
+ap.UIElements.Value,
 })
 
-if ao.Indeterminate then
-local ap=ad(
-ao.UIElements.Fill,
-1/ao.Speed,
+if ap.Indeterminate then
+local aq=ae(
+ap.UIElements.Fill,
+1/ap.Speed,
 {Position=UDim2.new(1,0,0,0)},
 Enum.EasingStyle.Linear,
 Enum.EasingDirection.InOut,-1
 
 )
-aa.AddSignal(ao.UIElements.Bar.Destroying,function()
-ap:Cancel()
+aa.AddSignal(ap.UIElements.Bar.Destroying,function()
+aq:Cancel()
 end)
-ap:Play()
+aq:Play()
 end
 
-local function Update(ap,aq)
-local ar=ToFiniteNumber(ap)
-if ar==nil then
-return ao.Value.Default
+local function Update(aq,ar)
+local as=ToFiniteNumber(aq)
+if as==nil then
+return ap.Value.Default
 end
 
-ar=math.clamp(ar,ao.Value.Min,ao.Value.Max)
-ao.Value.Default=ar
+as=math.clamp(as,ap.Value.Min,ap.Value.Max)
+ap.Value.Default=as
 
-local as=GetRatio(ar)
-local at=UDim2.new(as,0,1,0)
+local at=GetRatio(as)
+local au=UDim2.new(at,0,1,0)
 
-if ao.UIElements.Fill and not ao.Indeterminate then
-if aq or not ao.Animate or ao.AnimationDuration<=0 then
-ao.UIElements.Fill.Size=at
+if ap.UIElements.Fill and not ap.Indeterminate then
+if ar or not ap.Animate or ap.AnimationDuration<=0 then
+ap.UIElements.Fill.Size=au
 else
-ad(
-ao.UIElements.Fill,
-ao.AnimationDuration,
-{Size=at},
+ae(
+ap.UIElements.Fill,
+ap.AnimationDuration,
+{Size=au},
 Enum.EasingStyle.Quint,
 Enum.EasingDirection.Out
 ):Play()
 end
 end
 
-ao.UIElements.Value.Text=GetValueText(ar,as)
+ap.UIElements.Value.Text=GetValueText(as,at)
 
-return ar
+return as
 end
 
-function ao.Set(ap,aq)
-return Update(aq,false)
+function ap.Set(aq,ar)
+return Update(ar,false)
 end
 
-function ao.Get(ap)
-return ao.Value.Default
+function ap.Get(aq)
+return ap.Value.Default
 end
 
-function ao.GetPercentage(ap)
-return GetRatio(ao.Value.Default)*100
+function ap.GetPercentage(aq)
+return GetRatio(ap.Value.Default)*100
 end
 
-function ao.SetRange(ap,aq,ar)
-aq=ToFiniteNumber(aq)
+function ap.SetRange(aq,ar,as)
 ar=ToFiniteNumber(ar)
+as=ToFiniteNumber(as)
 
-if aq==nil or ar==nil then
-return ao.Value.Min,ao.Value.Max
+if ar==nil or as==nil then
+return ap.Value.Min,ap.Value.Max
 end
 
-if aq>ar then
-aq,ar=ar,aq
+if ar>as then
+ar,as=as,ar
 end
 
-ao.Value.Min=aq
-ao.Value.Max=ar
-Update(ao.Value.Default,false)
+ap.Value.Min=ar
+ap.Value.Max=as
+Update(ap.Value.Default,false)
 
-return aq,ar
+return ar,as
 end
 
-function ao.SetMin(ap,aq)
-aq=ToFiniteNumber(aq)
-if aq==nil then
-return ao.Value.Min
+function ap.SetMin(aq,ar)
+ar=ToFiniteNumber(ar)
+if ar==nil then
+return ap.Value.Min
 end
 
-ao:SetRange(aq,math.max(aq,ao.Value.Max))
-return ao.Value.Min
+ap:SetRange(ar,math.max(ar,ap.Value.Max))
+return ap.Value.Min
 end
 
-function ao.SetMax(ap,aq)
-aq=ToFiniteNumber(aq)
-if aq==nil then
-return ao.Value.Max
+function ap.SetMax(aq,ar)
+ar=ToFiniteNumber(ar)
+if ar==nil then
+return ap.Value.Max
 end
 
-ao:SetRange(math.min(ao.Value.Min,aq),aq)
-return ao.Value.Max
+ap:SetRange(math.min(ap.Value.Min,ar),ar)
+return ap.Value.Max
 end
 
-Update(ao.Value.Default,true)
+Update(ap.Value.Default,true)
 
-return ao.__type,ao
+return ap.__type,ap
 end
 
-return ae end function a.Q()
+return af end function a.Q():typeof(__modImpl())local aa=a.cache.Q if not aa then aa={c=__modImpl()}a.cache.Q=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -32130,7 +32121,7 @@ end)
 
 local ac=aa(game:GetService"UserInputService")
 
-local ad=a.load'j'
+local ad=a.j()
 local ae=ad.New local af=
 ad.Tween
 
@@ -32139,7 +32130,7 @@ UICorner=6,
 UIPadding=8,
 }
 
-local ah=a.load'C'.New
+local ah=a.D().New
 
 function ag.New(ai,aj)
 local function NormalizeKeyCode(ak)
@@ -32175,7 +32166,7 @@ table.insert(al,Enum.KeyCode[NormalizeKeyCode"Escape"])
 
 local am=true
 
-ak.KeybindFrame=a.load'I'{
+ak.KeybindFrame=a.J(){
 Title=ak.Title,
 Desc=ak.Desc,
 Parent=aj.Parent,
@@ -32322,19 +32313,19 @@ end)
 return ak.__type,ak
 end
 
-return ag end function a.R()
+return ag end function a.R():typeof(__modImpl())local aa=a.cache.R if not aa then aa={c=__modImpl()}a.cache.R=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'local ac=
+local aa=a.j()local ac=
 aa.New local ad=
 aa.Tween
 
 local ae={
 UICorner=8,
 UIPadding=8,
-}local af=a.load's'
+}local af=a.t()
 
 .New
-local ag=a.load't'.New
+local ag=a.u().New
 
 function ae.New(ah,ai)
 local aj={
@@ -32356,7 +32347,7 @@ Width=150,
 
 local ak=true
 
-aj.InputFrame=a.load'I'{
+aj.InputFrame=a.J(){
 Title=aj.Title,
 Desc=aj.Desc,
 Parent=ai.Parent,
@@ -32432,9 +32423,9 @@ end
 return aj.__type,aj
 end
 
-return ae end function a.S()
+return ae end function a.S():typeof(__modImpl())local aa=a.cache.S if not aa then aa={c=__modImpl()}a.cache.S=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local ae=aa.New
 
 local af={}
@@ -32460,7 +32451,7 @@ ai
 return"Divider",{__type="Divider",ElementFrame=aj}
 end
 
-return af end function a.T()
+return af end function a.T():typeof(__modImpl())local aa=a.cache.T if not aa then aa={c=__modImpl()}a.cache.T=aa end return aa.c end end do local function __modImpl()
 local aa={}
 
 local ae=(cloneref or clonereference or function(ae)
@@ -32473,9 +32464,9 @@ local ah=ae(game:GetService"Workspace").CurrentCamera local ai=
 
 workspace.CurrentCamera
 
-local aj=a.load't'.New
+local aj=a.u().New
 
-local ak=a.load'j'
+local ak=a.j()
 local al=ak.New
 local am=ak.Tween
 
@@ -33009,7 +33000,7 @@ end
 
 RecalculateCanvasSize()
 RecalculateListSize()
-else a.load'S'
+else a.T()
 :New{Parent=ap.UIElements.Menu.Frame.ScrollingFrame}
 end
 end
@@ -33142,7 +33133,7 @@ UpdatePosition
 return as
 end
 
-return aa end function a.U()
+return aa end function a.U():typeof(__modImpl())local aa=a.cache.U if not aa then aa={c=__modImpl()}a.cache.U=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -33152,13 +33143,13 @@ aa(game:GetService"UserInputService")
 aa(game:GetService"Players").LocalPlayer:GetMouse()local ae=
 aa(game:GetService"Workspace").CurrentCamera
 
-local af=a.load'j'
+local af=a.j()
 local ag=af.New local ah=
 af.Tween
 
-local ai=a.load'C'.New local aj=a.load't'
+local ai=a.D().New local aj=a.u()
 .New
-local ak=a.load'T'.New local al=
+local ak=a.U().New local al=
 
 workspace.CurrentCamera
 
@@ -33202,7 +33193,7 @@ if ap.Values and typeof(ap.Value)=="number"then
 ap.Value=ap.Values[ap.Value]
 end
 
-ap.DropdownFrame=a.load'I'{
+ap.DropdownFrame=a.J(){
 Title=ap.Title,
 Desc=ap.Desc,
 Parent=ao.Parent,
@@ -33276,7 +33267,7 @@ end
 return ap.__type,ap
 end
 
-return am end function a.V()
+return am end function a.V():typeof(__modImpl())local aa=a.cache.V if not aa then aa={c=__modImpl()}a.cache.V=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -33525,15 +33516,15 @@ end
 return table.concat(at)
 end
 
-return aa end function a.W()
+return aa end function a.W():typeof(__modImpl())local aa=a.cache.W if not aa then aa={c=__modImpl()}a.cache.W=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local af=a.load'j'
+local af=a.j()
 local ag=af.New
 local ai=af.Tween
 
-local ak=a.load'V'
+local ak=a.W()
 
 function aa.New(al,am,an,ao,ap)
 local aq={
@@ -33769,13 +33760,13 @@ end
 return aq
 end
 
-return aa end function a.X()
+return aa end function a.X():typeof(__modImpl())local aa=a.cache.X if not aa then aa={c=__modImpl()}a.cache.X=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'local af=
+local aa=a.j()local af=
 aa.New
 
 
-local ag=a.load'W'
+local ag=a.X()
 
 local ai={}
 
@@ -33871,9 +33862,9 @@ am.ElementFrame=ao.CodeFrame
 return am.__type,am
 end
 
-return ai end function a.Y()
+return ai end function a.Y():typeof(__modImpl())local aa=a.cache.Y if not aa then aa={c=__modImpl()}a.cache.Y=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local af=aa.New local ag=
 aa.Tween
 
@@ -33890,8 +33881,8 @@ al.RenderStepped
 local ao=am.LocalPlayer
 local ap=ao:GetMouse()
 
-local aq=a.load's'.New
-local ar=a.load't'.New
+local aq=a.t().New
+local ar=a.u().New
 
 local as={
 UICorner=9,
@@ -33925,7 +33916,7 @@ end
 
 az:SetHSVFromRGB(az.Default)
 
-local b=a.load'u'
+local b=a.v()
 local d=b.Create(nil,"Dialog",aw,ax,aw.UIElements.Main.Main)
 
 az.ColorpickerFrame=d
@@ -34668,7 +34659,7 @@ local ax=true
 
 
 
-aw.ColorpickerFrame=a.load'I'{
+aw.ColorpickerFrame=a.J(){
 Title=aw.Title,
 Desc=aw.Desc,
 Parent=av.Parent,
@@ -34746,9 +34737,9 @@ end)
 return aw.__type,aw
 end
 
-return as end function a.Z()
+return as end function a.Z():typeof(__modImpl())local aa=a.cache.Z if not aa then aa={c=__modImpl()}a.cache.Z=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local af=aa.New
 local ai=aa.Tween
 
@@ -35126,9 +35117,9 @@ end)
 return an.__type,an
 end
 
-return ak end function a._()
+return ak end function a._():typeof(__modImpl())local aa=a.cache._ if not aa then aa={c=__modImpl()}a.cache._=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35143,8 +35134,8 @@ BackgroundTransparency=1,
 return"Space",{__type="Space",ElementFrame=am}
 end
 
-return ai end function a.aa()
-local aa=a.load'j'
+return ai end function a.aa():typeof(__modImpl())local aa=a.cache.aa if not aa then aa={c=__modImpl()}a.cache.aa=aa end return aa.c end end do local function __modImpl()
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35212,8 +35203,8 @@ end
 return am.__type,am
 end
 
-return ai end function a.ab()
-local aa=a.load'j'
+return ai end function a.ab():typeof(__modImpl())local aa=a.cache.ab if not aa then aa={c=__modImpl()}a.cache.ab=aa end return aa.c end end do local function __modImpl()
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35269,7 +35260,7 @@ if au==0 then return end
 
 local av=1/au
 
-local aw=ar*(au-1)
+local aw=ar*math.max(#aq-1,0)
 
 local ax=-(aw+at)
 
@@ -35279,7 +35270,7 @@ local az=ax-(ay*au)
 for aA,aB in next,as do
 local b=ay
 if aA<=math.abs(az)then
-b=b-1
+b=b+(az>0 and 1 or-1)
 end
 
 if aB.ElementFrame then
@@ -35297,8 +35288,8 @@ al.Tab
 return am.__type,am
 end
 
-return ai end function a.ac()
-local aa=a.load'j'
+return ai end function a.ac():typeof(__modImpl())local aa=a.cache.ac if not aa then aa={c=__modImpl()}a.cache.ac=aa end return aa.c end end do local function __modImpl()
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35357,7 +35348,7 @@ end
 
 local av=1/au
 
-local aw=ar*(au-1)
+local aw=ar*math.max(#aq-1,0)
 
 local ax=-(aw+at)
 
@@ -35367,7 +35358,7 @@ local az=ax-(ay*au)
 for aA,aB in next,as do
 local b=ay
 if aA<=math.abs(az)then
-b=b-1
+b=b+(az>0 and 1 or-1)
 end
 
 if aB.ElementFrame then
@@ -35397,9 +35388,9 @@ end
 return am.__type,am
 end
 
-return ai end function a.ad()
+return ai end function a.ad():typeof(__modImpl())local aa=a.cache.ad if not aa then aa={c=__modImpl()}a.cache.ad=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35484,14 +35475,14 @@ al.Tab
 return am.__type,am
 end
 
-return ai end function a.ae()
+return ai end function a.ae():typeof(__modImpl())local aa=a.cache.ae if not aa then aa={c=__modImpl()}a.cache.ae=aa end return aa.c end end do local function __modImpl()
 local aa=(cloneref or clonereference or function(aa)
 return aa
 end)
 
 local af=aa(game:GetService"UserInputService")
 
-local ai=a.load'j'
+local ai=a.j()
 local ak=ai.New
 
 local al={}
@@ -35720,28 +35711,28 @@ ao.Main=at
 return ao.__type,ao
 end
 
-return al end function a.af()
+return al end function a.af():typeof(__modImpl())local aa=a.cache.af if not aa then aa={c=__modImpl()}a.cache.af=aa end return aa.c end end do local function __modImpl()
 
 return{
 Elements={
-Paragraph=a.load'J',
-Button=a.load'K',
-Toggle=a.load'N',
-Slider=a.load'O',
-ProgressBar=a.load'P',
-Keybind=a.load'Q',
-Input=a.load'R',
-Dropdown=a.load'U',
-Code=a.load'X',
-Colorpicker=a.load'Y',
-Section=a.load'Z',
-Divider=a.load'S',
-Space=a.load'_',
-Image=a.load'aa',
-Group=a.load'ab',
-HStack=a.load'ac',
-VStack=a.load'ad',
-Viewport=a.load'ae',
+Paragraph=a.K(),
+Button=a.L(),
+Toggle=a.O(),
+Slider=a.P(),
+ProgressBar=a.Q(),
+Keybind=a.R(),
+Input=a.S(),
+Dropdown=a.V(),
+Code=a.Y(),
+Colorpicker=a.Z(),
+Section=a._(),
+Divider=a.T(),
+Space=a.aa(),
+Image=a.ab(),
+Group=a.ac(),
+HStack=a.ad(),
+VStack=a.ae(),
+Viewport=a.af(),
 
 },
 Load=function(aa,af,ai,ak,al,am,an,ao,ap)
@@ -35870,7 +35861,7 @@ end
 end
 end
 end,
-}end function a.ag()
+}end function a.ag():typeof(__modImpl())local aa=a.cache.ag if not aa then aa={c=__modImpl()}a.cache.ag=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -35881,11 +35872,11 @@ local af=game:GetService"Players"
 aa(game:GetService"UserInputService")
 local ai=af.LocalPlayer:GetMouse()
 
-local ak=a.load'j'
+local ak=a.j()
 local al=ak.New
 
-local am=a.load'H'.New
-local an=a.load'D'.New
+local am=a.I().New
+local an=a.E().New
 
 
 
@@ -36324,7 +36315,7 @@ end
 
 
 
-local aA=a.load'af'
+local aA=a.ag()
 
 aA.Load(
 ar,
@@ -36475,6 +36466,7 @@ TextTransparency="TabTextTransparency",
 if as.UIElements.Icon and not as.IconColor then
 ak.SetThemeTag(as.UIElements.Icon.ImageLabel,{
 ImageTransparency="TabIconTransparency",
+ImageColor3="TabIcon",
 },0.15)
 end
 as.Selected=false
@@ -36495,6 +36487,7 @@ TextTransparency="TabTextTransparencyActive",
 if ao.Tabs[aq].UIElements.Icon and not ao.Tabs[aq].IconColor then
 ak.SetThemeTag(ao.Tabs[aq].UIElements.Icon.ImageLabel,{
 ImageTransparency="TabIconTransparencyActive",
+ImageColor3="TabIconActive",
 },0.15)
 end
 ao.Tabs[aq].Selected=true
@@ -36518,23 +36511,25 @@ ao.OnChangeFunc(aq)
 end
 end
 
-return ao end function a.ah()
+return ao end function a.ah():typeof(__modImpl())local aa=a.cache.ah if not aa then aa={c=__modImpl()}a.cache.ah=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
 
-local af=a.load'j'
+local af=a.j()
 local ai=af.New
 local ak=af.Tween
 
-local al=a.load'ag'
+local al=a.ah()
 
 function aa.New(am,an,ao,ap,aq)
 local ar={
 Title=am.Title or"Section",
 Icon=am.Icon,
 IconThemed=am.IconThemed,
-Opened=am.Opened or false,
+Opened=am.Opened or am.Collapsible==false,
+Collapsible=am.Collapsible~=false,
+Indent=math.max(0,tonumber(am.Indent)or 12),
 
 HeaderSize=42,
 IconSize=18,
@@ -36624,11 +36619,11 @@ PaddingRight=UDim.new(0,11),
 }),
 ai("Frame",{
 BackgroundTransparency=1,
-Size=UDim2.new(1,0,0,0),
+Size=UDim2.new(1,-ar.Indent,0,0),
 AutomaticSize="Y",
 Name="Content",
 Visible=true,
-Position=UDim2.new(0,0,0,ar.HeaderSize)
+Position=UDim2.new(0,ar.Indent,0,ar.HeaderSize)
 },{
 ai("UIListLayout",{
 FillDirection="Vertical",
@@ -36642,7 +36637,7 @@ VerticalAlignment="Bottom",
 function ar.Tab(aw,ax)
 if not ar.Expandable then
 ar.Expandable=true
-au.Visible=true
+au.Visible=ar.Collapsible
 end
 ax.Parent=av.Content
 return al.New(ax,ap)
@@ -36659,7 +36654,7 @@ ak(au.ImageLabel,0.1,{Rotation=180},Enum.EasingStyle.Quint,Enum.EasingDirection.
 end
 end
 function ar.Close(aw)
-if ar.Expandable then
+if ar.Expandable and ar.Collapsible then
 ar.Opened=false
 ak(av,0.26,{
 Size=UDim2.new(1,0,0,ar.HeaderSize)
@@ -36669,7 +36664,7 @@ end
 end
 
 af.AddSignal(av.TextButton.MouseButton1Click,function()
-if ar.Expandable then
+if ar.Expandable and ar.Collapsible then
 if ar.Opened then
 ar:Close()
 else
@@ -36697,7 +36692,7 @@ return ar
 end
 
 
-return aa end function a.ai()
+return aa end function a.ai():typeof(__modImpl())local aa=a.cache.ai if not aa then aa={c=__modImpl()}a.cache.ai=aa end return aa.c end end do local function __modImpl()
 return{
 Tab="table-of-contents",
 Paragraph="type",
@@ -36710,7 +36705,7 @@ Dropdown="chevrons-up-down",
 Code="terminal",
 Colorpicker="palette",
 ProgressBar="chart-bar",
-}end function a.aj()
+}end function a.aj():typeof(__modImpl())local aa=a.cache.aj if not aa then aa={c=__modImpl()}a.cache.aj=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -36723,7 +36718,7 @@ Margin=8,
 Padding=9,
 }
 
-local ai=a.load'j'
+local ai=a.j()
 local ak=ai.New
 local al=ai.Tween
 
@@ -36735,7 +36730,7 @@ Radius=22,
 Width=400,
 MaxHeight=380,
 
-Icons=a.load'ai',
+Icons=a.aj(),
 }
 
 local aq=ak("TextBox",{
@@ -37253,7 +37248,7 @@ end)
 return ap
 end
 
-return af end function a.ak()
+return af end function a.ak():typeof(__modImpl())local aa=a.cache.ak if not aa then aa={c=__modImpl()}a.cache.ak=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -37267,19 +37262,19 @@ local ak=aa(game:GetService"Players")
 
 local al=workspace.CurrentCamera
 
-local am=a.load'z'
+local am=a.A()
 
-local an=a.load'j'
+local an=a.j()
 local ao=an.New
 local ap=an.Tween
 
 
-local aq=a.load'C'.New
-local ar=a.load's'.New
-local as=a.load'D'.New
-local at=a.load'E'
+local aq=a.D().New
+local ar=a.t().New
+local as=a.E().New
+local at=a.F()
 
-local au=a.load'F'
+local au=a.G()
 
 
 
@@ -38366,7 +38361,7 @@ end
 
 
 
-aw.OpenButtonMain=a.load'G'.New(aw)
+aw.OpenButtonMain=a.H().New(aw)
 
 task.spawn(function()
 if aw.Icon then
@@ -38930,8 +38925,8 @@ if aw.OpenButton and typeof(aw.OpenButton)=="table"then
 aw:EditOpenButton(aw.OpenButton)
 end
 
-local F=a.load'ag'
-local G=a.load'ah'
+local F=a.ah()
+local G=a.ai()
 local H=F.Init(aw,av.WindUI,av.WindUI.TooltipGui)
 H:OnChange(function(J)
 aw.CurrentTab=J
@@ -39005,7 +39000,7 @@ L,
 return M
 end
 
-local J=a.load'u'
+local J=a.v()
 function aw.Dialog(L,M)
 local N={
 Title=M.Title or"Dialog",
@@ -39388,7 +39383,7 @@ end)
 
 
 if not aw.HideSearchBar then
-local R=a.load'aj'
+local R=a.ak()
 local S=false
 
 
@@ -39477,15 +39472,16 @@ end
 
 
 return aw
-end end end
+end end function a.al():typeof(__modImpl())local aa=a.cache.al if not aa then aa={c=__modImpl()}a.cache.al=aa end return aa.c end end end
 
 local aa={
 Window=nil,
 Theme=nil,
-Creator=a.load'j',
-LocalizationModule=a.load'k',
-NotificationModule=a.load'l',
+Creator=a.j(),
+LocalizationModule=a.k(),
+NotificationModule=a.l(),
 Themes=nil,
+NumberFormat=a.m(),
 Transparent=false,
 
 TransparencyValue=0.15,
@@ -39495,7 +39491,7 @@ UIScale=1,
 ConfigManager=nil,
 Version="0.0.0",
 
-Services=a.load'q',
+Services=a.r(),
 
 OnThemeChangeFunction=nil,
 
@@ -39557,12 +39553,12 @@ end)
 
 local ap=ak.LocalPlayer or nil
 
-local aq=ai:JSONDecode(a.load'r')
+local aq=ai:JSONDecode(a.s())
 if aq then
 aa.Version=aq.version
 end
 
-local ar=a.load'v'
+local ar=a.w()
 
 local as=aa.Creator
 
@@ -39571,7 +39567,7 @@ local at=as.New
 
 
 
-local au=a.load'z'
+local au=a.A()
 
 local av=protectgui or(syn and syn.protect_gui)or function()end
 
@@ -39773,10 +39769,10 @@ end
 
 function aa.Popup(az,aA)
 aA.WindUI=aa
-return a.load'A'.new(aA,aa.ScreenGui.Popups)
+return a.B().new(aA,aa.ScreenGui.Popups)
 end
 
-aa.Themes=a.load'B'(aa,as)
+aa.Themes=a.C()(aa,as)
 
 as.Themes=aa.Themes
 
@@ -39784,7 +39780,7 @@ aa:SetTheme"Dark"
 aa:SetLanguage(as.Language)
 
 function aa.CreateWindow(az,aA)
-local aB=a.load'ak'
+local aB=a.al()
 
 if not am:IsStudio()and writefile then
 if not isfolder"WindUI"then
