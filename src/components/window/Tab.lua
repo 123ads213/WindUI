@@ -692,6 +692,7 @@ function TabModule:SelectTab(TabIndex)
         child.ParentTab:Expand()
         child = child.ParentTab
     end
+    if target.TabSection then target.TabSection:Open() end
     TabIndex = target.Index
     if TabModule.SelectedTab == TabIndex then return true end
 	if not TabModule.Tabs[TabIndex].Locked then

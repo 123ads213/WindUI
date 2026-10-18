@@ -1769,6 +1769,12 @@ return function(Config)
 		end
 	end
 
+    function Window:CreateProfile(profileConfig)
+        if Window.Profile then Window.Profile:Destroy() end
+        Window.Profile = require("./Profile").New(Window, Config.WindUI, profileConfig or {})
+        return Window.Profile
+    end
+
 	function Window:Divider()
 		local Divider = New("Frame", {
 			Size = UDim2.new(1, 0, 0, 1),

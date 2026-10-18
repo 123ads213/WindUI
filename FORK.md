@@ -4,7 +4,7 @@ Fork of [WindUI by Footagesus](https://github.com/Footagesus/WindUI), based on u
 
 ## Scope
 
-The original WindUI element layout, slider position, buttons, window sizing, sidebar sections and horizontal containers are retained. No layout based on the second reference image is applied. Changes are limited to compact numeric displays, nested tabs, numerical/interaction fixes needed by those features, curated themes, optional offscreen locking and animated subtab expansion.
+The original WindUI element layout, slider position, buttons, window sizing, sidebar sections and horizontal containers are retained. No layout based on the second reference image is applied. Changes are limited to compact numeric displays, nested tabs, numerical/interaction fixes needed by those features, curated themes, optional offscreen locking, animated subtab/section expansion, optional profile preferences and theme-aware notification icons.
 
 ## Run
 
@@ -129,7 +129,7 @@ The example sets `ContentPaddingTop = 10` in CreateWindow (upstream default rema
 
 ## Tab selection animation
 
-`Window:SelectTab(tab.Index)` and `tab:Select()` use the original WindUI page-slide animation (not a new layout). The duration/easing now match nested expansion: **0.24 seconds, Quad Out**. Repeated selection of the current page does not restart it; rapid switches cancel the previous tween. Try **General → Tab selection** in `ForkExample.lua`, or click sidebar tabs directly.
+`Window:SelectTab(tab.Index)` and `tab:Select()` use the original WindUI page-slide animation (not a new layout). The duration/easing now match nested expansion: **0.24 seconds, Quad Out**. Repeated selection of the current page does not restart it; rapid switches cancel the previous tween. Click sidebar tabs directly to see page switching. For the separate collapsible Tab Section, use **APPEARANCE** (see below).
 
 ## Slider title icon
 
@@ -137,7 +137,7 @@ The example sets `ContentPaddingTop = 10` in CreateWindow (upstream default rema
 Player:Slider({
     Title = "Distance",
     Icon = "ruler", -- or Image = "ruler" (Image takes precedence)
-    IconSize = 18, -- or ImageSize = 18
+    IconSize = 24, -- or ImageSize = 24
     Value = { Min = 0, Max = 1e9, Default = 500000 },
     Callback = function(value) print(value) end,
 })
@@ -150,3 +150,72 @@ The icon occupies the existing WindUI element-image slot before the title/descri
 Window default size, min/max limits, auto-scaling, resize handles and fullscreen sizing code remain upstream behavior. The example still requests 740×520; minimum 560×350 and maximum 850×560 are unchanged. No new auto-size or scale rule was added for theme/animation fixes. LockOffscreen only clamps position to the GUI rectangle.
 
 Ocean, Forest, Ember and Orchid now use the same clean native contour renderer as Light/Paper. Their palettes are unchanged. Dark retains its upstream panel rendering.
+
+## Actual tab sections (revision 6 correction)
+
+A **Tab Section** is the upstream collapsible sidebar group, not the temporary “Tab selection” dropdown from revision 5. The example now puts Themes inside **APPEARANCE**, created with:
+
+```lua
+local Appearance = Window:Section({ Title = "APPEARANCE", Opened = true })
+local Themes = Appearance:Tab({ Title = "Themes", Icon = "palette" })
+Appearance:Close()
+Appearance:Open()
+```
+
+Click the APPEARANCE header to see its height and chevron animate together: 0.24s, Quad Out, cancellation on rapid reversal. Selecting Themes programmatically also opens its section. Visuals → Player/World remain nested tabs, not this section.
+
+### Title icon alignment
+
+Slider title icons default to **24px**, centred vertically on the full title/description block rather than its upper edge. A title without a description centres the icon on that title alone. `IconSize`/`ImageSize` overrides remain available. The example uses `Icon = "ruler", IconSize = 24`. The normal WindUI title/description spacing and fixed-width right-hand slider remain unchanged.
+
+## Profile footer and preferences
+
+Opt-in, not an alteration to every window:
+
+```lua
+local Profile = Window:CreateProfile({
+    -- Name / Avatar optional; defaults to local Roblox display name and headshot.
+    DaysRemaining = 30,
+    Mock = true, -- data is a demo; no mock badge is shown in the UI
+    StoreLink = "https://discord.gg/eqAEszZzHj",
+    Themes = { "Dark", "Light", "Ocean", "Forest", "Ember", "Orchid", "Paper" },
+    History = {
+        { Version = "1.0.0", Date = "2026-10-18", Title = "Release",
+          Description = "Your update description." },
+    },
+})
+```
+
+- Bottom-left card reserves its own space below the scrolling sidebar. Hover highlights the card and opens a rounded, theme-aware popover. A short leave delay allows moving the pointer from card to menu; click/touch also opens it. Escape closes it.
+- **Renew** copies the configured Discord shop link using `setclipboard`/`toclipboard`, then shows a WindUI notification with a clipboard icon. If unavailable/failed, it reports failure instead of claiming success.
+- **Menu Scale** changes the actual WindUI UIScale: Auto, 75%, 90%, 100%, 110%, 125%, 150%. Auto shrinks to the current viewport when necessary and never enlarges beyond 100%. Existing upstream resize/min/max behavior is retained. Manual DPI values can intentionally make a window larger than a small viewport; choose Auto or resize in that case.
+- **Style** has a gear action and a right-facing hover hint, no colour picker. Hover opens a rounded theme selection list to the right while keeping the main menu visible. Clicking a theme applies it immediately. Menu Scale uses the same side-list interaction. Lists flip to the left only when the right viewport edge leaves insufficient room. No Language, ESP Scale, Windows Scale, Units, Safe Mode, Sync, About or Chat items are included.
+- **History** shows supplied version/date/title/description entries as a scrolling list. Back returns to the profile menu.
+- `Profile:Open()`, `:Close()`, `:ShowPage("Main" | "Scale" | "Style" | "History")`, `:SetSubscription(info)`, `:Destroy()` are available. Creating a new profile destroys the old one. Window destruction cleans up profile connections and its floating selection list.
+
+### Subscription data / FlowAuth integration boundary
+
+This example uses **mock 30 days**; it is not connected to a buyer key and does not claim to authorize a subscription. No FlowAuth production scripts, keys, loaders or delivery settings were changed.
+
+FlowAuth's connected account automation guide was inspected read-only. Its administrative key metadata endpoints (`GET /v1/projects/{project_id}/keys` and `GET /v1/keys/{key_id}`) expose `duration.state`, `duration.remaining_ms`, `duration.is_lifetime` and `duration.evaluated_at` (server Unix milliseconds). Remaining duration is frozen for pending/paused keys. A positive duration does **not** grant access: status/effective_status and pause/revocation checks still matter; runtime authorization remains with the generated FlowAuth loader. Administrative reads are not a client-side authorization API.
+
+A later trusted adapter can pass *display-only* metadata to the UI, without putting an account API token in Luau:
+
+```lua
+-- metadata must already have been obtained/validated by your trusted integration.
+local duration = metadata.duration
+Profile:SetSubscription({
+    IsLifetime = duration.is_lifetime,
+    State = duration.state, -- pending / active / expired / paused / lifetime
+    ExpiresAt = duration.remaining_ms and duration.evaluated_at
+        and (duration.evaluated_at + duration.remaining_ms) / 1000 or nil,
+})
+```
+
+`ExpiresAt` is Unix **seconds** in this UI API; FlowAuth fields above are milliseconds. For a real integration create the profile with `Mock = false`. The precise runtime handoff from the protected loader is deliberately deferred to the later script-integration task, not invented here.
+
+### Final profile styling
+
+The footer has no background at rest in any theme; the rounded highlight fades in only on hover/open. The popover uses the original WindUI Dialog surface (Dark: #1A1A1A), a subdued outline and a 6%-opacity separator. Menu Scale, Style and History use the same compact icon/label/action row style; scale values open a matching hover flyout rather than a large standalone element control or replacement page. Page changes, hover, popover and DPI transitions are animated. The demo/mock badge is intentionally not rendered.
+
+The Distance example additionally uses `IconOffset = Vector2.new(4, -3)` for a subtle right/up adjustment within its reserved slot. Budget demonstrates a wallet icon. `IconOffset`/`ImageOffset` are optional; they affect only the graphic, not the text layout. All built-in profile/notification strings are English. Slider title icons follow the theme by default (set `IconThemed = false` to opt out for full-colour images). Notification icons now follow `NotificationTitle` theme colour and centre vertically on their text block. `Notify({ IconSize = 36, ... })` is supported; Renew uses 36px.

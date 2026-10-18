@@ -123,29 +123,27 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
             ChevronIconFrame.Visible = true
         end
         TabConfig.Parent = SectionFrame.Content
-        return TabModule.New(TabConfig, UIScale)
+        local tab = TabModule.New(TabConfig, UIScale)
+        tab.TabSection = SectionModule
+        return tab
     end
     
-    function SectionModule:Open()
-        if SectionModule.Expandable then
-            SectionModule.Opened = true
-            Tween(SectionFrame, 0.33, {
-                Size = UDim2.new(1,0,0, SectionModule.HeaderSize + (SectionFrame.Content.AbsoluteSize.Y/UIScale))
-            }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-            
-            Tween(ChevronIconFrame.ImageLabel, 0.1, {Rotation = 180}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        end
+    SectionModule.UIElements = { Main = SectionFrame, Content = SectionFrame.Content, Chevron = ChevronIconFrame.ImageLabel }
+    local sizeTween, arrowTween
+    local function animate(open)
+        if not SectionModule.Expandable then return end
+        SectionModule.Opened = open
+        if sizeTween then sizeTween:Cancel() end
+        if arrowTween then arrowTween:Cancel() end
+        local scale = Window:GetUIScale() or UIScale or 1
+        local height = SectionModule.HeaderSize + (open and SectionFrame.Content.AbsoluteSize.Y / scale or 0)
+        sizeTween = Tween(SectionFrame, .24, { Size = UDim2.new(1,0,0,height) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        arrowTween = Tween(ChevronIconFrame.ImageLabel, .24, { Rotation = open and 180 or 0 }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        sizeTween:Play(); arrowTween:Play()
     end
-    function SectionModule:Close()
-        if SectionModule.Expandable then
-            SectionModule.Opened = false
-            Tween(SectionFrame, 0.26, {
-                Size = UDim2.new(1,0,0, SectionModule.HeaderSize)
-            }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-            Tween(ChevronIconFrame.ImageLabel, 0.1, {Rotation = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-        end
-    end
-    
+    function SectionModule:Open() animate(true) end
+    function SectionModule:Close() animate(false) end
+
     Creator.AddSignal(SectionFrame.TextButton.MouseButton1Click, function()
         if SectionModule.Expandable then
             if SectionModule.Opened then

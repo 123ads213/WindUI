@@ -62,16 +62,17 @@ local Visuals = Window:Tab({ Title = 'Visuals', Icon = 'image' })
 local Player = Visuals:Tab({ Title = 'Player', Icon = 'user' })
 local World = Visuals:Tab({ Title = 'World', Icon = 'globe' })
 local General = Window:Tab({ Title = 'General', Icon = 'settings-2' })
-local Themes = Window:Tab({ Title = 'Themes', Icon = 'palette' })
+local Appearance = Window:Section({ Title = 'APPEARANCE', Opened = true, HeaderSize = 32 })
+local Themes = Appearance:Tab({ Title = 'Themes', Icon = 'palette' })
 
 local Calls = {}
 Player:Section({ Title = 'Player settings' })
 local Big = Player:Slider({
-    Title = 'Distance', Icon = 'ruler', IconSize = 18, Desc = 'Compact display, numeric callback.',
+    Title = 'Distance', Icon = 'ruler', IconSize = 24, IconOffset = Vector2.new(4,-3), Desc = 'Compact display, numeric callback.',
     Value = { Min = 0, Max = 1e9, Default = 500000 }, Step = 1, IsTooltip = true,
     Callback = function(value) Calls.Distance = value end,
 })
-local Billion = Player:Slider({ Title = 'Budget', Value = { Min = 0, Max = 1e12, Default = 1250000000 }, Step = 1000,
+local Billion = Player:Slider({ Title = 'Budget', Icon = 'wallet', IconSize = 24, IconOffset = Vector2.new(4,0), Value = { Min = 0, Max = 1e12, Default = 1250000000 }, Step = 1000,
     IsTooltip = true, Callback = function(value) Calls.Budget = value end })
 local Fine = Player:Slider({ Title = 'Precision', Width = 170, ValueWidth = 72,
     Value = { Min = -1, Max = 1, Default = .12345 }, Step = .00001,
@@ -94,22 +95,28 @@ General:Slider({ Title = 'Unshortened', Compact = false, Width = 170, ValueWidth
     Value = { Min = 0, Max = 1e6, Default = 500000 } })
 General:Slider({ Title = 'Locked', Locked = true, Value = { Min = 0, Max = 1e6, Default = 500000 } })
 General:Slider({ Title = 'Fixed range', Value = { Min = 5, Max = 5, Default = 5 } })
-local TabSelection = General:Dropdown({ Title = 'Tab selection',
-    Values = { 'Player', 'World', 'General', 'Themes' }, Value = 'General',
-    Callback = function(name)
-        local tabs = { Player = Player, World = World, General = General, Themes = Themes }
-        local tab = tabs[name]; if tab then Window:SelectTab(tab.Index) end
-    end })
 Themes:Dropdown({ Title = 'Theme', Values = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' }, Value = 'Dark',
     Callback = function(theme) WindUI:SetTheme(theme) end })
 Themes:Toggle({ Title = 'Preview toggle', Value = true, Callback = function() end })
 Themes:Slider({ Title = 'Preview slider', Value = { Min = 0, Max = 1e6, Default = 500000 }, IsTooltip = true })
 Themes:Button({ Title = 'Preview button' })
 Themes:Input({ Title = 'Preview input', Placeholder = 'Type here…', Callback = function() end })
+local Profile = Window:CreateProfile({
+    DaysRemaining = 30, Mock = true, StoreLink = 'https://discord.gg/eqAEszZzHj',
+    Themes = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' },
+    OnThemeChanged = function(theme) Themes.Elements[1]:Select(theme) end,
+    History = {
+        { Version = '1.6.66-fork.6', Date = '2026-10-18', Title = 'Profile & preferences', Description = 'Themed profile menu, subscription display, Renew, menu scaling, Style and scrollable update history. Animated Appearance tab section and centred title icons.' },
+        { Version = '1.6.66-fork.5', Date = '2026-10-18', Title = 'Tabs & clean themes', Description = 'Smooth page switching and clean Ocean, Forest, Ember and Orchid contours. Slider title icon support.' },
+        { Version = '1.6.66-fork.4', Date = '2026-10-18', Title = 'Viewport & controls', Description = 'Offscreen boundaries now use the actual GUI origin. Clean toggle thumb and Light/Paper outlines.' },
+        { Version = '1.6.66-fork.3', Date = '2026-10-18', Title = 'Precision & lifecycle', Description = 'Decimal step normalization, numeric callbacks and safe example reruns without duplicate windows.' },
+        { Version = '1.6.66-fork.2', Date = '2026-10-18', Title = 'Original WindUI layout', Description = 'Original inline controls and resize behavior, nested Player/World pages and optional Lock Offscreen.' },
+    },
+})
 Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 
 Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
     Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
-    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, TabSelection = TabSelection }
+    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile }
 Env.__WindUIForkPendingLibrary = nil
 return Window

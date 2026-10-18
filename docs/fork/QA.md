@@ -68,3 +68,36 @@ Final actual captures: `Light-Clean.jpg`, `Viewport-Top.jpg`, `Viewport-Bottom.j
 - These are synthetic API/GUI-signal checks, not a physical mouse/device compatibility matrix. Actual OS-window Ocean screenshot inspected for native contours and title icon.
 
 ![Ocean clean contours and Distance icon](Ocean-Clean-TitleIcon.jpg)
+
+## Revision 6 — real Tab Section, profile footer and final visual polish
+
+Scope: opt-in `Window:CreateProfile`, actual upstream `Window:Section` grouping for Themes, icon alignment, theme-aware notification icons. Original window size/scale/resize methods remain unchanged. A reserved 76px sidebar footer is intentional only when a profile is created.
+
+Latest live-client sequential results:
+- Runtime: **65 passed** (original resize limits, slider precision/dragging and GUI-origin bounds).
+- Theme/shape visuals: **86 passed**, all seven palettes and native joined corners.
+- Selection/title icon: **10 passed**, including 24px centred icon slot and actual Theme section routing.
+- Profile/section: **39 passed**, including intermediate Tab Section/hover animation, rapid reversal, footer reservation, pointer transfer, Style theme sync, scrollable History, DPI and Auto, menu containment at 560×350, 740×520 and 850×560, all-theme popup colours, subscription display states, Renew clipboard API success and close delay.
+- Final user-requested polish: **18 passed**, including Light-theme Distance/Budget contrast, English Renew text, Budget icon, Distance +4px/-3px graphic offset, fully transparent idle footer in four themes, subtle menu outline, compact Menu Scale row/list click, and 36px notification icon contrast/centering in Light.
+- Local NumberFormat/decimal-lattice/TabTree tests passed; **87 Lua files compiled**.
+
+All interaction checks are API or synthetic GUI signals, not a physical mouse/device matrix. Clipboard success means the executor copy API returned successfully; private clipboard contents were not read. The subscription is mock 30 days; there is intentionally no Demo label in the interface. FlowAuth automation documentation/project metadata were read-only; no production changes and no account API token placed in Luau.
+
+A cleanup regression surfaced queued native-shape property events after a UICorner had been destroyed. The renderer now guards all updates after Destroying; optional profile destruction disconnects its own signals and destroys both floating panels. The final implementation uses compact native option rows, not a stock Dropdown. The earlier malformed-Unicode test transport payload was corrected before executing the rerun test; a scheduled test without a result was not counted as a pass.
+
+
+### Final fork.6 hover-flyout verification
+
+- Additional flyout suite: **13 passed**. Hover opens the right-hand Scale/Style list with intermediate fade opacity; main profile remains visible, pointer transfer preserves the list, option clicks apply DPI/theme and sync the Themes dropdown, Light title icons match the theme, and panels remain inside the actual viewport near its edges.
+- Repeat-start/controlled-failure/concurrent-start cleanup suite: **7 passed** on the final build. All six primary suites run sequentially: **231 assertions passed**, plus the separate 7 cleanup checks.
+- Dark palette matches upstream d2c9bac5 exactly. Profile and side lists use upstream Dialog (#1A1A1A in Dark), not the darker window Background. No global size/resize modifications were introduced by the profile.
+- Actual OS captures below were individually inspected: Dark scale flyout, Light style flyout with visible Distance/Budget icons, scrollable History, and the English notification with a 36px centred theme-aware icon. Popup occlusion of the content below is intentional; neither main menu nor its side list replaces the other.
+- Notification screenshot uses the same English notification configuration with an extended display duration for capture; Renew clipboard API success and exact actual text were independently asserted by the live tests.
+
+![Dark Menu Scale hover flyout](Profile-Dark-Flyout.jpg)
+
+![Light Style hover flyout and themed title icons](Profile-Light-Flyout.jpg)
+
+![Scrollable update history](Profile-History.jpg)
+
+![English link-copied notification](Profile-Notification.jpg)

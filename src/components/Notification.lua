@@ -52,6 +52,7 @@ function NotificationModule.New(Config)
 		Title = Config.Title or "Notification",
 		Content = Config.Content or nil,
 		Icon = Config.Icon or nil,
+        IconSize = Config.IconSize or 32,
 		IconThemed = Config.IconThemed,
 		Background = Config.Background,
 		BackgroundImageTransparency = Config.BackgroundImageTransparency,
@@ -105,10 +106,11 @@ function NotificationModule.New(Config)
 			0,
 			Config.Window,
 			"Notification",
-			Notification.IconThemed
+            true, Notification.IconThemed, "NotificationTitle"
 		)
-		Icon.Size = UDim2.new(0, 26, 0, 26)
-		Icon.Position = UDim2.new(0, NotificationModule.UIPadding, 0, NotificationModule.UIPadding)
+		Icon.Size = UDim2.fromOffset(Notification.IconSize, Notification.IconSize)
+        Icon.Position = UDim2.new(0, NotificationModule.UIPadding, .5, 0)
+        Icon.AnchorPoint = Vector2.new(0,.5)
 		-- Icon.LayoutOrder = -1
 	end
 
@@ -148,7 +150,7 @@ function NotificationModule.New(Config)
 	})
 
 	local TextContainer = New("Frame", {
-		Size = UDim2.new(1, Notification.Icon and -28 - NotificationModule.UIPadding or 0, 1, 0),
+		Size = UDim2.new(1, Notification.Icon and -Notification.IconSize - 2 - NotificationModule.UIPadding or 0, 1, 0),
 		Position = UDim2.new(1, 0, 0, 0),
 		AnchorPoint = Vector2.new(1, 0),
 		BackgroundTransparency = 1,
@@ -260,6 +262,7 @@ function NotificationModule.New(Config)
 		CloseButton,
 	})
 
+    Notification.UIElements = { Main = Main, Icon = Icon, TextContainer = TextContainer }
 	local MainContainer = New("Frame", {
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, 0, 0, 0),

@@ -1,0 +1,71 @@
+-- Actual profile/section objects exercised through GUI signals and public methods.
+local d=assert(getgenv().WindUIForkDemo)
+local p=d.Profile
+local passed=0
+local function check(v,label)assert(v,label);passed+=1 end
+local ok,err=pcall(function()
+ p:Close();task.wait(.2)
+ local section=d.Appearance
+ section:Close();task.wait(.3)
+ check(section.UIElements.Main.Size.Y.Offset==32,'section collapsed header')
+ section:Open();task.wait(.06)
+ local mid=section.UIElements.Main.AbsoluteSize.Y
+ task.wait(.3)
+ check(mid>32 and mid<section.UIElements.Main.AbsoluteSize.Y,'actual Tab Section has smooth intermediate size')
+ section:Close();task.wait(.04);section:Open();task.wait(.04);section:Close();task.wait(.3)
+ check(section.UIElements.Main.Size.Y.Offset==32 and not section.Opened,'rapid section reversals settle')
+ d.Themes:Select();task.wait(.3)
+ check(section.Opened and d.Themes.UIElements.ContainerFrameCanvas.Visible,'select Themes opens its actual section')
+ check(d.Window.UIElements.SideBarContainer.AbsolutePosition.Y+d.Window.UIElements.SideBarContainer.AbsoluteSize.Y<=p.UIElements.Card.AbsolutePosition.Y,'sidebar scroll area reserves profile footer')
+ check(p.UIElements.Remaining.Text=='30 days left','mock days displayed')
+ check(p.UIElements.Card.BackgroundTransparency==1,'footer transparent without hover')
+ check(p.UIElements.Pages.Main:FindFirstChild('Source')==nil,'no demo text in interface')
+ firesignal(p.UIElements.Card.MouseEnter);task.wait(.07)
+ check(p.Opened and p.UIElements.Menu.Visible and p.UIElements.Menu.GroupTransparency>0 and p.UIElements.Menu.GroupTransparency<1,'hover opens with intermediate opacity')
+ task.wait(.3)
+ check(p.UIElements.Menu.GroupTransparency==0,'hover fade settles')
+ firesignal(p.UIElements.Menu.MouseEnter)
+ firesignal(p.UIElements.Card.MouseLeave);task.wait(.35)
+ check(p.Opened,'pointer can move from card to popup')
+ firesignal(p.UIElements.StyleButton.MouseButton1Click)
+ check(p.FlyoutKind=='Style' and p.UIElements.Flyout.Visible,'gear opens side theme list')
+ p.ThemeControl:Select('Ocean');task.wait(.3)
+ check(d.Library:GetCurrentTheme()=='Ocean' and d.Themes.Elements[1].Value=='Ocean','style dropdown changes theme and syncs example')
+ p:CloseFlyout()
+ check(not p.FlyoutKind and p.Page=='Main','side theme list leaves main menu intact')
+ firesignal(p.UIElements.HistoryButton.MouseButton1Click);task.wait(.2)
+ local history=p.UIElements.History
+ check(p.Page=='History' and history.Visible,'History page selected')
+ check(history.AbsoluteCanvasSize.Y>history.AbsoluteSize.Y,'history scroll content exceeds viewport')
+ history.CanvasPosition=Vector2.new(0,100);task.wait(.1)
+ check(history.CanvasPosition.Y>0,'history scroll moves')
+ firesignal(p.UIElements.Pages.History.Back.MouseButton1Click)
+ check(p.Page=='Main','history back button')
+ p.ScaleControl:Select('125%');task.wait(.3)
+ check(math.abs(d.Library.UIScaleObj.Scale-1.25)<.001,'Menu Scale applies DPI')
+ p.ScaleControl:Select('Auto');task.wait(.3)
+ check(d.Library.UIScaleObj.Scale<=1,'Auto scale does not enlarge beyond 100 percent')
+ p.ScaleControl:Select('100%');task.wait(.3)
+ for _,size in ipairs({Vector2.new(560,350),Vector2.new(740,520),Vector2.new(850,560)})do
+  d.Window.UIElements.Main.Size=UDim2.fromOffset(size.X,size.Y);task.wait(.15);p:Open()
+  local menu,main=p.UIElements.Menu,d.Window.UIElements.Main
+  check(menu.AbsolutePosition.X>=main.AbsolutePosition.X and menu.AbsolutePosition.Y>=main.AbsolutePosition.Y,'popup inside top/left at '..tostring(size))
+  check(menu.AbsolutePosition.X+menu.AbsoluteSize.X<=main.AbsolutePosition.X+main.AbsoluteSize.X+.5 and menu.AbsolutePosition.Y+menu.AbsoluteSize.Y<=main.AbsolutePosition.Y+main.AbsoluteSize.Y+.5,'popup inside bottom/right at '..tostring(size))
+ end
+ d.Window.UIElements.Main.Size=UDim2.fromOffset(740,520);task.wait(.2)
+ for _,theme in ipairs({'Dark','Light','Ocean','Forest','Ember','Orchid','Paper'})do
+  d.Library:SetTheme(theme);task.wait(.2)
+  check(p.UIElements.Menu.BackgroundColor3==d.Library:GetThemes()[theme].Dialog,'popup follows theme '..theme)
+ end
+ p:SetSubscription({IsLifetime=true});check(p.UIElements.Remaining.Text=='Lifetime','lifetime state')
+ p:SetSubscription({State='paused'});check(p.UIElements.Remaining.Text=='Paused','paused state')
+ p:SetSubscription({State='pending'});check(p.UIElements.Remaining.Text=='Not activated','pending state')
+ p:SetSubscription({State='expired'});check(p.UIElements.Remaining.Text=='Expired','expired state')
+ p:SetSubscription({DaysRemaining=30,Mock=true})
+ firesignal(p.UIElements.Renew.MouseButton1Click);task.wait(.1)
+ check(p.LastRenewResult=='copied','Renew reports clipboard API success')
+ firesignal(p.UIElements.Menu.MouseLeave);task.wait(.6)
+ check(not p.Opened and not p.UIElements.Menu.Visible,'leaving popup closes after grace period')
+end)
+d.Library:SetTheme('Dark');p:Close();d.Player:Select()
+return{status=ok and 'pass' or 'fail',passed=passed,error=not ok and tostring(err)or nil}

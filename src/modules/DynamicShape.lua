@@ -150,8 +150,10 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
 	end
 
     local nativeCorner, nativeStroke
+    local rendererDestroyed = false
     local originalBackgroundTransparency = Properties.BackgroundTransparency or 1
     function Wrapper:UpdateRenderer()
+        if rendererDestroyed then return end
         local kind = ShapeFallbacks[Wrapper.Type] or Wrapper.Type
         local supported = kind:find("Squircle") ~= nil or kind:find("Circle") ~= nil or kind == "Square"
         local clean = supported and (Wrapper.CleanShape or (Creator.Theme and Creator.Theme.CleanShapes == true))
@@ -205,6 +207,7 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
     end
     ActiveShapes[ImageLabel] = Wrapper
     Creator.AddSignal(ImageLabel.Destroying, function()
+        rendererDestroyed = true
         ActiveShapes[ImageLabel] = nil
         if nativeCorner then nativeCorner:Destroy() end
     end)
@@ -213,6 +216,7 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
     end
 
 	function Wrapper:SetRadius(NewRadius)
+        if rendererDestroyed then return Wrapper end
 		Wrapper.Radius = NewRadius
 		ImageLabel.SliceScale = math.max(NewRadius / GetShape(Wrapper.Type).Radius, 0.0001)
         Wrapper:UpdateRenderer()
@@ -220,6 +224,7 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
 	end
 
 	function Wrapper:SetType(NewType)
+        if rendererDestroyed then return Wrapper end
 		Wrapper.Type = NewType
 		local Shape = GetShape(NewType)
 		ImageLabel.Image = Shape.Image
@@ -240,6 +245,7 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
 	Wrapper:SetType(Type)
 
 	Creator.AddSignal(ImageLabel:GetPropertyChangedSignal("AbsoluteSize"), function()
+        if rendererDestroyed then return end
 		local Shape = GetShape(Wrapper.Type)
         Wrapper:UpdateRenderer()
 		if Shape.AutoChange == false then

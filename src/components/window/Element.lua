@@ -125,6 +125,9 @@ return function(Config)
 		end
 
 		ImageFrame.Size = UDim2.new(0, ImageSize, 0, ImageSize)
+        if Config.ImageOffset then
+            ImageFrame.ImageLabel.Position = UDim2.fromOffset(Config.ImageOffset.X, Config.ImageOffset.Y)
+        end
 
 		IconOffset = ImageSize
 	end
@@ -189,7 +192,7 @@ return function(Config)
 			New("UIListLayout", {
 				Padding = UDim.new(0, Element.UIPadding),
 				FillDirection = "Horizontal",
-				VerticalAlignment = Config.Window.NewElements and (Element.Justify == "Between" and "Top" or "Center")
+				VerticalAlignment = ImageFrame and "Center" or Config.Window.NewElements and (Element.Justify == "Between" and "Top" or "Center")
 					or "Center",
 				HorizontalAlignment = Element.Justify ~= "Between" and Element.Justify or "Center",
 			}),
