@@ -3,7 +3,7 @@
 >
 > **[Fork features, API, setup and test notes](FORK.md)** · **[Complete example](ForkExample.lua)**
 >
-> Compact numbers, full-width responsive sliders, sidebar groups and seven curated themes.
+> Original WindUI layout, compact numbers, actual nested tabs (Visuals → Player / World), and curated themes.
 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/123ads213/WindUI/main/ForkExample.lua"))()

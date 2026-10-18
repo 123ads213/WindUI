@@ -33,9 +33,8 @@ function Element:New(Config)
 		UIElements = {},
 		IsFocusing = false,
 
-		Width = math.max(Numbers.Finite(Config.Width) or 190, 100),
-		TextBoxWidth = math.max(40, Numbers.Finite(Config.ValueWidth) or 80),
-        Layout = Config.Layout or (Config.Window.NewElements and "Stacked" or "Inline"),
+		Width = math.max(Numbers.Finite(Config.Width) or 130, 100),
+		TextBoxWidth = math.max(30, Numbers.Finite(Config.ValueWidth) or 48),
 		ThumbSize = 13,
 		IconSize = 26,
 	}
@@ -112,7 +111,7 @@ function Element:New(Config)
 		Title = Slider.Title,
 		Desc = Slider.Desc,
 		Parent = Config.Parent,
-		TextOffset = Slider.Width + 32,
+		TextOffset = Slider.Width + 24,
 		Hover = false,
 		Tab = Config.Tab,
 		Index = Config.Index,
@@ -124,7 +123,7 @@ function Element:New(Config)
 
 	Slider.UIElements.SliderIcon = Creator.NewRoundFrame(99, "Squircle", {
 		ImageTransparency = 0.95,
-		Size = UDim2.new(1, 0, 0, 4),
+		Size = UDim2.new(1, not Slider.IsTextbox and -TotalSliderWidth or (-Slider.TextBoxWidth - 8), 0, 4),
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.new(0.5, 0, 0.5, 0),
 		Name = "Frame",
@@ -185,7 +184,7 @@ function Element:New(Config)
 		IconTo,
 		New("TextBox", {
 			Size = UDim2.new(0, Slider.TextBoxWidth, 0, 0),
-			TextXAlignment = "Right",
+			TextXAlignment = "Left",
 			Text = Display(Value),
 			ClearTextOnFocus = false,
 			ClipsDescendants = true,
@@ -197,32 +196,10 @@ function Element:New(Config)
 			TextSize = 15,
 			FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
 			BackgroundTransparency = 1,
-			LayoutOrder = 3,
+			LayoutOrder = -1,
 			Visible = Slider.IsTextbox,
 		}),
 	})
-
-    Slider.UIElements.SliderIcon.LayoutOrder = 1
-    if IconFrom then IconFrom.LayoutOrder = 0 end
-    if IconTo then IconTo.LayoutOrder = 2 end
-    Slider.UIElements.SliderContainer.UIListLayout.SortOrder = "LayoutOrder"
-    local container = Slider.SliderFrame.UIElements.Container
-    if Slider.Layout == "Stacked" or Slider.Title == nil then
-        -- A real vertical layout: descriptions never share horizontal space with the control.
-        container.Size = UDim2.new(1, 0, 0, 0)
-        container.TitleFrame.Size = UDim2.new(1, 0, 0, 0)
-        container.TitleFrame.Visible = Slider.Title ~= nil
-        container.UIListLayout.Padding = UDim.new(0, 6)
-        container.UIListLayout.SortOrder = "LayoutOrder"
-        local row = Slider.UIElements.SliderContainer
-        row.Parent = container
-        row.Size = UDim2.new(1, 0, 0, 28)
-        row.AutomaticSize = "None"
-        row.Position = UDim2.new(0, 0, 0, 0)
-        row.AnchorPoint = Vector2.new(0, 0)
-        row.LayoutOrder = 10
-        New("UIPadding", { Parent = row, PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) })
-    end
 
 	local Tooltip
 	if Slider.IsTooltip then
@@ -248,12 +225,12 @@ function Element:New(Config)
 
     local function Render(instant)
         if Destroyed then return end
-        local text = Slider.IsFocusing and Numbers.Plain(LastValue) or Display(LastValue)
+        local text = Slider.IsFocusing and tostring(LastValue) or Display(LastValue)
         TextBox.Text = text
         local gap = Slider.Title ~= nil and 8 or 12
         local gapWidth = gap * (IconCount + (Slider.IsTextbox and 1 or 0))
         -- Fixed value slot: never shift the track as digits/suffixes change during drag.
-        TextBox.Size = UDim2.new(0, Slider.TextBoxWidth, 0, 20)
+        TextBox.Size = UDim2.new(0, Slider.TextBoxWidth, 0, 0)
         Slider.UIElements.SliderIcon.Size = UDim2.new(1,
             -TotalSliderWidth - gapWidth - (Slider.IsTextbox and Slider.TextBoxWidth or 0), 0, 4)
         local size = UDim2.new(Numbers.Ratio(LastValue, Slider.Value.Min, Slider.Value.Max), 0, 1, 0)

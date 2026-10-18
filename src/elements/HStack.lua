@@ -57,7 +57,7 @@ function Element:New(Config)
 
 			local ElementWidthScale = 1 / StretchCount
 
-			local TotalGapWidth = Gap * math.max(#AllElements - 1, 0)
+			local TotalGapWidth = Gap * (StretchCount - 1)
 
 			local TotalOffset = -(TotalGapWidth + TotalFixedWidth)
 
@@ -67,7 +67,7 @@ function Element:New(Config)
 			for i, Element in next, StretchableElements do
 				local Offset = BaseOffset
 				if i <= math.abs(Remainder) then
-					Offset = Offset + (Remainder > 0 and 1 or -1)
+					Offset = Offset - 1
 				end
 
 				if Element.ElementFrame then

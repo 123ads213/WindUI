@@ -12,9 +12,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
         Title = SectionConfig.Title or "Section",
         Icon = SectionConfig.Icon,
         IconThemed = SectionConfig.IconThemed,
-        Opened = SectionConfig.Opened or SectionConfig.Collapsible == false,
-        Collapsible = SectionConfig.Collapsible ~= false,
-        Indent = math.max(0, tonumber(SectionConfig.Indent) or 12),
+        Opened = SectionConfig.Opened or false,
         
         HeaderSize = 42,
         IconSize = 18,
@@ -104,11 +102,11 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
         }),
         New("Frame", {
             BackgroundTransparency = 1,
-            Size = UDim2.new(1,-SectionModule.Indent,0,0),
+            Size = UDim2.new(1,0,0,0),
             AutomaticSize = "Y",
             Name = "Content",
             Visible = true,
-            Position = UDim2.new(0,SectionModule.Indent,0,SectionModule.HeaderSize)
+            Position = UDim2.new(0,0,0,SectionModule.HeaderSize)
         }, {
             New("UIListLayout", {
                 FillDirection = "Vertical",
@@ -122,7 +120,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
     function SectionModule:Tab(TabConfig)
         if not SectionModule.Expandable then
             SectionModule.Expandable = true
-            ChevronIconFrame.Visible = SectionModule.Collapsible
+            ChevronIconFrame.Visible = true
         end
         TabConfig.Parent = SectionFrame.Content
         return TabModule.New(TabConfig, UIScale)
@@ -139,7 +137,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
         end
     end
     function SectionModule:Close()
-        if SectionModule.Expandable and SectionModule.Collapsible then
+        if SectionModule.Expandable then
             SectionModule.Opened = false
             Tween(SectionFrame, 0.26, {
                 Size = UDim2.new(1,0,0, SectionModule.HeaderSize)
@@ -149,7 +147,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
     end
     
     Creator.AddSignal(SectionFrame.TextButton.MouseButton1Click, function()
-        if SectionModule.Expandable and SectionModule.Collapsible then
+        if SectionModule.Expandable then
             if SectionModule.Opened then
                 SectionModule:Close()
             else

@@ -1,5 +1,5 @@
--- WindUI fork showcase. Original library by Footagesus, MIT (see LICENSE).
--- Use this fork URL, not the original upstream distribution.
+-- WindUI by Footagesus (MIT). Fork: compact numbers, nested tabs and curated themes.
+-- All element positions and window behavior use the original WindUI layout.
 local Env = getgenv and getgenv() or _G
 if Env.WindUIForkDemo then
     Env.WindUIForkDemo.Window:Destroy()
@@ -12,72 +12,55 @@ if not WindUI then
     WindUI = assert(loadstring(game:HttpGet(
         'https://raw.githubusercontent.com/123ads213/WindUI/main/dist/main.lua')))()
 end
-
 local Window = WindUI:CreateWindow({
-    Title = 'WindUI · Extended', Author = 'WindUI by Footagesus · community fork',
+    Title = 'WindUI', Author = 'Footagesus · Extended fork',
     Folder = 'WindUI-fork', Icon = 'panels-top-left', Theme = 'Dark',
-    NewElements = true, Size = UDim2.fromOffset(900, 740),
-    MinSize = Vector2.new(600, 400), MaxSize = Vector2.new(1440, 1100),
-    Resizable = true,
+    NewElements = true, Size = UDim2.fromOffset(740, 520),
 })
-local Common = Window:Section({ Title = 'COMMON', Collapsible = false, Indent = 12 })
-local Visuals = Common:Tab({ Title = 'Visuals', Icon = 'image' })
-local Players = Common:Tab({ Title = 'Players', Icon = 'users' })
-local World = Common:Tab({ Title = 'World', Icon = 'globe' })
-local SettingsGroup = Window:Section({ Title = 'SETTINGS', Opened = true, Indent = 12 })
-local Themes = SettingsGroup:Tab({ Title = 'Appearance', Icon = 'palette' })
+Window:Section({ Title = 'COMMON' })
+local Visuals = Window:Tab({ Title = 'Visuals', Icon = 'image' })
+local Player = Visuals:Tab({ Title = 'Player', Icon = 'user' })
+local World = Visuals:Tab({ Title = 'World', Icon = 'globe' })
+local General = Window:Tab({ Title = 'General', Icon = 'settings-2' })
+local Themes = Window:Tab({ Title = 'Themes', Icon = 'palette' })
 
-Visuals:Section({ Title = 'Interactive Elements', Desc = 'Compact numbers. Exact values. Flexible rows.', Icon = 'sliders-horizontal' })
 local Calls = {}
-local Big = Visuals:Slider({
-    Title = 'Distance', Desc = '500000 is displayed as 500k. Focus to edit the full number.',
+Player:Section({ Title = 'Player settings' })
+local Big = Player:Slider({
+    Title = 'Distance', Desc = 'Compact display, numeric callback.',
     Value = { Min = 0, Max = 1e9, Default = 500000 }, Step = 1, IsTooltip = true,
     Callback = function(value) Calls.Distance = value end,
 })
-local Billion = Visuals:Slider({ Title = 'Budget', Value = { Min = 0, Max = 1e12, Default = 1250000000 }, Step = 1000,
-    Callback = function(value) Calls.Budget = value end })
-local Fine = Visuals:Slider({ Title = 'Fine precision', Value = { Min = -1, Max = 1, Default = 0.12345 }, Step = 0.00001,
+local Billion = Player:Slider({ Title = 'Budget', Value = { Min = 0, Max = 1e12, Default = 1250000000 }, Step = 1000,
+    IsTooltip = true, Callback = function(value) Calls.Budget = value end })
+local Fine = Player:Slider({ Title = 'Precision', Width = 170, ValueWidth = 72,
+    Value = { Min = -1, Max = 1, Default = .12345 }, Step = .00001,
     Callback = function(value) Calls.Fine = value end })
-Visuals:Section({ Title = 'Brightness Control', Icon = 'sun', TextSize = 15 })
-Visuals:Slider({ IsTextbox = false, Width = 250, Icons = { From = 'moon', To = 'sun' },
-    Value = { Min = 0, Max = 100, Default = 55 }, IsTooltip = true })
-Visuals:Section({ Title = 'Volume Settings', Icon = 'volume-2', TextSize = 15 })
-local Volume = Visuals:Slider({ IsTextbox = false, Icons = { From = 'volume-1', To = 'volume-2' },
-    Value = { Min = 0, Max = 100, Default = 72 }, IsTooltip = true })
-local Actions = Visuals:HStack({})
-Actions:Button({ Title = 'Save', Icon = 'save', IconAlign = 'Left', Justify = 'Center', Callback = function()
-    WindUI:Notify({ Title = 'Saved', Content = 'Example only: connect your persistence here.', Duration = 2 })
-end })
-Actions:Button({ Title = 'Reset', Icon = 'rotate-ccw', IconAlign = 'Left', Justify = 'Center', Callback = function()
-    Big:Set(500000); Billion:Set(1250000000); Fine:Set(0.12345); Volume:Set(72)
-end })
+Player:Toggle({ Title = 'Show players', Value = true, Callback = function() end })
+Player:Button({ Title = 'Reset distance', Callback = function() Big:Set(500000) end })
 
-Players:Section({ Title = 'Value displays', Icon = 'hash' })
-Players:ProgressBar({ Title = 'Balance', DisplayMode = 'Value', Value = { Min = 0, Max = 1e9, Default = 500000 } })
-Players:ProgressBar({ Title = 'Collection', DisplayMode = 'Fraction', Width = 230,
+World:Section({ Title = 'World settings' })
+local Gravity = World:Slider({ Title = 'Gravity', Value = { Min = 0, Max = 500, Default = 196.2 }, Step = .1 })
+local Balance = World:ProgressBar({ Title = 'Balance', DisplayMode = 'Value',
+    Value = { Min = 0, Max = 1e9, Default = 500000 } })
+local Collection = World:ProgressBar({ Title = 'Collection', DisplayMode = 'Fraction', Width = 210,
     Value = { Min = 0, Max = 1e9, Default = 250000000 } })
-Players:Slider({ Title = 'Unshortened', Compact = false, Width = 220,
-    Value = { Min = 0, Max = 1000000, Default = 500000 } })
-Players:Slider({ Title = 'Locked', Locked = true, Value = { Min = 0, Max = 1e6, Default = 500000 } })
-Players:Slider({ Title = 'Fixed range', Value = { Min = 5, Max = 5, Default = 5 } })
-World:Paragraph({ Title = 'Sidebar groups', Desc = 'COMMON is a static heading. SETTINGS is collapsible. Tabs keep separate content pages.' })
-World:Toggle({ Title = 'Autumn', Value = true, Callback = function() end })
-local WorldRow = World:HStack({})
-WorldRow:Button({ Title = 'Load', Icon = 'folder-open', IconAlign = 'Left', Justify = 'Center' })
-WorldRow:Button({ Title = 'Unload', Icon = 'package-minus', IconAlign = 'Left', Justify = 'Center' })
+World:Toggle({ Title = 'Shadows', Value = true, Callback = function() end })
 
-Themes:Section({ Title = 'Appearance', Desc = 'Dark unchanged. Light tuned. Five distinct alternative palettes.', Icon = 'palette' })
+General:Paragraph({ Title = 'Nested tabs', Desc = 'Click Visuals to expand Player and World. Each child has its own page; the last selected child is remembered.' })
+General:Slider({ Title = 'Unshortened', Compact = false, Width = 170, ValueWidth = 72,
+    Value = { Min = 0, Max = 1e6, Default = 500000 } })
+General:Slider({ Title = 'Locked', Locked = true, Value = { Min = 0, Max = 1e6, Default = 500000 } })
+General:Slider({ Title = 'Fixed range', Value = { Min = 5, Max = 5, Default = 5 } })
 Themes:Dropdown({ Title = 'Theme', Values = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' }, Value = 'Dark',
     Callback = function(theme) WindUI:SetTheme(theme) end })
 Themes:Toggle({ Title = 'Preview toggle', Value = true, Callback = function() end })
-Themes:Slider({ Title = 'Preview slider', Value = { Min = 0, Max = 1e6, Default = 500000 } })
-Themes:ProgressBar({ Title = 'Preview progress', Value = { Min = 0, Max = 100, Default = 65 } })
-Themes:Button({ Title = 'Preview button', Icon = 'check', IconAlign = 'Left', Justify = 'Center' })
+Themes:Slider({ Title = 'Preview slider', Value = { Min = 0, Max = 1e6, Default = 500000 }, IsTooltip = true })
+Themes:Button({ Title = 'Preview button' })
 Themes:Input({ Title = 'Preview input', Placeholder = 'Type here…', Callback = function() end })
-Window:SelectTab(Visuals.Index)
+Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 
--- Optional inspection handle for the MCP test; contains only this showcase's objects.
-if getgenv then getgenv().WindUIForkDemo = { Library = WindUI, Window = Window,
-    Big = Big, Billion = Billion, Fine = Fine, Calls = Calls, Visuals = Visuals,
-    Players = Players, Themes = Themes, Common = Common, Settings = SettingsGroup } end
+Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
+    Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
+    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection }
 return Window

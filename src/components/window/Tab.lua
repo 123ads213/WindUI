@@ -8,6 +8,7 @@ local UserInputService = cloneref(game:GetService("UserInputService"))
 local Mouse = Players.LocalPlayer:GetMouse()
 
 local Creator = require("../../modules/Creator")
+local TabTree = require("../../modules/TabTree")
 local New = Creator.New
 
 local CreateToolTip = require("../ui/Tooltip").New
@@ -56,6 +57,10 @@ function TabModule.New(Config, UIScale)
 		Parent = Config.Parent,
 		UIElements = {},
 		Elements = {},
+        SubTabs = {},
+        ParentTab = Config.ParentTab,
+        SubTabsOpened = false,
+        LastSubTab = nil,
 		ContainerFrame = nil,
 		UICorner = Window.UICorner - (Window.UIPadding / 2),
 
@@ -85,11 +90,20 @@ function TabModule.New(Config, UIScale)
 	local TabIndex = TabModule.TabCount
 	Tab.Index = TabIndex
 
+    -- Transparent hierarchy wrapper; the upstream tab button itself is unchanged.
+    Tab.UIElements.SidebarItem = New("Frame", {
+        Name = "TabItem", BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 0), AutomaticSize = "Y", Parent = Config.Parent,
+    }, {
+        New("UIListLayout", { SortOrder = "LayoutOrder", Padding = UDim.new(0, Window.Gap) }),
+    })
+
 	Tab.UIElements.Main = Creator.NewRoundFrame(Tab.UICorner, "Squircle", {
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -7, 0, 0),
 		AutomaticSize = "Y",
-		Parent = Config.Parent,
+		Parent = Tab.UIElements.SidebarItem,
+        LayoutOrder = 0,
 		ThemeTag = {
 			ImageColor3 = "TabBackground",
 		},
@@ -347,11 +361,15 @@ function TabModule.New(Config, UIScale)
 
 	Tab.ContainerFrame = Tab.UIElements.ContainerFrameCanvas
 
-	Creator.AddSignal(Tab.UIElements.Main.MouseButton1Click, function()
-		if not Tab.Locked then
-			TabModule:SelectTab(TabIndex)
-		end
-	end)
+    Creator.AddSignal(Tab.UIElements.Main.MouseButton1Click, function()
+        if Tab.Locked then return end
+        if #Tab.SubTabs > 0 and Tab.SubTabsOpened then
+            Tab:Collapse()
+        else
+            Tab:Expand()
+            TabModule:SelectTab(TabIndex)
+        end
+    end)
 
 	if Window.ScrollBarEnabled then
 		CreateScrollSlider(
@@ -502,6 +520,53 @@ function TabModule.New(Config, UIScale)
 		return UnlockedElements
 	end
 
+    function Tab:Expand()
+        if not Tab.UIElements.SubTabs then return self end
+        Tab.SubTabsOpened = true
+        Tab.UIElements.SubTabs.Visible = true
+        Tab.UIElements.SubTabChevron.ImageLabel.Rotation = 90
+        return self
+    end
+
+    function Tab:Collapse()
+        if not Tab.UIElements.SubTabs then return self end
+        Tab.SubTabsOpened = false
+        Tab.UIElements.SubTabs.Visible = false
+        Tab.UIElements.SubTabChevron.ImageLabel.Rotation = 0
+        return self
+    end
+
+    function Tab:SubTab(SubConfig)
+        SubConfig = SubConfig or {}
+        if not Tab.UIElements.SubTabs then
+            Tab.UIElements.SubTabs = New("Frame", {
+                Name = "SubTabs", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = "Y",
+                BackgroundTransparency = 1, Visible = false, LayoutOrder = 1,
+                Parent = Tab.UIElements.SidebarItem,
+            }, {
+                New("UIPadding", { PaddingLeft = UDim.new(0, 16) }),
+                New("UIListLayout", { SortOrder = "LayoutOrder", Padding = UDim.new(0, Window.Gap) }),
+            })
+            local chevron = Creator.Image("chevron-right", "SubTabChevron", 0,
+                Window.Folder, "Tab", true, true, "TabIcon")
+            chevron.Size = UDim2.fromOffset(14, 14)
+            chevron.LayoutOrder = 3
+            chevron.Parent = Tab.UIElements.Main.Frame
+            Tab.UIElements.SubTabChevron = chevron
+            local text = Tab.UIElements.Main.Frame.TextLabel
+            text.Size = UDim2.new(1, text.Size.X.Offset - 22, 0, 0)
+        end
+        SubConfig.Parent = Tab.UIElements.SubTabs
+        SubConfig.ParentTab = Tab
+        local child = TabModule.New(SubConfig, UIScale)
+        child.UIElements.SidebarItem.LayoutOrder = #Tab.SubTabs + 1
+        table.insert(Tab.SubTabs, child)
+        return child
+    end
+
+    -- Both names are supported: Visuals:Tab(...) or Visuals:SubTab(...).
+    Tab.Tab = Tab.SubTab
+
 	function Tab:Select()
 		return TabModule:SelectTab(Tab.Index)
 	end
@@ -582,6 +647,15 @@ function TabModule:OnChange(func)
 end
 
 function TabModule:SelectTab(TabIndex)
+    local target = TabTree.Resolve(TabModule.Tabs[TabIndex])
+    if not target then return false end
+    local child = target
+    while child.ParentTab do
+        child.ParentTab.LastSubTab = child
+        child.ParentTab:Expand()
+        child = child.ParentTab
+    end
+    TabIndex = target.Index
 	if not TabModule.Tabs[TabIndex].Locked then
 		TabModule.SelectedTab = TabIndex
 
@@ -626,6 +700,14 @@ function TabModule:SelectTab(TabIndex)
 			}, 0.15)
 		end
 		TabModule.Tabs[TabIndex].Selected = true
+        local parentTab = target.ParentTab
+        while parentTab do
+            Creator.SetThemeTag(parentTab.UIElements.Main.Frame.TextLabel, {
+                TextTransparency = "TabTextTransparencyActive",
+            }, 0.15)
+            parentTab = parentTab.ParentTab
+        end
+
 
 		task.spawn(function()
 			for _, ContainerObject in next, TabModule.Containers do

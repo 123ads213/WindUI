@@ -3,12 +3,12 @@
 return [[
 {
     "name": "windui",
-    "version": "1.6.66-fork.1",
+    "version": "1.6.66-fork.2",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
     "author": "Footagesus",
-    "description": "WindUI Extended \u2014 compact numbers, sidebar groups and curated themes. Based on WindUI by Footagesus.",
+    "description": "WindUI by Footagesus \u2014 original layout with compact values, nested tabs and curated themes.",
     "license": "MIT",
     "scripts": {
         "dev": "bash build/build.sh dev $INPUT_FILE",
@@ -18,7 +18,7 @@ return [[
         "live-build": "concurrently \"npm run live\" \"npm run watch --\"",
         "example-live-build": "INPUT_FILE=main_example.lua npm run live-build",
         "updater": "python3 updater/main.py",
-        "test": "luau tests/NumberFormat.luau"
+        "test": "luau tests/NumberFormat.luau && luau tests/TabTree.luau"
     },
     "keywords": [
         "ui-library",
