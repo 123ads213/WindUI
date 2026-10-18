@@ -111,3 +111,18 @@ The example sets `ContentPaddingTop = 10` in CreateWindow (upstream default rema
 ![Clean negative precision at the top viewport edge](docs/fork/Precision-TopEdge.jpg)
 
 ![Full capture showing a single demo window](docs/fork/TopEdge-Full.jpg)
+
+## Revision 4 — real viewport bounds and clean light contours
+
+- LockOffscreen uses both `ScreenGui.AbsolutePosition` and `AbsoluteSize`, not an assumed (0,0) origin. Roblox can report a negative GUI origin (observed Y=-58); top and bottom now use the same rectangle. GUI origin/inset changes trigger re-clamping.
+- The native OS/Roblox title bar is not drawn by WindUI and cannot be covered by a ScreenGui. The lock concerns the actual game viewport.
+- Light and Paper use `CleanShapes = true`: native UICorner per-corner radii and uniform inner UIStroke instead of baked fill/glass sprites. Joined first/middle/last row geometry stays intact. No extra GuiObjects are inserted into UIListLayout.
+- Dark and the other dark palettes keep their existing shape sprites. All themes use a clean native resting toggle thumb; the oversized glass rim is hidden, while the drag-only glass animation is retained.
+- Legacy clients without per-corner UICorner properties fall back to the original texture for joined half-corner shapes.
+- `tests/ForkVisual.lua` checks theme round trips, original row sizes/layout-child counts, per-corner grouping, theme-color propagation, resting toggles, and real top/bottom bounds.
+
+![Clean Light controls](docs/fork/Light-Clean.jpg)
+
+![True viewport top](docs/fork/Viewport-Top.jpg)
+
+![True viewport bottom](docs/fork/Viewport-Bottom.jpg)

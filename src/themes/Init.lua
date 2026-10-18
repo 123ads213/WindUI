@@ -32,6 +32,7 @@ return function(WindUI, Creator)
 
 		Light = {
 			Name = "Light",
+            CleanShapes = true,
 			Accent = Color3.fromHex("#FFFFFF"),
 			Dialog = Color3.fromHex("#FFFFFF"),
 			Outline = Color3.fromHex("#CBD3DD"),
@@ -282,6 +283,7 @@ return function(WindUI, Creator)
 
 		Paper = {
 			Name = "Paper",
+            CleanShapes = true,
 			Accent = Color3.fromHex("#FAF5E9"),
 			Dialog = Color3.fromHex("#FFFFFF"),
 			Outline = Color3.fromHex("#C5BBA9"),

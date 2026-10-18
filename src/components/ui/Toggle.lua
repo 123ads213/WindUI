@@ -112,6 +112,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Position = UDim2.new(0.5, 0, 0.5, 0),
 				Name = "Bar",
+                CleanShape = true,
 			}, {
 				Creator.New("Frame", {
 					Size = UDim2.new(1, 0, 1, 0),
@@ -123,6 +124,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 						Size = UDim2.new(1, 1, 1, 1),
 						ImageColor3 = Color3.new(1, 1, 1),
 						Name = "SquircleGlass",
+                        Visible = false,
 						ImageTransparency = 0.5,
 						AnchorPoint = Vector2.new(0.5, 0.5),
 						Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -130,6 +132,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 					Creator.NewRoundFrame(Radius, "Squircle", {
 						Size = UDim2.new(1, 0, 1, 0),
 						Name = "GlassBackground",
+                        Visible = false,
 						ImageTransparency = 0,
 						ThemeTag = {
 							ImageColor3 = "ElementBackground",
@@ -140,6 +143,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 						Size = UDim2.new(1, 0, 1, 0),
 						BackgroundTransparency = 1,
 						Name = "Glass",
+                        Visible = false,
 						ImageTransparency = 0,
 					}, {
 						New("UICorner", {
@@ -155,6 +159,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 					Creator.NewRoundFrame(Radius, "Squircle", {
 						Size = UDim2.new(1, 0, 1, 0),
 						Name = "BarOverlay",
+                        CleanShape = true,
 						ThemeTag = {
 							ImageColor3 = "ToggleBar",
 						},
@@ -184,6 +189,9 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 	local ToggleWidth = ToggleFrame.Size.X.Offset
 
 	function Toggle:Set(Toggled, isCallback, isAnim)
+        -- Resting thumb is a clean native pill. Glass is only used while dragging.
+        ToggleFrame.Frame.Bar.Highlight.Glass.Visible = false
+        ToggleFrame.Frame.Bar.Highlight.GlassBackground.Visible = false
 		if not isAnim then
 			if Toggled then
 				Tween(ToggleFrame.Frame, 0.35, {
@@ -281,6 +289,8 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 	function Toggle:Animate(input, ToggleObj)
 		if not Config.Window.IsToggleDragging then
 			Config.Window.IsToggleDragging = true
+            ToggleFrame.Frame.Bar.Highlight.Glass.Visible = true
+            ToggleFrame.Frame.Bar.Highlight.GlassBackground.Visible = true
 
 			local startMouseX = input.Position.X
 			local startMouseY = input.Position.Y

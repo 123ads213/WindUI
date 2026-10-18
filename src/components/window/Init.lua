@@ -1072,7 +1072,7 @@ return function(Config)
     local function constrainWindowPosition(position)
         if not Window.LockOffscreen then return position end
         local main = Window.UIElements.Main
-        local available, origin = Config.WindUI.ScreenGui.AbsoluteSize, Vector2.zero
+        local available, origin = Config.WindUI.ScreenGui.AbsoluteSize, Config.WindUI.ScreenGui.AbsolutePosition
         local current = main.Position
         local proposed = main.AbsolutePosition + Vector2.new(
             (position.X.Scale-current.X.Scale)*available.X + position.X.Offset-current.X.Offset,
@@ -1105,6 +1105,7 @@ return function(Config)
     Creator.AddSignal(Window.UIElements.Main:GetPropertyChangedSignal("AbsolutePosition"), keepOnscreen)
     Creator.AddSignal(Window.UIElements.Main:GetPropertyChangedSignal("AbsoluteSize"), keepOnscreen)
     Creator.AddSignal(Config.WindUI.ScreenGui:GetPropertyChangedSignal("AbsoluteSize"), keepOnscreen)
+    Creator.AddSignal(Config.WindUI.ScreenGui:GetPropertyChangedSignal("AbsolutePosition"), keepOnscreen)
 
 	local WindowDragModule = Creator.Drag(
 		Window.UIElements.Main,

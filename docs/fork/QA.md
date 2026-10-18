@@ -42,3 +42,14 @@ No mobile/touch hardware matrix, extreme custom text-width stress test or viewpo
 - The new cleanup removed the already stranded older example; one WindUI demo root remains.
 
 All 79 source/release/example/runtime-test Lua files compile in this follow-up. `Precision-TopEdge.jpg` and `TopEdge-Full.jpg` are actual OS captures after the synthetic drag: clean -0.02326, one demo at the top client boundary. The native Roblox title bar visible above the client area is outside WindUI's viewport.
+
+## Revision 4 correction — GUI origin and light borders
+
+The earlier boundary assertions assumed origin (0,0). That was insufficient: live ScreenGui.AbsolutePosition was (0,-58), while AbsoluteSize and camera viewport were 2560×1440. This explains the user's 58px upper gap / lower overflow. Current tests compare against the actual ScreenGui rectangle, including its origin, and listen for origin changes.
+
+- Updated runtime suite: **65 assertions passed** with real-origin corner and drag checks.
+- Separate visual/component suite: **51 assertions passed** across Light → Paper → Dark → Ocean → Light; native contours, unchanged layout-child counts and row heights, preserved joined row corners, clean thumb on/off states, exact relative top/bottom edges.
+- A discarded CanvasGroup prototype added layout items; it was removed before publication. Final rendering uses only UICorner/UIStroke components, not extra frames or compositing groups.
+- Native OS chrome is outside the scope of ScreenGui rendering. Test results do not claim to draw over the native Roblox title bar.
+
+Final actual captures: `Light-Clean.jpg`, `Viewport-Top.jpg`, `Viewport-Bottom.jpg`. Measured top at -58 relative GUI coordinates (top gap 0); bottom at Y=862 for a 520px-high window (bottom gap 0). Camera viewport 2560×1440. Final compilation check covers 82 Lua files.

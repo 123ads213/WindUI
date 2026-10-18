@@ -102,6 +102,7 @@ local UIScaleObj = New("UIScale", {
 })
 
 WindUI.UIScaleObj = UIScaleObj
+Creator.UIScaleObject = UIScaleObj
 
 WindUI.ScreenGui = New("ScreenGui", {
 	Name = "WindUI",

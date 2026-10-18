@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.3  |  2026-10-18  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.4  |  2026-10-18  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -28,8 +28,9 @@ Parent:Instance,
 }local a={cache={}::any}do do local function __modImpl()
 
 local b
+local d={}
 
-local d={
+local e={
 New=nil,
 Init=nil,
 Shapes={
@@ -132,122 +133,191 @@ AutoChange=false,
 },
 }
 
-function d.Init(e,f)
-b=f
-return e.New
+function e.Init(f,g)
+b=g
+table.insert(b.ThemeChangeCallbacks,function()
+for h,i in pairs(d)do i:UpdateRenderer()end
+end)
+return f.New
 end
 
-function d.New(e,f,g,h,i,j,l)
-local m={
-Radius=f or 0,
-Type=g or"Circle",
+function e.New(f,g,h,i,j,l,m)
+local p={
+Radius=g or 0,
+Type=h or"Circle",
+CleanShape=i and i.CleanShape==true,
 GetRadius=nil,
 GetType=nil,
 SetRadius=nil,
 SetType=nil,
 }
 
-local p={
+local r={
 ["Glass-0.7"]="SquircleGlass",
 ["Glass-1"]="SquircleGlass",
 ["Glass-1.4"]="SquircleGlass",
 ["Squircle-Outline"]="SquircleOutline",
 }
 
-local function GetShape(r)
-return d.Shapes[p[r]or r]or d.Shapes.Circle
+local function GetShape(u)
+return e.Shapes[r[u]or u]or e.Shapes.Circle
 end
 
-local r=b.New(j and"ImageButton"or"ImageLabel",{
+local u=b.New(l and"ImageButton"or"ImageLabel",{
 Image="",
-ScaleType=l~=false and"Slice"or nil,
-SliceCenter=m.Type~="Squircle"and Rect.new(512,512,512,512)or nil,
+ScaleType=m~=false and"Slice"or nil,
+SliceCenter=p.Type~="Squircle"and Rect.new(512,512,512,512)or nil,
 SliceScale=1,
-ThemeTag=h and h.ThemeTag or nil,
+ThemeTag=i and i.ThemeTag or nil,
 BackgroundTransparency=1,
-},i)
+},j)
 
-for u,v in next,h do
-if not table.find({"ThemeTag"},u)then
-r[u]=v
+for v,x in next,i do
+if not table.find({"ThemeTag","CleanShape"},v)then
+u[v]=x
 end
 end
 
-function m.SetRadius(u,v)
-m.Radius=v
-r.SliceScale=math.max(v/GetShape(m.Type).Radius,0.0001)
-return m
+local v,x
+local z=i.BackgroundTransparency or 1
+function p.UpdateRenderer(A)
+local B=r[p.Type]or p.Type
+local C=B:find"Squircle"~=nil or B:find"Circle"~=nil or B=="Square"
+local F=C and(p.CleanShape or(b.Theme and b.Theme.CleanShapes==true))
+u:SetAttribute("WindUICleanShape",F==true)
+if not F then
+u.Image=GetShape(p.Type).Image
+u.BackgroundTransparency=z
+if v then v.Parent=nil end
+if x then x.Enabled=false end
+return
+end
+if not v then
+v=b.New("UICorner",{Name="CleanCorner"})
+x=b.New("UIStroke",{
+Name="CleanContour",ApplyStrokeMode=Enum.ApplyStrokeMode.Border,
+LineJoinMode=Enum.LineJoinMode.Round,Thickness=1,
+Parent=u,Enabled=false,
+})
+pcall(function()x.BorderStrokePosition=Enum.BorderStrokePosition.Inner end)
+end
+local G=b.UIScaleObject and b.UIScaleObject.Scale or 1
+local H=u.AbsoluteSize/math.max(G,.001)
+local J=B=="Square"and 0 or math.min(p.Radius,math.min(H.X,H.Y)/2)
+local L=B:find"Glass"or B:find"Outline"
+local M=B:find"TL%-TR"~=nil
+local N=B:find"BL%-BR"~=nil
+v.Parent=u
+v.CornerRadius=UDim.new(0,J)
+
+
+local O=pcall(function()
+v.TopLeftRadius=UDim.new(0,N and 0 or J)
+v.TopRightRadius=UDim.new(0,N and 0 or J)
+v.BottomLeftRadius=UDim.new(0,M and 0 or J)
+v.BottomRightRadius=UDim.new(0,M and 0 or J)
+end)
+if not O and(M or N)then
+v.Parent=nil
+x.Enabled=false
+u.Image=GetShape(p.Type).Image
+u.BackgroundTransparency=z
+u:SetAttribute("WindUICleanShape",false)
+return
+end
+u.BackgroundColor3=u.ImageColor3
+u.BackgroundTransparency=L and 1 or u.ImageTransparency
+x.Enabled=L~=nil
+x.Color=u.ImageColor3
+x.Transparency=u.ImageTransparency
+u.Image=""
+end
+d[u]=p
+b.AddSignal(u.Destroying,function()
+d[u]=nil
+if v then v:Destroy()end
+end)
+for A,B in ipairs{"ImageColor3","ImageTransparency"}do
+b.AddSignal(u:GetPropertyChangedSignal(B),function()p:UpdateRenderer()end)
 end
 
-function m.SetType(u,v)
-m.Type=v
-local x=GetShape(v)
-r.Image=x.Image
-r.SliceCenter=x.Rect
-m:SetRadius(m.Radius)
-return m
+function p.SetRadius(A,B)
+p.Radius=B
+u.SliceScale=math.max(B/GetShape(p.Type).Radius,0.0001)
+p:UpdateRenderer()
+return p
 end
 
-function m.GetRadius(u)
-return m.Radius
+function p.SetType(A,B)
+p.Type=B
+local C=GetShape(B)
+u.Image=C.Image
+u.SliceCenter=C.Rect
+p:SetRadius(p.Radius)
+return p
 end
 
-function m.GetType(u)
-return m.Type
+function p.GetRadius(A)
+return p.Radius
 end
 
-m:SetRadius(f)
-m:SetType(g)
+function p.GetType(A)
+return p.Type
+end
 
-b.AddSignal(r:GetPropertyChangedSignal"AbsoluteSize",function()
-local u=GetShape(m.Type)
-if u.AutoChange==false then
+p:SetRadius(g)
+p:SetType(h)
+
+b.AddSignal(u:GetPropertyChangedSignal"AbsoluteSize",function()
+local A=GetShape(p.Type)
+p:UpdateRenderer()
+if A.AutoChange==false then
 return
 end
 
-if string.find(m.Type,"Squircle")then
-local v=string.find(m.Type,"Glass")and"Glass"or nil
-local x=string.find(m.Type,"Outline")and"Outline"or nil
+if string.find(p.Type,"Squircle")then
+local B=string.find(p.Type,"Glass")and"Glass"or nil
+local C=string.find(p.Type,"Outline")and"Outline"or nil
 
-local z=math.round(r.AbsoluteSize.X/b.UIScale)
-local A=math.round(r.AbsoluteSize.Y/b.UIScale)
+local F=math.round(u.AbsoluteSize.X/b.UIScale)
+local G=math.round(u.AbsoluteSize.Y/b.UIScale)
 
-local B=m.Radius~=0 and m.Radius or math.min(z,A)/2
-local C=d.Shapes.Squircle.Radius/1024
-local F=B/math.min(z,A)
+local H=p.Radius~=0 and p.Radius or math.min(F,G)/2
+local J=e.Shapes.Squircle.Radius/1024
+local L=H/math.min(F,G)
 
-local G
+local M
 
-if z>A then
-if F>=C then
-G="SquircleH"..(x or v or"")
+if F>G then
+if L>=J then
+M="SquircleH"..(C or B or"")
 else
-G="Squircle"..(x or v or"")
+M="Squircle"..(C or B or"")
 end
-elseif z<A then
-if F>=C then
-G="SquircleV"..(x or v or"")
+elseif F<G then
+if L>=J then
+M="SquircleV"..(C or B or"")
 else
-G="Squircle"..(x or v or"")
+M="Squircle"..(C or B or"")
 end
 else
-if F>=C then
-G="Circle"..(x or v or"")
+if L>=J then
+M="Circle"..(C or B or"")
 else
-G="Squircle"..(x or v or"")
+M="Squircle"..(C or B or"")
 end
 end
 
-if G~=m:GetType()then
-m:SetType(G)
+if M~=p:GetType()then
+p:SetType(M)
 end
 end
 end)
 
-return r,m
+return u,p
 end
 
-return d end function a.a():typeof(__modImpl())local b=a.cache.a if not b then b={c=__modImpl()}a.cache.a=b end return b.c end end do local function __modImpl()
+return e end function a.a():typeof(__modImpl())local b=a.cache.a if not b then b={c=__modImpl()}a.cache.a=b end return b.c end end do local function __modImpl()
 
 
 
@@ -26810,7 +26880,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.3",
+    "version": "1.6.66-fork.4",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -28381,6 +28451,7 @@ ElementBackgroundTransparency=0,
 
 Light={
 Name="Light",
+CleanShapes=true,
 Accent=Color3.fromHex"#FFFFFF",
 Dialog=Color3.fromHex"#FFFFFF",
 Outline=Color3.fromHex"#CBD3DD",
@@ -28631,6 +28702,7 @@ CheckboxBorderTransparency=0,
 
 Paper={
 Name="Paper",
+CleanShapes=true,
 Accent=Color3.fromHex"#FAF5E9",
 Dialog=Color3.fromHex"#FFFFFF",
 Outline=Color3.fromHex"#C5BBA9",
@@ -30945,6 +31017,7 @@ ImageTransparency=0,
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
 Name="Bar",
+CleanShape=true,
 },{
 ab.New("Frame",{
 Size=UDim2.new(1,0,1,0),
@@ -30956,6 +31029,7 @@ ab.NewRoundFrame(9999,"SquircleGlass",{
 Size=UDim2.new(1,1,1,1),
 ImageColor3=Color3.new(1,1,1),
 Name="SquircleGlass",
+Visible=false,
 ImageTransparency=0.5,
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
@@ -30963,6 +31037,7 @@ Position=UDim2.new(0.5,0,0.5,0),
 ab.NewRoundFrame(an,"Squircle",{
 Size=UDim2.new(1,0,1,0),
 Name="GlassBackground",
+Visible=false,
 ImageTransparency=0,
 ThemeTag={
 ImageColor3="ElementBackground",
@@ -30973,6 +31048,7 @@ ac("ImageLabel",{
 Size=UDim2.new(1,0,1,0),
 BackgroundTransparency=1,
 Name="Glass",
+Visible=false,
 ImageTransparency=0,
 },{
 ac("UICorner",{
@@ -30988,6 +31064,7 @@ CornerRadius=UDim.new(1,0),
 ab.NewRoundFrame(an,"Squircle",{
 Size=UDim2.new(1,0,1,0),
 Name="BarOverlay",
+CleanShape=true,
 ThemeTag={
 ImageColor3="ToggleBar",
 },
@@ -31017,6 +31094,9 @@ local au=ak and 30 or 20
 local av=ar.Size.X.Offset
 
 function am.Set(aw,ax,ay,az)
+
+ar.Frame.Bar.Highlight.Glass.Visible=false
+ar.Frame.Bar.Highlight.GlassBackground.Visible=false
 if not az then
 if ax then
 ad(ar.Frame,0.35,{
@@ -31114,6 +31194,8 @@ end
 function am.Animate(aw,ax,ay)
 if not al.Window.IsToggleDragging then
 al.Window.IsToggleDragging=true
+ar.Frame.Bar.Highlight.Glass.Visible=true
+ar.Frame.Bar.Highlight.GlassBackground.Visible=true
 
 local az=ax.Position.X
 local aA=ax.Position.Y
@@ -38455,7 +38537,7 @@ local A=false
 local function constrainWindowPosition(B)
 if not aw.LockOffscreen then return B end
 local C=aw.UIElements.Main
-local F,G=av.WindUI.ScreenGui.AbsoluteSize,Vector2.zero
+local F,G=av.WindUI.ScreenGui.AbsoluteSize,av.WindUI.ScreenGui.AbsolutePosition
 local H=C.Position
 local J=C.AbsolutePosition+Vector2.new(
 (B.X.Scale-H.X.Scale)*F.X+B.X.Offset-H.X.Offset,
@@ -38488,6 +38570,7 @@ end
 an.AddSignal(aw.UIElements.Main:GetPropertyChangedSignal"AbsolutePosition",keepOnscreen)
 an.AddSignal(aw.UIElements.Main:GetPropertyChangedSignal"AbsoluteSize",keepOnscreen)
 an.AddSignal(av.WindUI.ScreenGui:GetPropertyChangedSignal"AbsoluteSize",keepOnscreen)
+an.AddSignal(av.WindUI.ScreenGui:GetPropertyChangedSignal"AbsolutePosition",keepOnscreen)
 
 local B=an.Drag(
 aw.UIElements.Main,
@@ -39751,6 +39834,7 @@ Scale=aa.UIScale,
 })
 
 aa.UIScaleObj=ax
+as.UIScaleObject=ax
 
 aa.ScreenGui=at("ScreenGui",{
 Name="WindUI",

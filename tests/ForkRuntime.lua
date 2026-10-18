@@ -42,20 +42,21 @@ local ok, err = pcall(function()
         for _,pos in ipairs({Vector2.new(-10000,-10000),Vector2.new(10000,-10000),Vector2.new(-10000,10000),Vector2.new(10000,10000)}) do
             window:SetPosition(UDim2.fromOffset(pos.X,pos.Y));task.wait(.05)
             local p,z,view=main.AbsolutePosition,main.AbsoluteSize,d.Library.ScreenGui.AbsoluteSize
-            check(p.X>=-.5 and p.Y>=-.5 and p.X+z.X<=view.X+.5 and p.Y+z.Y<=view.Y+.5,'locked bounds at scale '..scale)
+            local origin=d.Library.ScreenGui.AbsolutePosition
+            check(p.X>=origin.X-.5 and p.Y>=origin.Y-.5 and p.X+z.X<=origin.X+view.X+.5 and p.Y+z.Y<=origin.Y+view.Y+.5,'locked bounds at scale '..scale)
         end
     end
     window:SetLockOffscreen(false);window:SetPosition(UDim2.fromOffset(-2000,-2000));task.wait(.05)
     check(main.AbsolutePosition.X<0,'offscreen allowed when disabled')
     window:SetLockOffscreen(true);task.wait(.05)
-    check(main.AbsolutePosition.X>=-.5 and main.AbsolutePosition.Y>=-.5,'enabling rescues offscreen window')
+    check(main.AbsolutePosition.X>=d.Library.ScreenGui.AbsolutePosition.X-.5 and main.AbsolutePosition.Y>=d.Library.ScreenGui.AbsolutePosition.Y-.5,'enabling rescues offscreen window')
     window:SetPosition(UDim2.fromScale(.5,.5))
     local drag={UserInputType=Enum.UserInputType.Touch,Position=Vector3.new(main.AbsolutePosition.X+240,main.AbsolutePosition.Y+20,0)}
     firesignal(main.Main.Topbar.InputBegan,drag)
     check(window.Dragging,'topbar drag begins')
     drag.Position=Vector3.new(drag.Position.X,-5000,0)
     firesignal(game:GetService('UserInputService').InputChanged,drag);task.wait(.1)
-    check(math.abs(main.AbsolutePosition.Y)<.5,'drag stops exactly at top edge')
+    check(math.abs(main.AbsolutePosition.Y-d.Library.ScreenGui.AbsolutePosition.Y)<.5,'drag stops exactly at real viewport top edge')
     firesignal(game:GetService('UserInputService').InputEnded,drag);task.wait()
     check(not window.Dragging,'topbar drag releases')
     window:SetPosition(UDim2.fromScale(.5,.5))

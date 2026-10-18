@@ -1,4 +1,5 @@
 local Creator
+local ActiveShapes = {}
 
 local DynamicShapeModule = {
 	New = nil,
@@ -105,6 +106,9 @@ local DynamicShapeModule = {
 
 function DynamicShapeModule:Init(CreatorObj)
 	Creator = CreatorObj
+    table.insert(Creator.ThemeChangeCallbacks, function()
+        for _,wrapper in pairs(ActiveShapes) do wrapper:UpdateRenderer() end
+    end)
 	return self.New
 end
 
@@ -112,6 +116,7 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
 	local Wrapper = {
 		Radius = Radius or 0,
 		Type = Type or "Circle",
+        CleanShape = Properties and Properties.CleanShape == true,
 		GetRadius = nil,
 		GetType = nil,
 		SetRadius = nil,
@@ -139,14 +144,78 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
 	}, Children)
 
 	for Property, Value in next, Properties do
-		if not table.find({ "ThemeTag" }, Property) then
+		if not table.find({ "ThemeTag", "CleanShape" }, Property) then
 			ImageLabel[Property] = Value
 		end
 	end
 
+    local nativeCorner, nativeStroke
+    local originalBackgroundTransparency = Properties.BackgroundTransparency or 1
+    function Wrapper:UpdateRenderer()
+        local kind = ShapeFallbacks[Wrapper.Type] or Wrapper.Type
+        local supported = kind:find("Squircle") ~= nil or kind:find("Circle") ~= nil or kind == "Square"
+        local clean = supported and (Wrapper.CleanShape or (Creator.Theme and Creator.Theme.CleanShapes == true))
+        ImageLabel:SetAttribute("WindUICleanShape", clean == true)
+        if not clean then
+            ImageLabel.Image = GetShape(Wrapper.Type).Image
+            ImageLabel.BackgroundTransparency = originalBackgroundTransparency
+            if nativeCorner then nativeCorner.Parent = nil end
+            if nativeStroke then nativeStroke.Enabled = false end
+            return
+        end
+        if not nativeCorner then
+            nativeCorner = Creator.New("UICorner", { Name = "CleanCorner" })
+            nativeStroke = Creator.New("UIStroke", {
+                Name = "CleanContour", ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+                LineJoinMode = Enum.LineJoinMode.Round, Thickness = 1,
+                Parent = ImageLabel, Enabled = false,
+            })
+            pcall(function() nativeStroke.BorderStrokePosition = Enum.BorderStrokePosition.Inner end)
+        end
+        local scale = Creator.UIScaleObject and Creator.UIScaleObject.Scale or 1
+        local localSize = ImageLabel.AbsoluteSize / math.max(scale, .001)
+        local radius = kind == "Square" and 0 or math.min(Wrapper.Radius, math.min(localSize.X, localSize.Y)/2)
+        local contour = kind:find("Glass") or kind:find("Outline")
+        local topOnly = kind:find("TL%-TR") ~= nil
+        local bottomOnly = kind:find("BL%-BR") ~= nil
+        nativeCorner.Parent = ImageLabel
+        nativeCorner.CornerRadius = UDim.new(0, radius)
+        -- Native per-corner radii preserve the upstream joined-row silhouettes.
+        -- UICorner/UIStroke are components, so they cannot become layout items.
+        local cornersSupported = pcall(function()
+            nativeCorner.TopLeftRadius = UDim.new(0, bottomOnly and 0 or radius)
+            nativeCorner.TopRightRadius = UDim.new(0, bottomOnly and 0 or radius)
+            nativeCorner.BottomLeftRadius = UDim.new(0, topOnly and 0 or radius)
+            nativeCorner.BottomRightRadius = UDim.new(0, topOnly and 0 or radius)
+        end)
+        if not cornersSupported and (topOnly or bottomOnly) then
+            nativeCorner.Parent = nil
+            nativeStroke.Enabled = false
+            ImageLabel.Image = GetShape(Wrapper.Type).Image
+            ImageLabel.BackgroundTransparency = originalBackgroundTransparency
+            ImageLabel:SetAttribute("WindUICleanShape", false)
+            return
+        end
+        ImageLabel.BackgroundColor3 = ImageLabel.ImageColor3
+        ImageLabel.BackgroundTransparency = contour and 1 or ImageLabel.ImageTransparency
+        nativeStroke.Enabled = contour ~= nil
+        nativeStroke.Color = ImageLabel.ImageColor3
+        nativeStroke.Transparency = ImageLabel.ImageTransparency
+        ImageLabel.Image = ""
+    end
+    ActiveShapes[ImageLabel] = Wrapper
+    Creator.AddSignal(ImageLabel.Destroying, function()
+        ActiveShapes[ImageLabel] = nil
+        if nativeCorner then nativeCorner:Destroy() end
+    end)
+    for _,property in ipairs({ "ImageColor3", "ImageTransparency" }) do
+        Creator.AddSignal(ImageLabel:GetPropertyChangedSignal(property), function() Wrapper:UpdateRenderer() end)
+    end
+
 	function Wrapper:SetRadius(NewRadius)
 		Wrapper.Radius = NewRadius
 		ImageLabel.SliceScale = math.max(NewRadius / GetShape(Wrapper.Type).Radius, 0.0001)
+        Wrapper:UpdateRenderer()
 		return Wrapper
 	end
 
@@ -172,6 +241,7 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
 
 	Creator.AddSignal(ImageLabel:GetPropertyChangedSignal("AbsoluteSize"), function()
 		local Shape = GetShape(Wrapper.Type)
+        Wrapper:UpdateRenderer()
 		if Shape.AutoChange == false then
 			return
 		end
