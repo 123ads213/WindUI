@@ -10,7 +10,7 @@ local WindUI = Env.__WindUIForkInjectedLibrary
 Env.__WindUIForkInjectedLibrary = nil
 if not WindUI then
     WindUI = assert(loadstring(game:HttpGet(
-        'https://raw.githubusercontent.com/123ads213/WindUI/main/dist/main.lua')))()
+        'https://raw.githubusercontent.com/123ads213/WindUI/206c7fcc40ee892d9339d490e984eda899c2185a/dist/main.lua')))()
 end
 local Window = WindUI:CreateWindow({
     Title = 'WindUI', Author = 'Footagesus · Extended fork',
