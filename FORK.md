@@ -419,3 +419,10 @@ Watermark has an opaque, pure-black background in Dark and opaque themed Dialog 
 ## Sirius labels and opaque bind surfaces (revision 14 — current)
 
 FPS now uses Lucide `monitor`, visually distinct from Ping's signal bars. Icon-bearing watermark labels begin 22px after a 14px icon, providing an explicit **8px icon-to-text gap**; inter-field spacing remains 6px. The brand cell displays **Sirius** rather than RB while retaining its existing config ID. Weekday labels use full English names (Monday–Sunday), measured from the current name instead of reserving a long empty slot every day. Header and Classic bind-list body use opaque themed surfaces: pure black in Dark, Dialog color in other themes. The reference's compact icon/label dimensions remain; only its transparent styling was not retained. Unit HUDModel coverage is now 89 checks, and the live HUD suite passed 68 checks including brand, full weekday and gap/surface assertions.
+
+### fork.15 — content-sized Classic hotkeys
+- Classic is now the only keylist layout. Removed the style dropdown; legacy Key/Value config/API requests normalize to Classic.
+- Header backplate and shadow fit only the icon/title (native font measurement + padding), independent of binding widths. No body/row background.
+- Larger native typography: title and bindings 14px, header/rows 30px, header icon 16px, binding indicators 18×10px; 6px row gap.
+- Drag guides and hover highlights are fixed white, like the supplied drag_widget source, not theme Accent. Keylist hover highlight only covers its header.
+- Live regression: 79 assertions passed, including older configs, content-sized header with long binding, transparent rows, fixed white guides across seven themes. Dark/Light screenshots inspected.

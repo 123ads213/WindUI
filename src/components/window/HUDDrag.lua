@@ -22,7 +22,7 @@ function Drag.New(Window,WindUI,gui)
  end
  local rulers={}
  for _,key in ipairs({'Center','Top','Bottom'})do
-  rulers[key]=Creator.New('Frame',{Parent=gui,Name='HUDGuide'..key,BackgroundTransparency=1,ThemeTag={BackgroundColor3='Accent'},BorderSizePixel=0,ZIndex=1})
+  rulers[key]=Creator.New('Frame',{Parent=gui,Name='HUDGuide'..key,BackgroundTransparency=1,BackgroundColor3=Color3.new(1,1,1),BorderSizePixel=0,ZIndex=1})
  end
  self.UIElements.Guides=rulers
  local function cancel()
@@ -42,7 +42,7 @@ function Drag.New(Window,WindUI,gui)
  function self:Add(id,frame,state,align,onChange)
   local w={Id=id,Frame=frame,State=state,Align=align,OnChange=onChange,Hover=0,Held=0}
   self.Widgets[id]=w
-  local highlight=Creator.New('Frame',{Parent=gui,Name=id..'DragHighlight',BackgroundTransparency=1,ThemeTag={BackgroundColor3='Accent'},BorderSizePixel=0,ZIndex=1})
+  local highlight=Creator.New('Frame',{Parent=gui,Name=id..'DragHighlight',BackgroundTransparency=1,BackgroundColor3=Color3.new(1,1,1),BorderSizePixel=0,ZIndex=1})
   Creator.New('UICorner',{Parent=highlight,CornerRadius=UDim.new(0,9)})
   w.Highlight=highlight
   connect(frame.InputBegan,function(i)
@@ -78,7 +78,9 @@ function Drag.New(Window,WindUI,gui)
    w.Hover+=( (hover and 1 or 0)-w.Hover)*alpha
    w.Held+=( (self.Active==w and 1 or 0)-w.Held)*alpha
    w.Frame.Active=open and visible
-   local a,z=w.Frame.Position,w.Frame.AbsoluteSize
+   local highlightFrame=w.HighlightFrame or w.Frame
+   local a,z=highlightFrame.AbsolutePosition-gui.AbsolutePosition,highlightFrame.AbsoluteSize
+   a=UDim2.fromOffset(a.X,a.Y)
    w.Highlight.Position=a-UDim2.fromOffset(3,3);w.Highlight.Size=UDim2.fromOffset(z.X+6,z.Y+6)
    w.Highlight.Visible=open and visible and(w.Hover>.005 or w.Held>.005)
    w.Highlight.BackgroundTransparency=1-(24*w.Hover+12*w.Held)/255*(1-w.Frame.GroupTransparency)
