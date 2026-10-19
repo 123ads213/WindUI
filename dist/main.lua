@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.17  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.18  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -26857,7 +26857,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.17",
+    "version": "1.6.66-fork.18",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -38081,7 +38081,7 @@ aL.Title.Position=UDim2.fromOffset(F and 34 or 33,0);aL.Title.Size=F and UDim2.n
 aL.Title.TextSize=14;aL.Title.FontFace=Font.new(aa.Font,Enum.FontWeight.Medium)
 aM.Position=UDim2.fromOffset(F and 8 or 11,8);aM.Size=UDim2.fromOffset(16,16)
 aa.AddThemeObject(aM.ImageLabel,{ImageColor3=F and'Placeholder'or'Primary'})
-aN.Position=UDim2.fromOffset(0,F and 32 or 35);m=F
+aN.Position=UDim2.fromOffset(4,F and 34 or 35);m=F
 end
 aL.Size=UDim2.fromOffset(math.max(140,measure(aL.Title.Text,14,false)+42),30)
 local G=not ar.Closed and ar.UIElements.Main.Visible and ar.UIElements.Main.Main.Visible
@@ -38093,13 +38093,13 @@ S.Label.Text=O.Owner.Title or'Feature';S.Value.Text=bindingValue(O,Q)
 S.Track.Visible=F;S.Value.Visible=not F;S.Thumb.Position=UDim2.fromOffset(Q.Value and 10 or 2,2)
 S.Label.TextSize=13
 S.IndicatorSurface.BackgroundColor3=C;S.NameSurface.BackgroundColor3=C
-local U=math.min(254,measure(S.Label.Text,13,false))+16
+local U=math.min(250,measure(S.Label.Text,13,false))+16
 S.NameSurface.Size=UDim2.fromOffset(U,26)
 local V=math.clamp(measure(S.Value.Text,13,false)+4,27,64)
 S.Value.Size=UDim2.fromOffset(V,25)
 S.Label.Position=UDim2.fromOffset(F and 38 or(12+V),0)
 S.Label.Size=UDim2.fromOffset(U-16,26);S.Label.ZIndex=6
-if S.Progress>0 then M=math.max(M,math.min(300,measure(S.Label.Text,13,false)+(F and 46 or(20+V))))end
+if S.Progress>0 then M=math.max(M,math.min(300,measure(S.Label.Text,13,false)+(F and 50 or(20+V))))end
 H[#H+1]=S
 end end
 
@@ -38111,8 +38111,8 @@ R.Frame.BackgroundTransparency=F and 1 or O
 R.Frame.Position=UDim2.fromOffset(6*(1-R.Progress),P);R.Frame.GroupTransparency=1-R.Progress;R.Frame.Size=UDim2.new(1,-6*(1-R.Progress),0,(F and 26 or 25)*R.Progress);R.Frame.Visible=R.Progress>0;P+=(F and 31 or 28)*R.Progress
 end
 local Q=math.max(0,az.AbsoluteSize.Y-51);local R=math.min(math.max(0,P-(F and 5 or 3)),Q)
-aN.Size=UDim2.fromOffset(l,R);aN.Visible=R>0
-aK.Size=UDim2.fromOffset(l,(30)+(R>0 and(F and 2 or 5)+R or 0))
+aN.Size=UDim2.fromOffset(l-4,R);aN.Visible=R>0
+aK.Size=UDim2.fromOffset(l,(30)+(R>0 and(F and 4 or 5)+R or 0))
 i=ag.Ease(i,av.KeylistEnabled and(G or L>0)and 1 or 0,p,12)
 aK.GroupTransparency=1-i;aK.Visible=i>0;aP:Layout(aP.Widgets.Keylist)
 aO.Size=aL.Size;aO.Position=aK.Position;aO.GroupTransparency=1-i;aO.Visible=aK.Visible

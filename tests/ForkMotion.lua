@@ -36,7 +36,7 @@ local ok,err=pcall(function()
  e:Close();d.HUD:SetKeylistEnabled(true);d.HUD.Drag:SetState('Keylist',{X=.2,Y=.3,Anchor=0});t:SetHotkeys({{Key='Unbound',Mode='Always',Value=true}});task.wait(.7)
  local h=d.HUD;local r=h.Rows[tostring(t.HotkeyEntry.Bindings[1].Id)]
  check(h.UIElements.Header.Size.X.Offset>=140,'header extended')
- check(h.UIElements.Body.Position.Y.Offset==32,'rows moved closer to header')
+ check(h.UIElements.Body.Position.Y.Offset==34,'rows moved closer to header')
  check(r.IndicatorSurface.Size==UDim2.fromOffset(26,26)and r.NameSurface.Position.X.Offset==30,'separate indicator square and name plate')
  check(r.NameSurface.Size.X.Offset==r.Label.Size.X.Offset+16,'name plate fits text with padding')
  check(r.IndicatorSurface.BackgroundColor3==Color3.new(0,0,0)and r.NameSurface.BackgroundColor3==Color3.new(0,0,0),'dark surfaces are black')

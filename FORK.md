@@ -437,3 +437,8 @@ FPS now uses Lucide `monitor`, visually distinct from Ping's signal bars. Icon-b
 ### fork.17 — subordinate binding size
 - Header stays 14px / 30px high. Bindings reduced to 13px / 26px high, 26px square indicator plates and 16×8px switches. Name plates retain measured widths; 5px row gap. Header/row gap stays 2px.
 - Live HUD regression: 81 checks passed, including explicit header > binding font/height comparisons. Actual game screenshot inspected.
+
+### fork.18 — tiny binding offset adjustment
+- Binding body moved from (0,32) to (4,34): 4px below the 30px header and 4px to the right. The smaller 13px/26px binding sizes are unchanged.
+- Reserved the inset inside total width and capped name plates accordingly to avoid right-edge overflow.
+- Built/compiled and injected into live Roblox; 81 live HUD checks passed. Screenshot staging was blocked by MCP HTTP 502 after those checks, so no new visual-QA claim for this revision.
