@@ -22,6 +22,8 @@ task.spawn(function()
   run();task.wait(.8);check(roots()==1,'failed setup cleaned on next run')
   task.spawn(function()run()end);task.wait(.05);task.spawn(function()run()end);task.wait(2)
   check(roots()==1,'concurrent reruns settle to one window')
+  local cursors=0;for _,r in ipairs(e.WindUIForkDemo.Library.ScreenGui.Parent:GetChildren())do if r.Name=='WindUI/Cursor'then cursors+=1 end end
+  check(cursors==1,'cursor roots cleaned across reruns')
  end)
  e.__WindUIForkReruns={status=ok and 'pass' or 'fail',passed=passed,error=not ok and tostring(err) or nil}
 end)

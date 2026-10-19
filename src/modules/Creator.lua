@@ -627,110 +627,78 @@ function Creator.SetDraggable(can)
 	Creator.CanDraggable = can
 end
 
-function Creator.Drag(mainFrame, dragFrames, ondrag, constrainPosition)
-	local CurInput = WindUI.GenerateGUID()
-
-	local currentDragFrame = nil
-	local dragging = false
-	local dragStart, startPos
-	local activeInput = nil
-
-	local DragModule = {
-		CanDraggable = true,
-	}
-
-	if not dragFrames or typeof(dragFrames) ~= "table" then
-		dragFrames = { mainFrame }
-	end
-
-	local function update(input)
-		if not dragging or not DragModule.CanDraggable then
-			return
-		end
-
-		local delta = input.Position - dragStart
-        local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-            startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        if constrainPosition then position = constrainPosition(position) end
-        Creator.Tween(mainFrame, 0.02, { Position = position }):Play()
-	end
-
-	for _, dragFrame in pairs(dragFrames) do
-		dragFrame.InputBegan:Connect(function(input)
-			if not DragModule.CanDraggable or dragging then
-				return
-			end
-
-			if
-				input.UserInputType == Enum.UserInputType.MouseButton1
-				or input.UserInputType == Enum.UserInputType.Touch
-			then
-				if WindUI and WindUI.CurrentInput and WindUI.CurrentInput ~= CurInput then
-					return
-				end
-
-				WindUI.CurrentInput = CurInput
-
-				dragging = true
-				activeInput = input
-				currentDragFrame = dragFrame
-				dragStart = input.Position
-				startPos = mainFrame.Position
-
-				if ondrag and typeof(ondrag) == "function" then
-					ondrag(true, currentDragFrame)
-				end
-			end
-		end)
-	end
-
-	UserInputService.InputChanged:Connect(function(input)
-		if not dragging then
-			return
-		end
-		if WindUI.CurrentInput and WindUI.CurrentInput ~= CurInput then
-			return
-		end
-
-		if activeInput.UserInputType == Enum.UserInputType.MouseButton1 then
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				update(input)
-			end
-		elseif activeInput.UserInputType == Enum.UserInputType.Touch then
-			if input == activeInput then
-				update(input)
-			end
-		end
-	end)
-
-	UserInputService.InputEnded:Connect(function(input)
-		if not dragging or WindUI.CurrentInput ~= CurInput then
-			return
-		end
-
-		if
-			input == activeInput
-			or (
-				activeInput.UserInputType == Enum.UserInputType.MouseButton1
-				and input.UserInputType == Enum.UserInputType.MouseButton1
-			)
-		then
-			WindUI.CurrentInput = nil
-			dragging = false
-			activeInput = nil
-			currentDragFrame = nil
-
-			if ondrag and typeof(ondrag) == "function" then
-				ondrag(false, nil)
-			end
-		end
-	end)
-
-	function DragModule:Set(v)
-		DragModule.CanDraggable = v
-	end
-
-	return DragModule
+function Creator.Drag(mainFrame, dragFrames, ondrag, constrainPosition, smoothness)
+    local CurInput=WindUI.GenerateGUID()
+    local dragging,activeInput,currentDragFrame=false,nil,nil
+    local dragStart,startPos,target
+    local smoothX,smoothY
+    local frameSignal
+    local signals={}
+    local destroyed=false
+    local DragModule={CanDraggable=true,Smoothness=math.clamp(smoothness==nil and .02 or (tonumber(smoothness)or 0),0,.2)}
+    local function connect(signal,fn)local c=signal:Connect(fn);signals[#signals+1]=c;return c end
+    local function bounded(position)return constrainPosition and constrainPosition(position)or position end
+    local function disconnectFrame()if frameSignal then frameSignal:Disconnect();frameSignal=nil end end
+    local function step(dt)
+        if destroyed or not mainFrame.Parent or not target then disconnectFrame();return end
+        target=bounded(target)
+        local alpha=DragModule.Smoothness<=0 and 1 or 1-math.exp(-dt/DragModule.Smoothness)
+        -- UDim offsets truncate to integers. Keep a floating accumulator so the follower
+        -- cannot stall a few pixels short of its target at low velocity.
+        smoothX=(smoothX or mainFrame.Position.X.Offset)+(target.X.Offset-(smoothX or mainFrame.Position.X.Offset))*alpha
+        smoothY=(smoothY or mainFrame.Position.Y.Offset)+(target.Y.Offset-(smoothY or mainFrame.Position.Y.Offset))*alpha
+        local settled=math.abs(smoothX-target.X.Offset)+math.abs(smoothY-target.Y.Offset)<.05
+        local nextPosition=settled and target or UDim2.new(target.X.Scale,math.round(smoothX),target.Y.Scale,math.round(smoothY))
+        local constrained=bounded(nextPosition)
+        if constrained~=nextPosition then smoothX=constrained.X.Offset;smoothY=constrained.Y.Offset end
+        mainFrame.Position=constrained
+        if not dragging and settled then disconnectFrame()end
+    end
+    local function update(input)
+        if not dragging or not DragModule.CanDraggable then return end
+        local delta=input.Position-dragStart
+        target=bounded(UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y))
+        if DragModule.Smoothness<=0 then mainFrame.Position=target
+        elseif not frameSignal then frameSignal=RunService.RenderStepped:Connect(step)end
+    end
+    local function stop(cancelTail)
+        if WindUI.CurrentInput==CurInput then WindUI.CurrentInput=nil end
+        local wasDragging=dragging;dragging=false;activeInput=nil;currentDragFrame=nil
+        if cancelTail then target=nil;disconnectFrame()end
+        if wasDragging and ondrag then ondrag(false,nil)end
+    end
+    if not dragFrames or typeof(dragFrames)~='table'then dragFrames={mainFrame}end
+    for _,dragFrame in pairs(dragFrames)do
+        connect(dragFrame.InputBegan,function(input)
+            if destroyed or not DragModule.CanDraggable or dragging then return end
+            if input.UserInputType~=Enum.UserInputType.MouseButton1 and input.UserInputType~=Enum.UserInputType.Touch then return end
+            if WindUI.CurrentInput and WindUI.CurrentInput~=CurInput then return end
+            disconnectFrame();target=nil;WindUI.CurrentInput=CurInput
+            dragging=true;activeInput=input;currentDragFrame=dragFrame;dragStart=input.Position;startPos=mainFrame.Position;smoothX=startPos.X.Offset;smoothY=startPos.Y.Offset
+            if ondrag then ondrag(true,currentDragFrame)end
+        end)
+    end
+    connect(UserInputService.InputChanged,function(input)
+        if not dragging or (WindUI.CurrentInput and WindUI.CurrentInput~=CurInput)then return end
+        if (activeInput.UserInputType==Enum.UserInputType.MouseButton1 and input.UserInputType==Enum.UserInputType.MouseMovement)or
+            (activeInput.UserInputType==Enum.UserInputType.Touch and input==activeInput)then update(input)end
+    end)
+    connect(UserInputService.InputEnded,function(input)
+        if not dragging then return end
+        if input==activeInput or (activeInput.UserInputType==Enum.UserInputType.MouseButton1 and input.UserInputType==Enum.UserInputType.MouseButton1)then stop(false)end
+    end)
+    connect(UserInputService.WindowFocusReleased,function()stop(true)end)
+    function DragModule:Set(value)self.CanDraggable=value;if not value then stop(true)end end
+    function DragModule:SetSmoothness(value)
+        local n=tonumber(value);if n and n==n then self.Smoothness=math.clamp(n,0,.2)end
+    end
+    function DragModule:Cancel()stop(true)end
+    function DragModule:Destroy()
+        if destroyed then return end;stop(true);destroyed=true
+        for _,c in ipairs(signals)do c:Disconnect()end
+    end
+    connect(mainFrame.Destroying,function()DragModule:Destroy()end)
+    return DragModule
 end
 
 Icons.Init(New, "Icon")

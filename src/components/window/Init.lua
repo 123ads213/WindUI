@@ -1098,6 +1098,7 @@ return function(Config)
         return Window
     end
     function Window:SetPosition(position)
+        if Window.DragController then Window.DragController:Cancel()end
         Window.UIElements.Main.Position = constrainWindowPosition(position)
         Window.Position = Window.UIElements.Main.Position
         return Window
@@ -1121,8 +1122,11 @@ return function(Config)
 				Window.Dragging = dragging
 			end
 		end,
-        constrainWindowPosition
+        constrainWindowPosition, Config.DragSmoothness == nil and .045 or Config.DragSmoothness
 	)
+    Creator.AddSignal(Window.UIElements.Main:GetPropertyChangedSignal("Position"),function()Window.Position=Window.UIElements.Main.Position end)
+    Window.DragController=WindowDragModule
+    function Window:SetDragSmoothness(value)WindowDragModule:SetSmoothness(value);return Window end
 
 	if not IsVideoBG and Window.Background and typeof(Window.Background) == "table" then
 		local BackgroundGradient = New("UIGradient")
@@ -1231,11 +1235,13 @@ return function(Config)
 		Window.BackgroundImageTransparency = math.floor(v * 10 + 0.5) / 10
 	end
 
-	function Window:SetBackgroundTransparency(v)
-		local rounded = math.floor(tonumber(v) * 10 + 0.5) / 10
-		Config.WindUI.TransparencyValue = rounded
-		Window:ToggleTransparency(rounded > 0)
-	end
+    function Window:SetBackgroundTransparency(value)
+        value=tonumber(value)
+        if not value or value~=value or math.abs(value)==math.huge then return Window end
+        Config.WindUI.TransparencyValue=math.round(math.clamp(value,0,1)*100)/100
+        Window:ToggleTransparency(Config.WindUI.TransparencyValue>0)
+        return Window
+    end
 
 	local CurrentPos
 	local CurrentSize
@@ -1583,15 +1589,13 @@ return function(Config)
 		end
 	end
 
-	function Window:ToggleTransparency(Value)
-		-- Config.Transparent = Value
-		Window.Transparent = Value
-		Config.WindUI.Transparent = Value
-
-		Window.UIElements.Main.Background.ImageTransparency = Value and Config.WindUI.TransparencyValue or 0
-		-- Window.UIElements.Main.Background.ImageLabel.ImageTransparency = Value and Config.WindUI.TransparencyValue or 0
-		--Window.UIElements.MainBar.Background.ImageTransparency = Value and 0.97 or 0.95
-	end
+    Window.TransparencyController=require('./Transparency').New(Window,Config.WindUI,Creator)
+    function Window:ToggleTransparency(value)
+        Window.Transparent=value==true;Config.WindUI.Transparent=Window.Transparent
+        local alpha=Window.Transparent and math.clamp(Config.WindUI.TransparencyValue,0,1)or 0
+        Window.UIElements.Main.Background.ImageTransparency=alpha
+        Window.TransparencyController:Set(alpha)
+    end
 
 	function Window:LockAll()
 		for _, element in next, Window.AllElements do
@@ -2268,5 +2272,8 @@ return function(Config)
 	--     end
 	-- })
 
-	return Window
+    Window.Cursor=require('./Cursor').New(Window,Config.WindUI,Creator)
+    function Window:SetCustomCursor(config)Window.Cursor:Set(config);return Window end
+    Window:SetCustomCursor(Config.CustomCursor or false)
+    return Window
 end

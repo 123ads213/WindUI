@@ -120,3 +120,17 @@ A cleanup regression surfaced queued native-shape property events after a UICorn
 ![Light preferences: no gear, no resting numeric label, History last](Preferences-Light.jpg)
 
 ![Original Search finds Distance inside Player](Native-Search.jpg)
+
+## Revision 8 — surface transparency, smooth drag and optional cursor
+
+- Corrected revision 7's root-only alpha: window-scoped theme background surfaces now retain their own base alpha and apply `base + (1-base)*value`. This includes the content panel, element cards, search and profile backgrounds. Text, icons and control fills are not faded. At zero the exact theme/hover base is restored; overlapping translucent layers naturally composite.
+- Main-window dragging uses a frame-rate-independent follower (default 0.045 seconds). A floating-point accumulator avoids Roblox UDim2 integer-offset stalling. Release settles exactly at the constrained target; setting position, focus loss, disabling and destruction cancel ownership safely. No default window size, resize implementation or palette changes.
+- Optional `CustomCursor = {Enabled=true, Size=10}` creates a filled white circle independent of DPI/theme/transparency. It is off by default and enabled in ForkExample. Hidden/closed/unfocused UI restores the previous native cursor state. Destroying the window destroys its separate cursor ScreenGui.
+- Final sequential live suites: Runtime 65, Visual 86, Selection 10, Profile 39, Polish 18, Flyout 13, Preferences 33, Interaction 28 — **292 assertions passed**. Cursor QA explicitly controls synthetic focus rather than assuming the host remains focused during automation.
+- Local number formatting, 2001 signed decimal-lattice cases and tab routing passed; **91 Lua files compiled**. Tests use APIs/synthetic GUI signals, not a physical mouse/device matrix.
+- Fixed a queued native-renderer update after parent removal, and removed a duplicate theme subscription so controller destruction disconnects it correctly.
+- Final repeated-start/controlled-failure/concurrent-start suite: **8 passed**, including one surviving cursor root. Actual OS Light/Dark captures at 0.7 were individually inspected; the white filled cursor is visible beside APPEARANCE. No new CleanCorner errors were returned. Synthetic focus broadcasting did produce Roblox CorePackages FocusNavigation errors; those host-side logs are not claimed as a clean console or a library failure.
+
+![Light at 0.7: panel and card backgrounds now transparent; text remains opaque](Transparency-Light-v8.jpg)
+
+![Dark at 0.7, with the filled white cursor visible](Transparency-Dark-v8.jpg)

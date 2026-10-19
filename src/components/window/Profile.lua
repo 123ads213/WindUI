@@ -114,8 +114,7 @@ function Profile.New(Window, WindUI, Config)
         value=tonumber(value)
         if not value or value~=value or math.abs(value)==math.huge then return transparency end
         transparency=math.round(math.clamp(value,0,1)*100)/100
-        WindUI.TransparencyValue=transparency
-        Window:ToggleTransparency(transparency>0)
+        Window:SetBackgroundTransparency(transparency)
         fill.Size=UDim2.fromScale(transparency,1)
         tip.Text=string.format('%.2f',transparency):gsub('0+$',''):gsub('%.$','')
         tip.Position=UDim2.fromOffset(166+math.clamp(transparency*100,22,78),3)

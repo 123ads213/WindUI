@@ -190,7 +190,7 @@ local Profile = Window:CreateProfile({
 - **Renew** copies the configured Discord shop link using `setclipboard`/`toclipboard`, then shows a WindUI notification with a clipboard icon. If unavailable/failed, it reports failure instead of claiming success.
 - **Menu Scale** changes the actual WindUI UIScale: Auto, 75%, 90%, 100%, 110%, 125%, 150%. Auto shrinks to the current viewport when necessary and never enlarges beyond 100%. Existing upstream resize/min/max behavior is retained. Manual DPI values can intentionally make a window larger than a small viewport; choose Auto or resize in that case.
 - **Style** has a right-facing hover hint, no gear, no colour picker. Hover opens a rounded theme selection list to the right while keeping the main menu visible. Clicking a theme applies it immediately. Menu Scale uses the same side-list interaction. Lists flip to the left only when the right viewport edge leaves insufficient room. No Language, ESP Scale, Windows Scale, Units, Safe Mode, Sync, About or Chat items are included.
-- **Transparency** is a thumb-free bar before History. Drag its right-hand track from 0 (opaque) to 1 (transparent); the numeric value appears above it only on hover or during dragging. The value controls the original WindUI window-background transparency API; text and controls are not group-faded. `Profile:SetTransparency(0.7)` / `Profile:GetTransparency()` are also available.
+- **Transparency** is a thumb-free bar before History. Drag its right-hand track from 0 (opaque) to 1 (transparent); the numeric value appears above it only on hover or during dragging. The value controls the window background and theme-tagged panel/element surfaces; text, icons and functional control fills are not group-faded. Theme/hover alpha is preserved with `base + (1-base)*value`. At zero, the theme’s original surface opacity is restored. `Profile:SetTransparency(0.7)` / `Profile:GetTransparency()` are also available.
 - The taller profile popover can extend below the WindUI window, but is clamped to the actual viewport. It does not resize the main window.
 - **History** shows supplied version/date/title/description entries as a scrolling list. Back returns to the profile menu.
 - `Profile:Open()`, `:Close()`, `:ShowPage("Main" | "Scale" | "Style" | "History")`, `:SetSubscription(info)`, `:Destroy()` are available. Creating a new profile destroys the old one. Window destruction cleans up profile connections and its floating selection list.
@@ -226,3 +226,43 @@ The Distance example additionally uses `IconOffset = Vector2.new(4, -3)` for a s
 ## Original Search (revision 7)
 
 The example enables the built-in WindUI Search above COMMON with `HideSearchBar = false` in `CreateWindow`. This opens upstream's own search dialog and searches tab/element titles and descriptions, including the nested Player/World pages. The search implementation and its appearance are not replaced with a custom field. Omit this option to keep the upstream hidden-by-default setting.
+
+
+## Smooth dragging and optional cursor (revision 8)
+
+```lua
+local Window = WindUI:CreateWindow({
+    Title = "My menu",
+    DragSmoothness = 0.045, -- seconds; 0 disables smoothing
+    CustomCursor = { Enabled = true, Size = 10 }, -- filled white circle, physical pixels
+})
+Window:SetDragSmoothness(0.06)
+Window:SetCustomCursor(true) -- or false, or { Enabled = true, Size = 12 }
+Window:SetBackgroundTransparency(0.7) -- includes themed surfaces, not only the root
+```
+
+Dragging uses one frame-rate-independent exponential follower rather than repeated overlapping position tweens. Its short release tail settles at the target; programmatic SetPosition, hide, focus loss and destruction cancel stale drag work. LockOffscreen still constrains every rendered position. No size/min/max or resize-handle limits change.
+
+Custom cursor is opt-in (enabled in ForkExample). It is an unoutlined, fully filled white native circle, independent of theme and menu DPI. Only an open, visible, enabled menu on a mouse-capable focused client replaces the native pointer. Closing/hiding/disabling/destroying the menu, disabling the cursor, or losing focus restores the previous MouseIconEnabled state, even when that previous state was false. No OS pointer shape or game input lock is changed.
+
+Revision 7 only faded the window's root background. That left opaque Light/Paper panels over a transparent sidebar. Revision 8 extends opacity to registered theme-tagged window surfaces, including new elements and profile panels; it does not fade notifications or the cursor. At nonzero transparency, nested surfaces still composite normally rather than behaving like a single faded screenshot of the UI.
+
+
+## Smooth dragging and optional cursor (revision 8)
+
+```lua
+local Window = WindUI:CreateWindow({
+    Title = "My menu",
+    DragSmoothness = 0.045, -- seconds; 0 disables smoothing
+    CustomCursor = { Enabled = true, Size = 10 }, -- filled white circle, physical pixels
+})
+Window:SetDragSmoothness(0.06)
+Window:SetCustomCursor(true) -- or false, or { Enabled = true, Size = 12 }
+Window:SetBackgroundTransparency(0.7) -- includes themed surfaces, not only the root
+```
+
+Dragging uses one frame-rate-independent exponential follower rather than repeated overlapping position tweens. Its short release tail settles at the target; programmatic SetPosition, hide, focus loss and destruction cancel stale drag work. LockOffscreen still constrains every rendered position. No size/min/max or resize-handle limits change.
+
+Custom cursor is opt-in (enabled in ForkExample). It is an unoutlined, fully filled white native circle, independent of theme and menu DPI. Only an open, visible, enabled menu on a mouse-capable focused client replaces the native pointer. Closing/hiding/disabling/destroying the menu, disabling the cursor, or losing focus restores the previous MouseIconEnabled state, even when that previous state was false. No OS pointer shape or game input lock is changed.
+
+Revision 7 only faded the window's root background. That left opaque Light/Paper panels over a transparent sidebar. Revision 8 extends opacity to registered theme-tagged window surfaces, including new elements and profile panels; it does not fade notifications or the cursor. At nonzero transparency, nested surfaces still composite normally rather than behaving like a single faded screenshot of the UI.

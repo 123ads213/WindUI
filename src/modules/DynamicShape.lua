@@ -153,7 +153,7 @@ function DynamicShapeModule:New(Radius, Type, Properties, Children, IsButton, Is
     local rendererDestroyed = false
     local originalBackgroundTransparency = Properties.BackgroundTransparency or 1
     function Wrapper:UpdateRenderer()
-        if rendererDestroyed then return end
+        if rendererDestroyed or not ImageLabel.Parent then return end
         local kind = ShapeFallbacks[Wrapper.Type] or Wrapper.Type
         local supported = kind:find("Squircle") ~= nil or kind:find("Circle") ~= nil or kind == "Square"
         local clean = supported and (Wrapper.CleanShape or (Creator.Theme and Creator.Theme.CleanShapes == true))
