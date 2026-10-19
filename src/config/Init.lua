@@ -22,11 +22,15 @@ ConfigManager = {
                     __type = obj.__type,
                     value = obj.Default:ToHex(),
                     transparency = obj.Transparency or nil,
+                    gradient = obj.Export and obj:Export() or nil,
                 }
             end,
             Load = function(element, data)
                 if element and element.Update then
-                    element:Update(Color3.fromHex(data.value), data.transparency or nil)
+                    if data.gradient and element.Import then
+                        local ok,err=element:Import(data.gradient)
+                        if not ok then error(err)end
+                    else element:Update(Color3.fromHex(data.value), data.transparency or nil)end
                 end
             end
         },
@@ -44,19 +48,6 @@ ConfigManager = {
             end
         },
         Input = {
-            Save = function(obj)
-                return {
-                    __type = obj.__type,
-                    value = obj.Value,
-                }
-            end,
-            Load = function(element, data)
-                if element and element.Set then
-                    element:Set(data.value)
-                end
-            end
-        },
-        Keybind = {
             Save = function(obj)
                 return {
                     __type = obj.__type,

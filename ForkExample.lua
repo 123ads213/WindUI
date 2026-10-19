@@ -69,7 +69,7 @@ local Themes = Appearance:Tab({ Title = 'Themes', Icon = 'palette' })
 local Calls = {}
 Player:Section({ Title = 'Player settings' })
 local Big = Player:Slider({
-    Title = 'Distance', Icon = 'ruler', IconSize = 24, Desc = 'Set the maximum player display distance. Large values are compact; focus the value to edit the full number.',
+    Title = 'Distance', Icon = 'ruler', IconSize = 24, IconOffset = Vector2.new(4,0), Desc = 'Set the maximum player display distance. Large values are compact; focus the value to edit the full number.',
     Value = { Min = 0, Max = 1e9, Default = 500000 }, Step = 1, IsTooltip = true,
     Callback = function(value) Calls.Distance = value end,
 })
@@ -102,11 +102,19 @@ Themes:Toggle({ Title = 'Preview toggle', Flag = 'preview_toggle', Value = true,
 Themes:Slider({ Title = 'Preview slider', Value = { Min = 0, Max = 1e6, Default = 500000 }, IsTooltip = true })
 Themes:Button({ Title = 'Preview button' })
 Themes:Input({ Title = 'Preview input', Placeholder = 'Type here…', Callback = function() end })
+local SolidColor = Themes:Colorpicker({ Title = 'Accent color', Flag = 'accent_color', Default = Color3.fromRGB(42,148,255), Transparency = .15,
+    Desc = 'Open the color square. Add colors for a gradient, edit formats, opacity, copy/paste or reset to the default.',
+    Callback = function(color,transparency,gradient) Calls.AccentColor = {Color=color,Transparency=transparency,Gradient=gradient} end })
+local GradientColor = Themes:Colorpicker({ Title = 'Gradient preview', Flag = 'gradient_color', Gradient = {
+    { Position=0, Color=Color3.fromRGB(0,170,255), Transparency=0 },
+    { Position=1, Color=Color3.fromRGB(196,92,255), Transparency=.2 },
+}, Callback = function(color,transparency,gradient) Calls.GradientColor=gradient end })
 local Profile = Window:CreateProfile({
     DaysRemaining = 30, Mock = true, StoreLink = 'https://discord.gg/eqAEszZzHj',
     Themes = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' },
     OnThemeChanged = function(theme) Themes.Elements[1]:Select(theme) end,
     History = {
+        { Version = '1.6.66-fork.10', Date = '2026-10-19', Title = 'Gradients & popup polish', Description = 'Multi-color gradients, per-stop opacity, Hex/RGB/HSV/HSL formats, copy/paste and reset. Soft popup shadows and cursor-near hotkeys. Legacy Keybind removed.' },
         { Version = '1.6.66-fork.9', Date = '2026-10-19', Title = 'Descriptions & hotkeys', Description = 'Themed hover descriptions and right-click multi-hotkey editor, global list and config persistence. Toggle, Hold and Always with explicit boolean Value.' },
         { Version = '1.6.66-fork.8', Date = '2026-10-18', Title = 'Transparency & interaction', Description = 'Background-only transparency now includes themed panels and surfaces. Time-based smooth dragging and an optional filled white cursor with lifecycle cleanup.' },
         { Version = '1.6.66-fork.7', Date = '2026-10-18', Title = 'Search & transparency', Description = 'Original WindUI Search above COMMON. Longer preferences menu, clean Style row and thumb-free Transparency bar with a hover-only value.' },
@@ -123,6 +131,6 @@ Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 
 Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
     ShowPlayers = ShowPlayers, Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
-    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile }
+    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile, SolidColor = SolidColor, GradientColor = GradientColor }
 Env.__WindUIForkPendingLibrary = nil
 return Window

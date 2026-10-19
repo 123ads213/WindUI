@@ -5,7 +5,6 @@ return {
 		Toggle = require("./Toggle"),
 		Slider = require("./Slider"),
 		ProgressBar = require("./ProgressBar"),
-		Keybind = require("./Keybind"),
 		Input = require("./Input"),
 		Dropdown = require("./Dropdown"),
 		Code = require("./Code"),

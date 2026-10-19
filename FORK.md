@@ -316,6 +316,45 @@ Window:ShowHotkeys()
 
 ### Config compatibility
 
-Use the original config manager with a stable `Flag` (or explicitly `config:Register("id", feature)`). `Save()` writes every binding as `{Key, Mode, Value}` alongside the ordinary element value; `Load()` replaces those bindings, rather than appending duplicates. Runtime press/hold phases are not serialized. Missing hotkey data in an old config preserves code-defined bindings. Existing Slider/Input/Dropdown/Keybind/Colorpicker values retain their original parser. The example creates `WindUIForkDemoConfig`, with autoload **off**, for manual `:Save()` / `:Load()`; no existing config is silently overwritten.
+Use the original config manager with a stable `Flag` (or explicitly `config:Register("id", feature)`). `Save()` writes every binding as `{Key, Mode, Value}` alongside the ordinary element value; `Load()` replaces those bindings, rather than appending duplicates. Runtime press/hold phases are not serialized. Missing hotkey data in an old config preserves code-defined bindings. Existing Slider/Input/Dropdown/Colorpicker values retain their value parser. The example creates `WindUIForkDemoConfig`, with autoload **off**, for manual `:Save()` / `:Load()`; no existing config is silently overwritten.
 
-Nonboolean elements do not receive a meaningless boolean assignment automatically. To opt in on a Slider/Button/etc., pass `HotkeyCallback = function(enabled) ... end` and a `Flag`; implement the feature's boolean action there. These adapters use the same editor and config extension. Standalone upstream `Tab:Keybind()` remains available for source/config compatibility.
+Nonboolean elements do not receive a meaningless boolean assignment automatically. To opt in on a Slider/Button/etc., pass `HotkeyCallback = function(enabled) ... end` and a `Flag`; implement the feature's boolean action there. These adapters use the same editor and config extension. Revision 10 removes standalone upstream `Tab:Keybind()` and its parser. Migrate old standalone key controls to the per-feature `Hotkeys` editor; old Keybind records are not loaded.
+
+
+## Gradient color editor and panel polish (revision 10)
+
+```lua
+local color = Themes:Colorpicker({
+    Title = "Accent",
+    Flag = "accent",
+    Default = Color3.fromRGB(42, 148, 255),
+    Transparency = 0.15, -- 0 opaque; 1 transparent
+    AllowGradient = true, -- default; false keeps a solid-only editor
+    Callback = function(firstColor, firstTransparency, gradient)
+        -- First two arguments retain the solid-color API.
+        -- gradient is nil for a solid, or {Rotation, Stops} for multiple colors.
+    end,
+})
+local gradient = Themes:Colorpicker({
+    Title = "Gradient",
+    Gradient = {
+        {Position = 0, Color = Color3.fromRGB(0, 170, 255), Transparency = 0},
+        {Position = 1, Color = Color3.fromRGB(196, 92, 255), Transparency = 0.2},
+    },
+})
+local state = gradient:GetValue() -- independent {Rotation, Stops} copy
+local colors, transparency, angle = gradient:GetColorSequence()
+gradient:SetGradient(state, true) -- true invokes callback
+color:Update(Color3.fromRGB(255, 128, 0), 0.25) -- silent solid update
+color:Reset() -- restores the construction-time default and invokes callback
+```
+
+- Click the rounded color square to open the editor. The square displays the full gradient and per-stop transparency. The checkerboard indicates transparency.
+- Top swatches select colors; **+** adds a color (maximum 16). Starting from a solid duplicates its endpoint; later additions interpolate the largest gap. Right-click a top color swatch for Copy, Paste and Delete color. Delete removes the selected color while retaining valid endpoints. Stop positions/rotation can be specified through the API; this release does not include draggable positions or an angle control.
+- Saturation/value, hue and opacity edit the selected color. Opacity reads 0–100%, the inverse of the API's Transparency. Hover/click **HEX** to choose HEX, RGB, HSV or HSL from a list anchored directly to that control. Text input accepts all listed formats, including short/long hex with optional alpha, and validates channel ranges.
+- The compact editor follows the reference: top swatches, saturation/value map, slim hue/opacity tracks and one input row, with native medium typography, no text border/stroke, and a reset icon. **Copy** uses the executor clipboard setter when available; otherwise it selects the text for Ctrl+C. **Paste** reads the clipboard when supported; otherwise it selects the field for Ctrl+V and Enter. The connected test client has clipboard write but no clipboard-read API, so Paste uses the keyboard fallback there.
+- Save/Load retains every stop, opacity and rotation, while older solid color configs still load. `Export()`/`Import()` expose the serializable representation (hex strings instead of Color3). Invalid updates leave the current value unchanged.
+- Popup movement/fades follow the theme and menu scale; viewport edges are clamped. Escape, outside click, focus loss, locking, moving/resizing/hiding the window or switching its page dismiss the color editor. Only one color editor is active at a time.
+- Feature/profile popups use subtle native sliced shadows rather than white outlines. Hotkey context opens 6 px from the cursor (clamped at the viewport edges). All Hotkeys uses a dedicated icon-only close button. Main-window shadow disappears at background transparency 1. Sidebar text keeps its theme color after tab selection and theme changes.
+
+Runtime QA: `tests/ForkColors.lua` checks format/alpha round trips, invalid input, 16-stop limits, UI signals, actual disk Save/Load, legacy solid configs, default reset, popup bounds at 0.75/1/1.25 scale, cursor-near hotkeys, and full-transparency shadow. `tests/ForkHotkeys.lua` retains the previous editor/persistence/lifecycle regression coverage. These are synthetic signal/API checks; screenshots are captured separately from the real Roblox window.

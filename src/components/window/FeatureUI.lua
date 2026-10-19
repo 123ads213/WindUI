@@ -1,6 +1,7 @@
 -- WindUI themed hover descriptions and per-feature context hotkeys.
 local Creator=require('../../modules/Creator')
 local Model=require('../../modules/HotkeyModel')
+local Shadow=require('../ui/PopupShadow')
 local New,Tween=Creator.New,Creator.Tween
 local Input=game:GetService('UserInputService')
 local Run=game:GetService('RunService')
@@ -13,14 +14,14 @@ function FeatureUI.New(Window,WindUI)
  local function scale()return WindUI.UIScaleObj.Scale end
  local function corner(p,n)New('UICorner',{Parent=p,CornerRadius=UDim.new(0,n)})end
  local function label(p,name,title,x,y,w,h,size,secondary)
-  return New('TextLabel',{Parent=p,Name=name,Text=title,Position=UDim2.fromOffset(x,y),Size=UDim2.new(w<0 and 1 or 0,w,0,h),BackgroundTransparency=1,TextSize=size or 15,TextXAlignment='Left',TextYAlignment='Center',TextTruncate='AtEnd',FontFace=Font.new(Creator.Font,secondary and Enum.FontWeight.Regular or Enum.FontWeight.Medium),ThemeTag={TextColor3=secondary and'Placeholder'or'Text'},ZIndex=502})
+  return New('TextLabel',{Parent=p,Name=name,Text=title,Position=UDim2.fromOffset(x,y),Size=UDim2.new(w<0 and 1 or 0,w,0,h),BackgroundTransparency=1,TextSize=math.max(size or 15,15),TextStrokeTransparency=1,TextXAlignment='Left',TextYAlignment='Center',TextTruncate='AtEnd',FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium),ThemeTag={TextColor3=secondary and'Placeholder'or'Text'},ZIndex=502})
  end
  local function icon(p,name,x,y,n)
   local im=Creator.Image(name,name,0,Window.Folder,'HotkeyIcon',true,false,'Icon');im.Parent=p;im.Position=UDim2.fromOffset(x,y);im.Size=UDim2.fromOffset(n,n);im.ZIndex=503;im.ImageLabel.ZIndex=503;return im
  end
  local function panel(name,width,height)
   local f=New('CanvasGroup',{Parent=host,Name=name,Size=UDim2.fromOffset(width,height),Visible=false,GroupTransparency=1,ThemeTag={BackgroundColor3='Dialog'},ZIndex=500,Active=true})
-  corner(f,12);New('UIStroke',{Parent=f,Thickness=1,Transparency=.88,ThemeTag={Color='Outline'}})
+  corner(f,12);Shadow.New(f)
   return f
  end
  local tweens,targets={},{}
@@ -162,12 +163,12 @@ function FeatureUI.New(Window,WindUI)
   if activeBinding then activeRow=contextList:FindFirstChild('Binding_'..activeBinding.Id)end
  end
  function self:Open(e,point)
+  if Window.ActiveColorPopup then Window.ActiveColorPopup:Close()end
   self:Close();show(all,false);self:HideDescription();activeEntry=e;rebuildContext()
-  local at=point or Input:GetMouseLocation();place(context,at.X,at.Y);show(context,true)
+  local at=point or (Input:GetMouseLocation()+WindUI.ScreenGui.AbsolutePosition);place(context,at.X+6,at.Y+6);show(context,true)
  end
  label(all,'Title','All Hotkeys',20,12,-80,32,20)
- button(all,'Close','Close',nil,12,function()self:CloseAll()end).Size=UDim2.fromOffset(70,32)
- all.Close.Position=UDim2.new(1,-82,0,12)
+ local close=button(all,'Close','','x',12,function()self:CloseAll()end);close.Size=UDim2.fromOffset(36,32);close.Position=UDim2.new(1,-48,0,12);close.Label:Destroy();for _,child in ipairs(close:GetChildren())do if child:IsA('GuiObject')then child.Position=UDim2.fromOffset(8,6)end end
  local columns=New('Frame',{Parent=all,Position=UDim2.fromOffset(32,52),Size=UDim2.new(1,-64,0,28),BackgroundTransparency=1,ZIndex=502})
  for _,c in ipairs({{'Feature',0,.40},{'Key',.41,.22},{'Mode',.64,.16},{'Value',.81,.19}})do local t=label(columns,c[1],c[1],0,0,0,28,13,true);t.Position=UDim2.fromScale(c[2],0);t.Size=UDim2.fromScale(c[3],1)end
  separator(all,84)
@@ -185,6 +186,7 @@ function FeatureUI.New(Window,WindUI)
   if n==0 then label(scroll,'Empty','No hotkeys. Right-click a toggle to add one.',12,24,-24,40,15,true)end
  end
  function self:ShowAll()
+  if Window.ActiveColorPopup then Window.ActiveColorPopup:Close()end
   self:Close();self:HideDescription();refreshAll()
   local s=scale();all.Size=UDim2.fromOffset(math.min(580,WindUI.ScreenGui.AbsoluteSize.X/s-24),math.min(420,WindUI.ScreenGui.AbsoluteSize.Y/s-24))
   local a=Window.UIElements.Main.AbsolutePosition;local z=Window.UIElements.Main.AbsoluteSize

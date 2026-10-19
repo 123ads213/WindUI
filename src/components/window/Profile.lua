@@ -1,6 +1,7 @@
 -- WindUI by Footagesus (MIT). Optional themed profile/preferences footer.
 local Creator = require('../../modules/Creator')
 local New, Tween = Creator.New, Creator.Tween
+local Shadow=require('../ui/PopupShadow')
 local Players = game:GetService('Players')
 local Input = game:GetService('UserInputService')
 local Profile = {}
@@ -56,7 +57,7 @@ function Profile.New(Window, WindUI, Config)
     local menu=New('CanvasGroup',{Parent=parent,Name='ProfileMenu',Visible=false,Size=UDim2.fromOffset(304,304),
         GroupTransparency=1,ThemeTag={BackgroundColor3='Dialog'},ZIndex=200,Active=true})
     corner(menu,14)
-    New('UIStroke',{Parent=menu,Thickness=1,Transparency=.92,ThemeTag={Color='Outline'}})
+    Shadow.New(menu)
     local pages={}
     for _,page in ipairs({'Main','History'})do
         pages[page]=New('CanvasGroup',{Parent=menu,Name=page,BackgroundTransparency=1,Size=UDim2.fromScale(1,1),Visible=page=='Main',ZIndex=201})
@@ -99,7 +100,7 @@ function Profile.New(Window, WindUI, Config)
         BackgroundTransparency=0,TextSize=13,FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium),
         ThemeTag={BackgroundColor3='Dialog',TextColor3='Text'},ZIndex=208})
     corner(tip,7)
-    New('UIStroke',{Parent=tip,Thickness=1,Transparency=.94,ThemeTag={Color='Outline'}})
+    Shadow.New(tip)
     local transparency=Window.Transparent and WindUI.TransparencyValue or 0
     local overTrack,dragging,dragInput=false,false,nil
     local dragToken={}
@@ -193,7 +194,7 @@ function Profile.New(Window, WindUI, Config)
     local flyout=New('CanvasGroup',{Parent=parent,Name='ProfileFlyout',Visible=false,GroupTransparency=1,
         Size=UDim2.fromOffset(180,212),ThemeTag={BackgroundColor3='Dialog'},ZIndex=210,Active=true})
     corner(flyout,12)
-    New('UIStroke',{Parent=flyout,Thickness=1,Transparency=.92,ThemeTag={Color='Outline'}})
+    Shadow.New(flyout)
     local lists={}
     for _,kind in ipairs({'Scale','Style'})do
         lists[kind]=New('Frame',{Parent=flyout,Name=kind,Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Visible=false,ZIndex=211})
@@ -314,6 +315,7 @@ function Profile.New(Window, WindUI, Config)
         pageTween=Tween(pages[page],.18,{GroupTransparency=0});pageTween:Play()
     end
     function self:Open()
+        if Window.ActiveColorPopup then Window.ActiveColorPopup:Close()end
         if self.Destroyed or self.Opened then return end
         serial+=1;self.Opened=true;place();self:ShowPage('Main');highlight(true)
         if anim then anim:Cancel()end;if move then move:Cancel()end

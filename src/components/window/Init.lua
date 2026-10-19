@@ -1421,7 +1421,7 @@ return function(Config)
 			Tween(
 				Blur,
 				0.25,
-				{ ImageTransparency = Window.ShadowTransparency },
+				{ ImageTransparency = 1-(1-Window.ShadowTransparency)*(1-(Window.Transparent and Config.WindUI.TransparencyValue or 0)) },
 				Enum.EasingStyle.Quint,
 				Enum.EasingDirection.Out
 			):Play()
@@ -1594,6 +1594,7 @@ return function(Config)
         Window.Transparent=value==true;Config.WindUI.Transparent=Window.Transparent
         local alpha=Window.Transparent and math.clamp(Config.WindUI.TransparencyValue,0,1)or 0
         Window.UIElements.Main.Background.ImageTransparency=alpha
+        Blur.ImageTransparency=Window.Closed and 1 or 1-(1-Window.ShadowTransparency)*(1-alpha)
         Window.TransparencyController:Set(alpha)
     end
 
