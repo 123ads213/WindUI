@@ -24,7 +24,7 @@ if pending and (not previous or pending ~= previous.Library) then disposeLibrary
 if RunId ~= Env.__WindUIForkRunId then disposeLibrary(WindUI);return end
 if not WindUI then
     WindUI = assert(loadstring(game:HttpGet(
-        'https://raw.githubusercontent.com/123ads213/WindUI/a7009f7e3b3894b93b74eb03a40c8fc27fec0fe5/dist/main.lua')))()
+        'https://raw.githubusercontent.com/123ads213/WindUI/f7337a750c18eccb5df28d66779239125a7b7232/dist/main.lua')))()
 end
 if RunId ~= Env.__WindUIForkRunId then disposeLibrary(WindUI);return end
 Env.__WindUIForkPendingLibrary = WindUI
@@ -94,7 +94,6 @@ General:Section({ Title = 'On-screen widgets' })
 local WatermarkToggle=General:Toggle({ Title = 'Watermark', Flag = 'hud_watermark', Value = true, Hotkeys=false, Callback=function(value)HUD:SetWatermarkEnabled(value)end })
 local KeylistToggle=General:Toggle({ Title = 'Keylist', Flag = 'hud_keylist', Value = true, Hotkeys=false, Callback=function(value)HUD:SetKeylistEnabled(value)end })
 local WatermarkFields=General:Dropdown({Title='Watermark elements',Multi=true,AllowNone=true,MenuWidth=240,Values=HUD:GetAvailableFields(),Value=HUD:GetFields(),Callback=function(value)HUD:SetFields(value)end})
-local KeylistMode=General:Dropdown({Title='Keylist style',Values={'Classic','Value','Key'},Value='Classic',Callback=function(value)HUD:SetKeylistMode(value)end})
 -- HUD config is authoritative; controls mirror Import/Load as well as API changes.
 local syncingHUD=false
 HUD.OnChanged=function(h)
@@ -102,7 +101,6 @@ HUD.OnChanged=function(h)
     local desired=h:GetFields();local current=WatermarkFields.Value or{};local equal=#desired==#current
     if equal then for _,v in ipairs(desired)do if not table.find(current,v)then equal=false;break end end end
     if not equal then WatermarkFields:Select(desired)end
-    if KeylistMode.Value~=h.KeylistMode then KeylistMode:Select(h.KeylistMode)end
     if WatermarkToggle.Value~=h.WatermarkEnabled then WatermarkToggle:Set(h.WatermarkEnabled)end
     if KeylistToggle.Value~=h.KeylistEnabled then KeylistToggle:Set(h.KeylistEnabled)end
     syncingHUD=false
@@ -154,6 +152,6 @@ Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 
 Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
     ShowPlayers = ShowPlayers, Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
-    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile, HUD = HUD, WatermarkFields = WatermarkFields, KeylistMode = KeylistMode, SolidColor = SolidColor, GradientColor = GradientColor }
+    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile, HUD = HUD, WatermarkFields = WatermarkFields, SolidColor = SolidColor, GradientColor = GradientColor }
 Env.__WindUIForkPendingLibrary = nil
 return Window
