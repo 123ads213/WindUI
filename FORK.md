@@ -266,3 +266,56 @@ Dragging uses one frame-rate-independent exponential follower rather than repeat
 Custom cursor is opt-in (enabled in ForkExample). It is an unoutlined, fully filled white native circle, independent of theme and menu DPI. Only an open, visible, enabled menu on a mouse-capable focused client replaces the native pointer. Closing/hiding/disabling/destroying the menu, disabling the cursor, or losing focus restores the previous MouseIconEnabled state, even when that previous state was false. No OS pointer shape or game input lock is changed.
 
 Revision 7 only faded the window's root background. That left opaque Light/Paper panels over a transparent sidebar. Revision 8 extends opacity to registered theme-tagged window surfaces, including new elements and profile panels; it does not fade notifications or the cursor. At nonzero transparency, nested surfaces still composite normally rather than behaving like a single faded screenshot of the UI.
+
+## Hover descriptions and feature hotkeys (revision 9)
+
+Keep upstream inline descriptions by default, or move them into themed hover cards:
+
+```lua
+local Window = WindUI:CreateWindow({
+    Title = "My menu",
+    DescriptionMode = "Tooltip", -- default: "Inline"
+    -- the rest of your original window options
+})
+local feature = Player:Toggle({
+    Title = "Show players",
+    Desc = "Show player overlays. Right-click to configure hotkeys.",
+    Flag = "show_players", -- stable, unique config identity
+    Value = false,
+    Hotkeys = {
+        { Key = "K", Mode = "Toggle", Value = true },
+        { Key = "L", Mode = "Hold", Value = false },
+    },
+    Callback = function(enabled)
+        -- apply your feature state here
+    end,
+})
+```
+
+`DescMode = "Inline"` / `"Tooltip"` overrides the window setting on one element. `SetDesc()` updates the current description without reintroducing inline text in Tooltip mode. Hover cards have a short delay, title, wrapped description, theme-aware text/surface, soft fade and viewport-aware placement. Existing title icons/layout remain native. For a Paragraph that should remain body text, set `DescMode = "Inline"` explicitly.
+
+### Right-click editor
+
+Boolean Toggles automatically support right-click hotkeys (`Hotkeys = false` disables this on one toggle). The first list contains bindings with a side chevron, **All Hotkeys**, **New Hotkey**, and **Reset**. Hover a binding to open its editor, without replacing the first list. Key captures the next keyboard key or mouse button; Escape cancels, Backspace/Delete unbinds. Mode has Toggle, Hold and Always. Value is an Enabled/Disabled switch. Delete removes only that binding; Reset removes all bindings on that feature. There is no Visible option.
+
+- **Toggle:** first press applies Value, next applies its inverse. `Value = false` therefore disables first, enables second. Repeated key-down events do not retrigger.
+- **Hold:** applies Value while held; release or focus loss applies the inverse.
+- **Always:** continuously enforces Value (no key needed). If multiple Always bindings conflict, the last one wins. Always takes precedence over key-driven changes; deleting it stops enforcement and exposes any earlier Always binding. With no Always binding, input events apply in registration order.
+- Typing in a TextBox, game-processed input, locked features, key capture and open hotkey panels suppress normal activation. Holds still release on key-up. Hidden menu hotkeys continue to work, as feature controls normally should.
+
+The scrollable, closeable **All Hotkeys** panel lists feature title, key, mode and target boolean value. Click a row to edit that binding. `Window:ShowHotkeys()` opens it programmatically. Panels, mode lists and description cards follow all seven themes and menu DPI; positions clamp to the actual viewport. Moving/resizing the viewport or hiding the window dismisses transient UI; deleting a feature unregisters its bindings.
+
+```lua
+feature:AddHotkey({Key = Enum.KeyCode.J, Mode = "Toggle", Value = true})
+local snapshot = feature:GetHotkeys() -- independent persistent records
+feature:SetHotkeys(snapshot)         -- replace every binding on this feature
+feature:ResetHotkeys()
+feature:OpenHotkeys()                -- at the mouse
+Window:ShowHotkeys()
+```
+
+### Config compatibility
+
+Use the original config manager with a stable `Flag` (or explicitly `config:Register("id", feature)`). `Save()` writes every binding as `{Key, Mode, Value}` alongside the ordinary element value; `Load()` replaces those bindings, rather than appending duplicates. Runtime press/hold phases are not serialized. Missing hotkey data in an old config preserves code-defined bindings. Existing Slider/Input/Dropdown/Keybind/Colorpicker values retain their original parser. The example creates `WindUIForkDemoConfig`, with autoload **off**, for manual `:Save()` / `:Load()`; no existing config is silently overwritten.
+
+Nonboolean elements do not receive a meaningless boolean assignment automatically. To opt in on a Slider/Button/etc., pass `HotkeyCallback = function(enabled) ... end` and a `Flag`; implement the feature's boolean action there. These adapters use the same editor and config extension. Standalone upstream `Tab:Keybind()` remains available for source/config compatibility.

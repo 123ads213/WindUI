@@ -100,7 +100,7 @@ local ok, err = pcall(function()
     for _,size in ipairs({Vector2.new(560,350),Vector2.new(740,520),Vector2.new(850,560)}) do
         d.Window:SetSize(UDim2.fromOffset(size.X,size.Y));task.wait(.2)
         local desc=b.SliderFrame.UIElements.Desc
-        check(desc.AbsolutePosition.X+desc.AbsoluteSize.X<=b.UIElements.SliderContainer.AbsolutePosition.X,'inline text/control separation')
+        check(not desc.Visible and b.SliderFrame.UIElements.Title.AbsolutePosition.X+b.SliderFrame.UIElements.Title.AbsoluteSize.X<=b.UIElements.SliderContainer.AbsolutePosition.X,'tooltip mode hides inline description and separates title/control')
         check(track.AbsoluteSize.X>0,'positive track width')
     end
 end)

@@ -2272,6 +2272,9 @@ return function(Config)
 	--     end
 	-- })
 
+    Window.DescriptionMode=Config.DescriptionMode or "Inline"
+    Window.FeatureUI=require("./FeatureUI").New(Window,Config.WindUI)
+    function Window:ShowHotkeys()Window.FeatureUI:ShowAll();return Window end
     Window.Cursor=require('./Cursor').New(Window,Config.WindUI,Creator)
     function Window:SetCustomCursor(config)Window.Cursor:Set(config);return Window end
     Window:SetCustomCursor(Config.CustomCursor or false)

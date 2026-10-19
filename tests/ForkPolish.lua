@@ -8,7 +8,7 @@ local ok,err=pcall(function()
  local h=d.Big.SliderFrame.UIElements.Container.TitleFrame
  local im
  for _,c in ipairs(h:GetChildren())do if c:IsA('Frame')and c.Name~='TitleFrame'then im=c;break end end
- check(im and im.ImageLabel.Position==UDim2.fromOffset(4,-3),'Distance icon right/up offset')
+ check(im and im.ImageLabel.Position==UDim2.fromOffset(0,0),'compact Distance icon has no description offset')
  for _,theme in ipairs({'Dark','Light','Ocean','Paper'})do
   d.Library:SetTheme(theme);task.wait(.2)
   check(p.UIElements.Card.BackgroundTransparency==1,'transparent idle footer '..theme)

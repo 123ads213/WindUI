@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.8  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.9  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -26857,7 +26857,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.8",
+    "version": "1.6.66-fork.9",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -26872,7 +26872,7 @@ return[[
         "live-build": "concurrently \"npm run live\" \"npm run watch --\"",
         "example-live-build": "INPUT_FILE=main_example.lua npm run live-build",
         "updater": "python3 updater/main.py",
-        "test": "luau tests/NumberFormat.luau && luau tests/TabTree.luau"
+        "test": "luau tests/NumberFormat.luau && luau tests/TabTree.luau && luau tests/HotkeyModel.luau"
     },
     "keywords": [
         "ui-library",
@@ -29158,6 +29158,10 @@ Folder=nil,
 Path=nil,
 Configs={},
 Parser={
+Button={
+Save=function(af)return{__type=af.__type}end,
+Load=function()end,
+},
 Colorpicker={
 Save=function(af)
 return{
@@ -29239,6 +29243,22 @@ end
 },
 }
 }
+
+
+for af,ag in pairs(ae.Parser)do
+local ah,ai=ag.Save,ag.Load
+ag.Save=function(aj)
+local ak=ah(aj)
+if aj.GetHotkeys then ak.hotkeys=aj:GetHotkeys()end
+return ak
+end
+ag.Load=function(aj,ak)
+local al=aj and aj.SetHotkeys and ak.hotkeys
+if al~=nil then aj:SetHotkeys{}end
+ai(aj,ak)
+if al~=nil then aj:SetHotkeys(al)end
+end
+end
 
 function ae.Init(af,ag)
 if not ag.Folder then
@@ -30227,10 +30247,11 @@ end
 
 local aq=CreateText(ah.Title,"Title")
 local ar=CreateText(ah.Desc,"Desc")
+local as=(ag.ParentConfig.DescMode or ag.Window.DescriptionMode)=="Tooltip"
 if not ah.Title or ah.Title==""then
 ar.Visible=false
 end
-if not ah.Desc or ah.Desc==""then
+if as or not ah.Desc or ah.Desc==""then
 ar.Visible=false
 end
 
@@ -30327,12 +30348,12 @@ ar,
 }),
 })
 
-for as,at in next,ag.Tags or{}do
+for at,au in next,ag.Tags or{}do
 if not ah.UIElements.Container.TitleFrame.TitleFrame.ScrollingFrame.Visible then
 ah.UIElements.Container.TitleFrame.TitleFrame.ScrollingFrame.Visible=true
 ah.UIElements.Container.TitleFrame.TitleFrame.Space.Visible=true
 end
-af:New(at,ah.UIElements.Container.TitleFrame.TitleFrame.ScrollingFrame)
+af:New(au,ah.UIElements.Container.TitleFrame.TitleFrame.ScrollingFrame)
 end
 
 aa.AddSignal(
@@ -30354,12 +30375,12 @@ end
 
 
 
-local as=aa.Image("lock","lock",0,ag.Window.Folder,"Lock",false)
-as.Size=UDim2.new(0,20,0,20)
-as.ImageLabel.ImageColor3=Color3.new(1,1,1)
-as.ImageLabel.ImageTransparency=0.4
+local at=aa.Image("lock","lock",0,ag.Window.Folder,"Lock",false)
+at.Size=UDim2.new(0,20,0,20)
+at.ImageLabel.ImageColor3=Color3.new(1,1,1)
+at.ImageLabel.ImageTransparency=0.4
 
-local at=ab("TextLabel",{
+local au=ab("TextLabel",{
 Text="Locked",
 TextSize=18,
 FontFace=Font.new(aa.Font,Enum.FontWeight.Medium),
@@ -30369,7 +30390,7 @@ TextColor3=Color3.new(1,1,1),
 TextTransparency=0.05,
 })
 
-local au=ab("Frame",{
+local av=ab("Frame",{
 Size=UDim2.new(1,ah.UIPadding*2,1,ah.UIPadding*2),
 BackgroundTransparency=1,
 AnchorPoint=Vector2.new(0.5,0.5),
@@ -30377,13 +30398,13 @@ Position=UDim2.new(0.5,0,0.5,0),
 ZIndex=9999999,
 })
 
-local av,aw=ac(ah.UICorner,"Squircle",{
+local aw,ax=ac(ah.UICorner,"Squircle",{
 Size=UDim2.new(1,0,1,0),
 ImageTransparency=0.25,
 ImageColor3=Color3.new(0,0,0),
 Visible=false,
 Active=false,
-Parent=au,
+Parent=av,
 },{
 ab("UIListLayout",{
 FillDirection="Horizontal",
@@ -30391,18 +30412,18 @@ VerticalAlignment="Center",
 HorizontalAlignment="Center",
 Padding=UDim.new(0,8),
 }),
-as,
 at,
+au,
 },nil,true)local
 
-ax=ac(ah.UICorner,"Squircle-Outline",{
+ay=ac(ah.UICorner,"Squircle-Outline",{
 Size=UDim2.new(1,0,1,0),
 ImageTransparency=1,
 Active=false,
 ThemeTag={
 ImageColor3="Text",
 },
-Parent=au,
+Parent=av,
 },{
 ab("UIListLayout",{
 FillDirection="Horizontal",
@@ -30412,14 +30433,14 @@ Padding=UDim.new(0,8),
 }),
 },nil,true)
 
-local ay,az=ac(ah.UICorner,"Squircle",{
+local az,aA=ac(ah.UICorner,"Squircle",{
 Size=UDim2.new(1,0,1,0),
 ImageTransparency=1,
 Active=false,
 ThemeTag={
 ImageColor3="Text",
 },
-Parent=au,
+Parent=av,
 },{
 ab("UIListLayout",{
 FillDirection="Horizontal",
@@ -30429,7 +30450,7 @@ Padding=UDim.new(0,8),
 }),
 },nil,true)local
 
-aA=ac(ah.UICorner,"Squircle-Outline",{
+aB=ac(ah.UICorner,"Squircle-Outline",{
 Size=UDim2.new(1,0,1,0),
 ImageTransparency=1,
 Visible=false,
@@ -30437,7 +30458,7 @@ Active=false,
 ThemeTag={
 ImageColor3="Text",
 },
-Parent=au,
+Parent=av,
 },{
 ab("UIListLayout",{
 FillDirection="Horizontal",
@@ -30462,14 +30483,14 @@ NumberSequenceKeypoint.new(1,1),
 }),
 },nil,true)
 
-local aB,b=ac(ah.UICorner,"Squircle",{
+local b,d=ac(ah.UICorner,"Squircle",{
 Size=UDim2.new(1,0,1,0),
 ImageTransparency=1,
 Active=false,
 ThemeTag={
 ImageColor3="Text",
 },
-Parent=au,
+Parent=av,
 },{
 ab("UIGradient",{
 Name="HoverGradient",
@@ -30494,7 +30515,7 @@ Padding=UDim.new(0,8),
 }),
 },nil,true)
 
-local d,f=ac(ah.UICorner,"Squircle",{
+local f,g=ac(ah.UICorner,"Squircle",{
 Size=UDim2.new(1,0,0,0),
 AutomaticSize="Y",
 ImageTransparency=ah.Color and 0.05 or(not ag.Window.NewElements and 0.93 or nil),
@@ -30513,7 +30534,7 @@ aa.Colors[ah.Color]
 )or typeof(ah.Color)=="Color3"and ah.Color)or nil,
 },{
 ah.UIElements.Container,
-au,
+av,
 ab("UIPadding",{
 PaddingTop=UDim.new(0,ah.UIPadding),
 PaddingLeft=UDim.new(0,ah.UIPadding),
@@ -30522,50 +30543,50 @@ PaddingBottom=UDim.new(0,ah.UIPadding),
 }),
 },true,true)
 
-ah.UIElements.Main=d
-ah.UIElements.Locked=av
+ah.UIElements.Main=f
+ah.UIElements.Locked=aw
 
 if ah.Hover then
-aa.AddSignal(d.MouseEnter,function()
+aa.AddSignal(f.MouseEnter,function()
 if am then
 
-ad(aB,0.12,{ImageTransparency=0.9}):Play()
-ad(aA,0.12,{ImageTransparency=0.8}):Play()
-aa.AddSignal(d.MouseMoved,function(g,h)
+ad(b,0.12,{ImageTransparency=0.9}):Play()
+ad(aB,0.12,{ImageTransparency=0.8}):Play()
+aa.AddSignal(f.MouseMoved,function(h,i)
+b.HoverGradient.Offset=
+Vector2.new(((h-f.AbsolutePosition.X)/f.AbsoluteSize.X)-0.5,0)
 aB.HoverGradient.Offset=
-Vector2.new(((g-d.AbsolutePosition.X)/d.AbsoluteSize.X)-0.5,0)
-aA.HoverGradient.Offset=
-Vector2.new(((g-d.AbsolutePosition.X)/d.AbsoluteSize.X)-0.5,0)
+Vector2.new(((h-f.AbsolutePosition.X)/f.AbsoluteSize.X)-0.5,0)
 end)
 end
 end)
-aa.AddSignal(d.InputEnded,function()
+aa.AddSignal(f.InputEnded,function()
 if am then
 
+ad(b,0.12,{ImageTransparency=1}):Play()
 ad(aB,0.12,{ImageTransparency=1}):Play()
-ad(aA,0.12,{ImageTransparency=1}):Play()
 end
 end)
 end
 
-function ah.SetTitle(g,h)
-ah.Title=h
-aq.Text=h
+function ah.SetTitle(h,i)
+ah.Title=i
+aq.Text=i
 end
 
-function ah.SetDesc(g,h)
-ah.Desc=h
-ar.Text=h or""
-if not h then
+function ah.SetDesc(h,i)
+ah.Desc=i
+ar.Text=i or""
+if as or not i or i==""then
 ar.Visible=false
 elseif not ar.Visible then
 ar.Visible=true
 end
 end
 
-function ah.Colorize(g,h,i)
+function ah.Colorize(h,i,l)
 if ah.Color then
-h[i]=typeof(ah.Color)=="string"
+i[l]=typeof(ah.Color)=="string"
 and GetTextColorForHSB(Color3.fromHex(aa.Colors[ah.Color]))
 or typeof(ah.Color)=="Color3"and GetTextColorForHSB(ah.Color)
 or nil
@@ -30591,18 +30612,18 @@ end
 
 
 
-function ah.SetThumbnail(g,h,i)
-ah.Thumbnail=h
-if i then
-ah.ThumbnailSize=i
-al=i
+function ah.SetThumbnail(h,i,l)
+ah.Thumbnail=i
+if l then
+ah.ThumbnailSize=l
+al=l
 end
 
 if ao then
-if h then
+if i then
 ao:Destroy()
 ao=aa.Image(
-h,
+i,
 ah.Title,
 ah.UICorner-3,
 ag.Window.Folder,
@@ -30613,8 +30634,8 @@ ah.IconThemed
 if ao then
 ao.Size=UDim2.new(1,0,0,al)
 ao.Parent=ah.UIElements.Container
-local l=ah.UIElements.Container:FindFirstChild"UIListLayout"
-if l then
+local m=ah.UIElements.Container:FindFirstChild"UIListLayout"
+if m then
 ao.LayoutOrder=-1
 end
 end
@@ -30622,9 +30643,9 @@ else
 ao.Visible=false
 end
 else
-if h then
+if i then
 ao=aa.Image(
-h,
+i,
 ah.Title,
 ah.UICorner-3,
 ag.Window.Folder,
@@ -30635,8 +30656,8 @@ ah.IconThemed
 if ao then
 ao.Size=UDim2.new(1,0,0,al)
 ao.Parent=ah.UIElements.Container
-local l=ah.UIElements.Container:FindFirstChild"UIListLayout"
-if l then
+local m=ah.UIElements.Container:FindFirstChild"UIListLayout"
+if m then
 ao.LayoutOrder=-1
 end
 end
@@ -30644,22 +30665,22 @@ end
 end
 end
 
-function ah.SetImage(g,h,i)
-ah.Image=h
-if i then
-ah.ImageSize=i
-ak=i
+function ah.SetImage(h,i,l)
+ah.Image=i
+if l then
+ah.ImageSize=l
+ak=l
 end
 
-if h then
-local l=ap and ap.Parent or ah.UIElements.Container.TitleFrame
+if i then
+local m=ap and ap.Parent or ah.UIElements.Container.TitleFrame
 if ap then
 ap:Destroy()
 end
 
 ap=aa.Image(
-h,
-h,
+i,
+i,
 ah.UICorner-3,
 ag.Window.Folder,
 "Image",
@@ -30674,7 +30695,7 @@ ap.ImageLabel.ImageColor3=GetTextColorForHSB(ah.Color)
 end
 
 ap.Visible=true
-ap.Parent=l
+ap.Parent=m
 ap.LayoutOrder=-99
 
 ap.Size=UDim2.new(0,ak,0,ak)
@@ -30690,25 +30711,25 @@ end
 ah.UIElements.Container.TitleFrame.TitleFrame.Size=UDim2.new(1,-an,1,0)
 end
 
-function ah.Destroy(g)
-d:Destroy()
+function ah.Destroy(h)
+f:Destroy()
 end
 
-function ah.Lock(g,h)
+function ah.Lock(h,i)
 am=false
-av.Active=true
-av.Visible=true
-at.Text=h or"Locked"
+aw.Active=true
+aw.Visible=true
+au.Text=i or"Locked"
 end
 
-function ah.Unlock(g)
+function ah.Unlock(h)
 am=true
-av.Active=false
-av.Visible=false
+aw.Active=false
+aw.Visible=false
 end
 
-function ah.Highlight(g)
-local h=ab("UIGradient",{
+function ah.Highlight(h)
+local i=ab("UIGradient",{
 Color=ColorSequence.new{
 ColorSequenceKeypoint.new(0,Color3.new(1,1,1)),
 ColorSequenceKeypoint.new(0.5,Color3.new(1,1,1)),
@@ -30723,10 +30744,10 @@ NumberSequenceKeypoint.new(1,1),
 },
 Rotation=0,
 Offset=Vector2.new(-1,0),
-Parent=ax,
+Parent=ay,
 })
 
-local i=ab("UIGradient",{
+local l=ab("UIGradient",{
 Color=ColorSequence.new{
 ColorSequenceKeypoint.new(0,Color3.new(1,1,1)),
 ColorSequenceKeypoint.new(0.5,Color3.new(1,1,1)),
@@ -30741,43 +30762,43 @@ NumberSequenceKeypoint.new(1,1),
 },
 Rotation=0,
 Offset=Vector2.new(-1,0),
-Parent=ay,
+Parent=az,
 })
 
-ax.ImageTransparency=0.65
-ay.ImageTransparency=0.88
-
-ad(h,0.75,{
-Offset=Vector2.new(1,0),
-}):Play()
+ay.ImageTransparency=0.65
+az.ImageTransparency=0.88
 
 ad(i,0.75,{
 Offset=Vector2.new(1,0),
 }):Play()
 
+ad(l,0.75,{
+Offset=Vector2.new(1,0),
+}):Play()
+
 task.spawn(function()
 task.wait(0.75)
-ax.ImageTransparency=1
 ay.ImageTransparency=1
-h:Destroy()
+az.ImageTransparency=1
 i:Destroy()
+l:Destroy()
 end)
 end
 
-function ah.UpdateShape(g)
+function ah.UpdateShape(h)
 if ag.Window.NewElements then
-local h=aa:GetElementPosition(
-g.Elements,
+local i=aa:GetElementPosition(
+h.Elements,
 ah.Index,
 ag.ParentConfig.ParentTable.__type=="HStack"or ag.ParentConfig.ParentTable.__type=="Group"
 )
 
-if h and d then
-f:SetType(h)
-aw:SetType(h)
-az:SetType(h)
+if i and f then
+g:SetType(i)
+ax:SetType(i)
+aA:SetType(i)
 
-b:SetType(h)
+d:SetType(i)
 
 end
 end
@@ -35949,9 +35970,11 @@ end
 if aw then
 av.ElementFrame=aw.UIElements.Main
 function av.SetTitle(ax,ay)
+av.Title=ay
 return aw.SetTitle and aw:SetTitle(ay)
 end
 function av.SetDesc(ax,ay)
+av.Desc=ay
 return aw.SetDesc and aw:SetDesc(ay)
 end
 function av.SetImage(ax,ay,az)
@@ -35966,12 +35989,20 @@ end
 function av.Destroy(ax)
 aw:Destroy()
 
-table.remove(ak.AllElements,at.GlobalIndex)
-table.remove(aa.Elements,at.Index)
-table.remove(ap.Elements,at.Index)
+
+
+local function removeFrom(ay)
+local az=table.find(ay,av)
+if az then table.remove(ay,az)end
+end
+removeFrom(ak.AllElements)
+removeFrom(aa.Elements)
+if ap and ap.Elements~=aa.Elements then removeFrom(ap.Elements)end
 aa:UpdateAllElementShapes(aa)
 end
 end
+
+if aw and ak.FeatureUI then ak.FeatureUI:Register(av,aw,at)end
 
 ak.AllElements[at.Index]=av
 aa.Elements[at.Index]=av
@@ -37921,6 +37952,348 @@ return af end function a.an():typeof(__modImpl())local aa=a.cache.an if not aa t
 
 
 local aa={}
+function aa.New()
+local af={Entries={},NextId=0}
+function af.Register(ai,ak,al,am,an)
+local ao={Owner=ak,Apply=al,Read=am,Available=an,Bindings={}};ai.Entries[#ai.Entries+1]=ao;return ao
+end
+local function allowed(ai)return not ai.Available or ai.Available()end
+local function set(ai,ak)if allowed(ai)and(not ai.Read or ai.Read()~=ak)then ai.Apply(ak)end end
+function af.Enforce(ai,ak)
+if not allowed(ak)then return end
+for al=#ak.Bindings,1,-1 do local am=ak.Bindings[al];if am.Mode=='Always'then set(ak,am.Value);return end end
+end
+function af.Add(ai,ak,al)
+al=al or{};ai.NextId+=1
+local am={Id=ai.NextId,Key=type(al.Key)=='string'and al.Key or'Unbound',Mode=al.Mode=='Hold'and'Hold'or al.Mode=='Always'and'Always'or'Toggle',Value=al.Value~=false,Active=false}
+ak.Bindings[#ak.Bindings+1]=am;ai:Enforce(ak);return am
+end
+function af.Release(ai,ak,al)
+if al.Mode=='Hold'and al.Active then al.Active=false;set(ak,not al.Value)end
+end
+function af.Remove(ai,ak,al)
+ai:Release(ak,al);local am=table.find(ak.Bindings,al);if am then table.remove(ak.Bindings,am)end;ai:Enforce(ak)
+end
+function af.Reset(ai,ak)
+for al,am in ipairs(ak.Bindings)do ai:Release(ak,am)end;table.clear(ak.Bindings)
+end
+function af.Update(ai,ak,al,am)
+ai:Release(ak,al);al.Active=false;al.Down=false
+if am.Key then al.Key=am.Key end
+if am.Mode then al.Mode=am.Mode=='Hold'and'Hold'or am.Mode=='Always'and'Always'or'Toggle'end
+if type(am.Value)=='boolean'then al.Value=am.Value end;ai:Enforce(ak)
+end
+function af.Input(ai,ak,al,am)
+for an,ao in ipairs(ai.Entries)do
+for ap,aq in ipairs(ao.Bindings)do
+if aq.Key==ak and aq.Mode~='Always'then
+if al and not am and allowed(ao)and not aq.Down then
+aq.Down=true
+if aq.Mode=='Toggle'then aq.Active=not aq.Active;set(ao,aq.Active==aq.Value)
+else aq.Active=true;set(ao,aq.Value)end
+elseif not al then aq.Down=false;ai:Release(ao,aq)end
+end
+end;ai:Enforce(ao)
+end
+end
+function af.Blur(ai)
+for ak,al in ipairs(ai.Entries)do for am,an in ipairs(al.Bindings)do an.Down=false;ai:Release(al,an)end;ai:Enforce(al)end
+end
+function af.Export(ai,ak)
+local al={};for am,an in ipairs(ak.Bindings)do al[#al+1]={Key=an.Key,Mode=an.Mode,Value=an.Value}end;return al
+end
+function af.Import(ai,ak,al)
+ai:Reset(ak)
+if type(al)=='table'then for am,an in ipairs(al)do if type(an)=='table'then ai:Add(ak,an)end end end
+end
+function af.Unregister(ai,ak)
+ai:Reset(ak);local al=table.find(ai.Entries,ak);if al then table.remove(ai.Entries,al)end
+end
+return af
+end
+return aa end function a.ao():typeof(__modImpl())local aa=a.cache.ao if not aa then aa={c=__modImpl()}a.cache.ao=aa end return aa.c end end do local function __modImpl()
+
+
+local aa=a.j()
+local af=a.ao()
+local ai,ak=aa.New,aa.Tween
+local al=game:GetService'UserInputService'
+local am=game:GetService'RunService'
+local an={}
+function an.New(ao,ap)
+local aq={Model=af.New(),UIElements={},Destroyed=false,Picking=nil}
+local ar,as={},{}
+local at=ao.UIElements.Main.Main
+local function connect(au,av)local aw=au:Connect(av);ar[#ar+1]=aw;return aw end
+local function scale()return ap.UIScaleObj.Scale end
+local function corner(au,av)ai('UICorner',{Parent=au,CornerRadius=UDim.new(0,av)})end
+local function label(au,av,aw,ax,ay,az,aA,aB,aC)
+return ai('TextLabel',{Parent=au,Name=av,Text=aw,Position=UDim2.fromOffset(ax,ay),Size=UDim2.new(az<0 and 1 or 0,az,0,aA),BackgroundTransparency=1,TextSize=aB or 15,TextXAlignment='Left',TextYAlignment='Center',TextTruncate='AtEnd',FontFace=Font.new(aa.Font,aC and Enum.FontWeight.Regular or Enum.FontWeight.Medium),ThemeTag={TextColor3=aC and'Placeholder'or'Text'},ZIndex=502})
+end
+local function icon(au,av,aw,ax,ay)
+local az=aa.Image(av,av,0,ao.Folder,'HotkeyIcon',true,false,'Icon');az.Parent=au;az.Position=UDim2.fromOffset(aw,ax);az.Size=UDim2.fromOffset(ay,ay);az.ZIndex=503;az.ImageLabel.ZIndex=503;return az
+end
+local function panel(au,av,aw)
+local ax=ai('CanvasGroup',{Parent=at,Name=au,Size=UDim2.fromOffset(av,aw),Visible=false,GroupTransparency=1,ThemeTag={BackgroundColor3='Dialog'},ZIndex=500,Active=true})
+corner(ax,12);ai('UIStroke',{Parent=ax,Thickness=1,Transparency=.88,ThemeTag={Color='Outline'}})
+return ax
+end
+local au,av={},{}
+local function show(aw,ax)
+if aq.Destroyed or av[aw]==ax then return end
+av[aw]=ax
+if au[aw]then au[aw]:Cancel()end
+if ax then aw.Visible=true end
+local ay=ak(aw,.16,{GroupTransparency=ax and 0 or 1});au[aw]=ay;ay:Play()
+if not ax then task.delay(.17,function()if not aq.Destroyed and au[aw]==ay then aw.Visible=false end end)end
+end
+local function place(aw,ax,ay)
+local az=scale();local aA=ap.ScreenGui.AbsolutePosition;local aB=ap.ScreenGui.AbsoluteSize
+local aC,aD=aw.Size.X.Offset*az,aw.Size.Y.Offset*az
+ax=math.clamp(ax,aA.X+8,math.max(aA.X+8,aA.X+aB.X-aC-8));ay=math.clamp(ay,aA.Y+8,math.max(aA.Y+8,aA.Y+aB.Y-aD-8))
+aw.Position=UDim2.fromOffset((ax-at.AbsolutePosition.X)/az,(ay-at.AbsolutePosition.Y)/az)
+end
+local function beside(aw,ax)
+local ay=scale();local az,aA=ax.AbsolutePosition,ax.AbsoluteSize
+local aB=az.X+aA.X+6*ay
+if aB+aw.Size.X.Offset*ay>ap.ScreenGui.AbsolutePosition.X+ap.ScreenGui.AbsoluteSize.X-8 then aB=az.X-aw.Size.X.Offset*ay-6*ay end
+place(aw,aB,az.Y)
+end
+local function separator(aw,ax)
+ai('Frame',{Parent=aw,Position=UDim2.fromOffset(14,ax),Size=UDim2.new(1,-28,0,1),BorderSizePixel=0,BackgroundTransparency=.93,ThemeTag={BackgroundColor3='Text'},ZIndex=502})
+end
+local function button(aw,ax,ay,az,aA,aB)
+local aC=ai('TextButton',{Parent=aw,Name=ax,Text='',Size=UDim2.new(1,-16,0,38),Position=UDim2.fromOffset(8,aA),AutoButtonColor=false,BackgroundTransparency=1,ThemeTag={BackgroundColor3='ElementBackground'},ZIndex=501})
+corner(aC,8);if az then icon(aC,az,10,9,20)end
+label(aC,'Label',ay,az and 40 or 12,0,-(az and 52 or 24),38,15)
+aC.MouseEnter:Connect(function()ak(aC,.12,{BackgroundTransparency=0}):Play()end)
+aC.MouseLeave:Connect(function()ak(aC,.12,{BackgroundTransparency=1}):Play()end)
+if aB then aC.MouseButton1Click:Connect(aB)end
+return aC
+end
+local aw=panel('FeatureDescription',330,92)
+local ax=label(aw,'Title','',14,10,-28,22,15)
+local ay=label(aw,'Description','',14,36,-28,42,14,true);ay.TextWrapped=true;ay.TextTruncate='AtEnd';ay.TextYAlignment='Top'
+local az=panel('FeatureHotkeys',232,188)
+local aA=panel('HotkeyEditor',264,198)
+local aB=panel('HotkeyModes',156,130)
+local aC=panel('AllHotkeys',580,420)
+aq.UIElements={Tooltip=aw,TooltipTitle=ax,TooltipBody=ay,Context=az,Editor=aA,Modes=aB,All=aC}
+local aD,aE,aF
+local aG=0
+function aq.HideDescription(aH)aG+=1;show(aw,false)end
+function aq.Describe(aH,aI,aJ)
+if aH.Picking or az.Visible or aC.Visible or ao.Closed or ao.Destroyed then return end
+local aK=aG
+local aL=aJ.Desc
+if not aL or aL==''then return end
+ax.Text=aI.Title or aJ.Title or'Feature';ay.Text=aL
+local aM=scale();local aN=math.min(330,math.max(220,ap.ScreenGui.AbsoluteSize.X/aM-32))
+local aO=Instance.new'GetTextBoundsParams';aO.Text=aL;aO.Font=ay.FontFace;aO.Size=14;aO.Width=aN-28
+local aP,aQ=pcall(function()return game:GetService'TextService':GetTextBoundsAsync(aO)end)
+local aR=aP and math.min(180,math.max(20,aQ.Y+2))or 60
+if aH.Destroyed or not aJ.UIElements.Main.Parent or aK~=aG then return end
+aw.Size=UDim2.fromOffset(aN,aR+50);ay.Size=UDim2.new(1,-28,0,aR)
+beside(aw,aJ.UIElements.Main);show(aw,true)
+end
+local aH=ai('ScrollingFrame',{Parent=az,Name='Bindings',Position=UDim2.fromOffset(0,8),Size=UDim2.new(1,0,1,-142),BackgroundTransparency=1,BorderSizePixel=0,ScrollBarThickness=2,ThemeTag={ScrollBarImageColor3='Icon'},CanvasSize=UDim2.new(),AutomaticCanvasSize='Y',ZIndex=501})
+local aI,aJ,aK,aL,aM
+local aN
+local aO,aP,aQ
+local function clearChildren(aR)for b,d in ipairs(aR:GetChildren())do d:Destroy()end end
+local function validKey(aR)
+if typeof(aR)=='EnumItem'then aR=aR.Name end
+if type(aR)~='string'then return'Unbound'end
+if aR=='MouseButton1'or aR=='MouseButton2'or aR=='MouseButton3'then return aR end
+local b,d=pcall(function()return Enum.KeyCode[aR]end)
+return b and d and d~=Enum.KeyCode.Unknown and d~=Enum.KeyCode.Escape and aR or'Unbound'
+end
+local function keyName(aR)
+if aR.UserInputType==Enum.UserInputType.Keyboard then return aR.KeyCode.Name end
+if aR.UserInputType==Enum.UserInputType.MouseButton1 or aR.UserInputType==Enum.UserInputType.MouseButton2 or aR.UserInputType==Enum.UserInputType.MouseButton3 then return aR.UserInputType.Name end
+end
+function aq.CancelCapture(aR)aR.Picking=nil;if aI then aI.Value.Text=aE and aE.Key or'Unbound'end end
+function aq.Close(aR)
+aR:CancelCapture();aD=nil;aE=nil
+show(az,false);show(aA,false);show(aB,false)
+end
+function aq.Edit(aR,b,d,f)
+aR:CancelCapture();aD=b;aE=d;aF=f
+aP();beside(aA,f or az);show(aA,true);show(aB,false)
+end
+aP=function()
+if not aE then return end
+aI.Value.Text=aq.Picking and'Press a key…'or aE.Key
+aJ.Value.Text=aE.Mode
+if aN then aN:Cancel()end
+aL.BackgroundColor3=aa.GetThemeProperty(aE.Value and'Toggle'or'Button',aa.Theme)
+aN=ak(aM,.16,{Position=UDim2.new(aE.Value and 1 or 0,aE.Value and-20 or 2,.5,-9)});aN:Play()
+end
+aI=button(aA,'Key','Key','keyboard',8,function()
+if aE then aq.Picking={Entry=aD,Binding=aE};aI.Value.Text='Press a key…'end
+end)
+local aR=label(aI,'Value','Unbound',80,0,-114,38,14,true);aR.TextXAlignment='Right'
+aJ=button(aA,'Mode','Mode','repeat-2',50,function()beside(aB,aJ);show(aB,not aB.Visible)end)
+aJ.MouseEnter:Connect(function()if aE then beside(aB,aJ);show(aB,true)end end)
+local b=label(aJ,'Value','Toggle',90,0,-126,38,14,true);b.TextXAlignment='Right';icon(aJ,'chevron-right',220,11,16)
+aK=button(aA,'Value','Value','link',92,function()
+if aE then aq.Model:Update(aD,aE,{Value=not aE.Value});aP();aQ()end
+end)
+aL=ai('Frame',{Parent=aK,Name='ValueToggle',Position=UDim2.new(1,-52,.5,-11),Size=UDim2.fromOffset(40,22),BorderSizePixel=0,ZIndex=503});corner(aL,11)
+aM=ai('Frame',{Parent=aL,Name='Thumb',Size=UDim2.fromOffset(18,18),Position=UDim2.new(1,-20,.5,-9),BackgroundColor3=Color3.new(1,1,1),BorderSizePixel=0,ZIndex=504});corner(aM,9)
+separator(aA,140)
+button(aA,'Delete','Delete','trash-2',150,function()
+if aE then aq.Model:Remove(aD,aE);aq:CancelCapture();aE=nil;show(aA,false);show(aB,false);aO();aQ()end
+end)
+for d,f in ipairs{'Toggle','Hold','Always'}do
+button(aB,f,f,nil,8+(d-1)*38,function()
+if aE then aq.Model:Update(aD,aE,{Mode=f});aP();aO();aQ()end;show(aB,false)
+end)
+end
+local d=button(az,'AllHotkeys','All Hotkeys','list',46,function()aq:ShowAll()end)
+local f=button(az,'NewHotkey','New Hotkey','circle-plus',88,function()
+if aD then local f=aq.Model:Add(aD);aO();aq:Edit(aD,f,aH:FindFirstChild('Binding_'..f.Id));aQ()end
+end)
+local g=button(az,'Reset','Reset','rotate-ccw',140,function()
+if aD then aq.Model:Reset(aD);aq:CancelCapture();aE=nil;show(aA,false);show(aB,false);aO();aQ()end
+end)
+local h=ai('Frame',{Parent=az,Name='Separator',Size=UDim2.new(1,-28,0,1),Position=UDim2.fromOffset(14,132),BackgroundTransparency=.93,BorderSizePixel=0,ThemeTag={BackgroundColor3='Text'},ZIndex=502})
+aO=function()
+clearChildren(aH)
+if not aD then return end
+local i=#aD.Bindings;local l=math.min(5,math.max(1,i));local m=l*38
+az.Size=UDim2.fromOffset(232,m+150);aH.Size=UDim2.new(1,0,0,m)
+d.Position=UDim2.fromOffset(8,m+12);f.Position=UDim2.fromOffset(8,m+54)
+h.Position=UDim2.fromOffset(14,m+100);g.Position=UDim2.fromOffset(8,m+106)
+if i==0 then label(aH,'Empty','No hotkeys yet',20,0,-40,38,14,true)end
+for p,r in ipairs(aD.Bindings)do
+local u=button(aH,'Binding_'..r.Id,r.Key,'keyboard',0)
+u.Position=UDim2.fromOffset(8,(p-1)*38)
+icon(u,'chevron-right',190,11,16)
+u.MouseEnter:Connect(function()aq:Edit(aD,r,u)end)
+u.MouseButton1Click:Connect(function()aq:Edit(aD,r,u)end)
+end
+
+if aE then aF=aH:FindFirstChild('Binding_'..aE.Id)end
+end
+function aq.Open(i,l,m)
+i:Close();show(aC,false);i:HideDescription();aD=l;aO()
+local p=m or al:GetMouseLocation();place(az,p.X,p.Y);show(az,true)
+end
+label(aC,'Title','All Hotkeys',20,12,-80,32,20)
+button(aC,'Close','Close',nil,12,function()aq:CloseAll()end).Size=UDim2.fromOffset(70,32)
+aC.Close.Position=UDim2.new(1,-82,0,12)
+local i=ai('Frame',{Parent=aC,Position=UDim2.fromOffset(32,52),Size=UDim2.new(1,-64,0,28),BackgroundTransparency=1,ZIndex=502})
+for l,m in ipairs{{'Feature',0,.40},{'Key',.41,.22},{'Mode',.64,.16},{'Value',.81,.19}}do local p=label(i,m[1],m[1],0,0,0,28,13,true);p.Position=UDim2.fromScale(m[2],0);p.Size=UDim2.fromScale(m[3],1)end
+separator(aC,84)
+local l=ai('ScrollingFrame',{Parent=aC,Name='Entries',Position=UDim2.fromOffset(12,94),Size=UDim2.new(1,-24,1,-110),CanvasSize=UDim2.new(),AutomaticCanvasSize='Y',BackgroundTransparency=1,BorderSizePixel=0,ScrollBarThickness=3,ThemeTag={ScrollBarImageColor3='Icon'},ZIndex=501})
+aQ=function()
+clearChildren(l);local m=0
+for p,r in ipairs(aq.Model.Entries)do for u,v in ipairs(r.Bindings)do
+local x=button(l,'Hotkey_'..v.Id,r.Owner.Title or'Feature',nil,m*48,function()aq:Open(r,aC.AbsolutePosition);aq:Edit(r,v,az)end)
+x.Label.Size=UDim2.new(.40,-16,0,38)
+local z=label(x,'Key',v.Mode=='Always'and'—'or v.Key,0,0,0,38,14,true);z.Position=UDim2.fromScale(.41,0);z.Size=UDim2.fromScale(.22,1)
+local A=label(x,'Mode',v.Mode,0,0,0,38,14);A.Position=UDim2.fromScale(.64,0);A.Size=UDim2.fromScale(.16,1)
+local B=label(x,'Value',v.Value and'Enabled'or'Disabled',0,0,0,38,13,true);B.Position=UDim2.fromScale(.81,0);B.Size=UDim2.fromScale(.19,1)
+m+=1
+end end
+if m==0 then label(l,'Empty','No hotkeys. Right-click a toggle to add one.',12,24,-24,40,15,true)end
+end
+function aq.ShowAll(m)
+m:Close();m:HideDescription();aQ()
+local p=scale();aC.Size=UDim2.fromOffset(math.min(580,ap.ScreenGui.AbsoluteSize.X/p-24),math.min(420,ap.ScreenGui.AbsoluteSize.Y/p-24))
+local r=ao.UIElements.Main.AbsolutePosition;local u=ao.UIElements.Main.AbsoluteSize
+place(aC,r.X+(u.X-aC.Size.X.Offset*p)/2,r.Y+(u.Y-aC.Size.Y.Offset*p)/2);show(aC,true)
+end
+function aq.CloseAll(m)show(aC,false);m:Close()end
+function aq.Register(m,p,r,u)
+local v=r.UIElements.Main
+local x=(u.DescMode or ao.DescriptionMode)=='Tooltip'
+local z={Signals={}}
+local function bind(A,B)local C=A:Connect(B);z.Signals[#z.Signals+1]=C end
+if x then
+bind(v.MouseEnter,function()
+aG+=1;local A=aG
+task.delay(.35,function()if not m.Destroyed and A==aG and v.Parent and v.Visible then m:Describe(p,r)end end)
+end)
+bind(v.MouseLeave,function()m:HideDescription()end)
+function p.ShowDescription(A)A.__FeatureUI:Describe(A,r)end
+p.__FeatureUI=m
+end
+local A=(p.__type=='Toggle'and u.Hotkeys~=false)or type(u.HotkeyCallback)=='function'
+if A then
+local B=m.Model:Register(p,function(B)
+if u.HotkeyCallback then aa.SafeCallback(u.HotkeyCallback,B);p.HotkeyValue=B else p:Set(B,true,true)end
+end,function()if u.HotkeyCallback then return p.HotkeyValue end;return p.Value end,function()return v.Parent~=nil and not p.Locked and not ao.Destroyed end)
+z.Entry=B;p.HotkeyEntry=B
+function p.GetHotkeys(C)return C.__HotkeyController.Model:Export(B)end
+function p.SetHotkeys(C,F)
+local G={};if type(F)=='table'then for H,J in ipairs(F)do if type(J)=='table'then G[#G+1]={Key=validKey(J.Key),Mode=J.Mode,Value=J.Value}end end end
+C.__HotkeyController.Model:Import(B,G);aQ();if aD==B then aO();show(aA,false);show(aB,false)end
+return C
+end
+function p.AddHotkey(C,F)
+F=F or{};local G=C.__HotkeyController.Model:Add(B,{Key=validKey(F.Key),Mode=F.Mode,Value=F.Value});if aD==B then aO()end;aQ();return G
+end
+function p.ResetHotkeys(C)C:SetHotkeys{};return C end
+function p.OpenHotkeys(C,F)C.__HotkeyController:Open(B,F)end
+p.__HotkeyController=m
+bind(v.MouseButton2Click,function()if not p.Locked then m:Open(B)end end)
+if type(u.Hotkeys)=='table'then p:SetHotkeys(u.Hotkeys)end
+end
+as[p]=z
+bind(v.Destroying,function()
+if z.Entry then if aD==z.Entry then m:Close()end;m.Model:Unregister(z.Entry)end
+for B,C in ipairs(z.Signals)do C:Disconnect()end;as[p]=nil;m:HideDescription();if not m.Destroyed then aQ()end
+end)
+end
+connect(al.InputBegan,function(m,p)
+local r=keyName(m)
+if aq.Picking then
+if m.UserInputType~=Enum.UserInputType.Keyboard and not r then return end
+local u=aq.Picking
+if r=='Escape'then aq:CancelCapture();return end
+r=(r=='Backspace'or r=='Delete')and'Unbound'or validKey(r)
+if r~='Unbound'or m.KeyCode==Enum.KeyCode.Backspace or m.KeyCode==Enum.KeyCode.Delete then
+aq.Model:Update(u.Entry,u.Binding,{Key=r});aq:CancelCapture();aP();aO();aQ()
+end;return
+end
+if r=='Escape'then aq:CloseAll();aq:HideDescription();return end
+local u=m.UserInputType~=Enum.UserInputType.Keyboard
+local v=Vector2.new(m.Position.X,m.Position.Y)
+local function inside(x)return x.Visible and v.X>=x.AbsolutePosition.X and v.X<=x.AbsolutePosition.X+x.AbsoluteSize.X and v.Y>=x.AbsolutePosition.Y and v.Y<=x.AbsolutePosition.Y+x.AbsoluteSize.Y end
+if u and(inside(az)or inside(aA)or inside(aB)or inside(aC))then return end
+if u and(m.UserInputType==Enum.UserInputType.MouseButton1 or m.UserInputType==Enum.UserInputType.MouseButton2)then aq:CloseAll()end
+if r then aq.Model:Input(r,true,p or al:GetFocusedTextBox()~=nil or az.Visible or aA.Visible or aC.Visible)end
+end)
+connect(al.InputEnded,function(m)local p=keyName(m);if p then aq.Model:Input(p,false,false)end end)
+connect(al.WindowFocusReleased,function()aq.Model:Blur();aq:CloseAll();aq:HideDescription()end)
+local m=0
+connect(am.Heartbeat,function(p)
+m+=p;if m<.05 then return end;m=0
+for r,u in ipairs(aq.Model.Entries)do aq.Model:Enforce(u)end
+if ao.Closed or not ap.ScreenGui.Enabled or not at.Visible then aq:CloseAll();aq:HideDescription()end
+end)
+connect(ao.UIElements.Main:GetPropertyChangedSignal'Position',function()aq:CloseAll();aq:HideDescription()end)
+local p=aa:OnThemeChange(function()if aE then aP()end end)
+connect(ap.ScreenGui:GetPropertyChangedSignal'AbsoluteSize',function()aq:CloseAll();aq:HideDescription()end)
+connect(ap.UIScaleObj:GetPropertyChangedSignal'Scale',function()aq:CloseAll();aq:HideDescription()end)
+function aq.Destroy(r)
+if r.Destroyed then return end;r.Destroyed=true;aG+=1;r.Picking=nil
+if p then p:Disconnect()end
+if aN then aN:Cancel()end
+for u,v in ipairs(ar)do v:Disconnect()end
+for u,v in pairs(as)do for x,z in ipairs(v.Signals)do z:Disconnect()end end
+table.clear(r.Model.Entries)
+for u,v in ipairs{aw,az,aA,aB,aC}do if au[v]then au[v]:Cancel()end;v:Destroy()end
+end
+connect(ao.UIElements.Main.Destroying,function()aq:Destroy()end)
+return aq
+end
+return an end function a.ap():typeof(__modImpl())local aa=a.cache.ap if not aa then aa={c=__modImpl()}a.cache.ap=aa end return aa.c end end do local function __modImpl()
+
+
+local aa={}
 function aa.New(af,ai,ak)
 local al=game:GetService'UserInputService'
 local am=game:GetService'RunService'
@@ -37974,7 +38347,7 @@ connect(ai.ScreenGui:GetPropertyChangedSignal'Enabled',update)
 connect(af.UIElements.Main.Destroying,function()an:Destroy()end)
 return an
 end
-return aa end function a.ao():typeof(__modImpl())local aa=a.cache.ao if not aa then aa={c=__modImpl()}a.cache.ao=aa end return aa.c end end do local function __modImpl()
+return aa end function a.aq():typeof(__modImpl())local aa=a.cache.aq if not aa then aa={c=__modImpl()}a.cache.aq=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -40250,11 +40623,14 @@ end
 
 
 
-aw.Cursor=a.ao().New(aw,av.WindUI,an)
+aw.DescriptionMode=av.DescriptionMode or"Inline"
+aw.FeatureUI=a.ap().New(aw,av.WindUI)
+function aw.ShowHotkeys(x)aw.FeatureUI:ShowAll();return aw end
+aw.Cursor=a.aq().New(aw,av.WindUI,an)
 function aw.SetCustomCursor(x,z)aw.Cursor:Set(z);return aw end
 aw:SetCustomCursor(av.CustomCursor or false)
 return aw
-end end function a.ap():typeof(__modImpl())local aa=a.cache.ap if not aa then aa={c=__modImpl()}a.cache.ap=aa end return aa.c end end end
+end end function a.ar():typeof(__modImpl())local aa=a.cache.ar if not aa then aa={c=__modImpl()}a.cache.ar=aa end return aa.c end end end
 
 local aa={
 Window=nil,
@@ -40563,7 +40939,7 @@ aa:SetTheme"Dark"
 aa:SetLanguage(as.Language)
 
 function aa.CreateWindow(az,aA)
-local aB=a.ap()
+local aB=a.ar()
 
 if not am:IsStudio()and writefile then
 if not isfolder"WindUI"then

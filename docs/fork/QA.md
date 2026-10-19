@@ -134,3 +134,21 @@ A cleanup regression surfaced queued native-shape property events after a UICorn
 ![Light at 0.7: panel and card backgrounds now transparent; text remains opaque](Transparency-Light-v8.jpg)
 
 ![Dark at 0.7, with the filled white cursor visible](Transparency-Dark-v8.jpg)
+
+## Revision 9 — hover descriptions and multi-hotkey feature editor
+
+- Added opt-in window `DescriptionMode = "Tooltip"` and per-element `DescMode` override. The example uses hover cards instead of inline descriptions. Existing Inline remains the library default. Cards use 15px titles, wrapped 14px bodies, a short hover delay, theme-aware Dialog/Text/Placeholder roles, smooth fade and viewport-aware side placement.
+- Boolean Toggles support per-feature right-click lists, multiple bindings, hover-side editors (Key / Mode / Value switch / Delete), All Hotkeys, New Hotkey and Reset. No Visible control. Other element types can explicitly opt in with a boolean `HotkeyCallback`.
+- Pure-model suite: **22 passed**, including Enabled/Disabled first-press semantics, repeat suppression, Hold release/blur, processed input, lock, active-hold deletion, Always precedence/enforcement, independent export and multiple import.
+- Final sequential client suites: Runtime 65, Visual 86, Selection 10, Profile 39, Polish 18, Flyout 13, Preferences 33, Interaction 28, Hotkeys 51 — **343 assertions passed**. New tests cover actual right-click/hover/capture/reset/delete signals, Escape cancellation, seven-theme popup contrast, 75/100/125% DPI viewport containment, scrollable All Hotkeys, window close/reopen, dynamic title metadata and feature destruction.
+- A uniquely named temporary QA config was written with the real Save API, decoded from disk, mutated and restored with Load, then deleted. Both target `Value=false` and feature value false survived; both bindings remained; ordinary slider values still loaded. Old records without hotkeys retain code-defined defaults. Stable unique Flags (or explicit registration) remain necessary, as in upstream.
+- All model/number/tab tests passed locally; **94 Lua files compiled**. Tests are API/synthetic GUI checks, not a physical keyboard/device compatibility matrix. Synthetic focus broadcasts may produce Roblox CorePackages FocusNavigation logs; this is not claimed as a completely clean host console.
+- Element deletion now removes identity once instead of removing an aliased Tab collection twice by a stale index. Description/title metadata follows setters. Transient fade targets are deduplicated so repeated hidden-window polling cannot restart closing animations forever.
+- Final restart/failure/concurrency suite: **10 passed**, including four distinct feature registrations and exactly two configured demo hotkeys after reruns. All example toggles have stable Flags for config persistence.
+- Actual OS screenshots were individually inspected: compact title-only Distance with a readable Light hover card, Dark context plus Value switch in its side editor, and a closeable Light All Hotkeys table. The All Hotkeys visual session includes an explicitly added Always binding for inspection; default example bindings remain K/Toggle/Enabled and L/Hold/Enabled. Popup overlap over underlying content is intentional; controls/text within each popup do not overlap.
+
+![Light hover description with native compact row](Description-Light-v9.jpg)
+
+![Dark right-click hotkeys and side editor with Value switch](Hotkeys-Dark-v9.jpg)
+
+![Light All Hotkeys panel](Hotkeys-All-v9.jpg)

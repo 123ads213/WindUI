@@ -54,7 +54,7 @@ local Window = WindUI:CreateWindow({
     Title = 'WindUI', Author = 'Footagesus · Extended fork',
     Folder = 'WindUI-fork', Icon = 'panels-top-left', Theme = 'Dark',
     CustomCursor = { Enabled = true, Size = 10 }, DragSmoothness = 0.045,
-    ContentPaddingTop = 10, HideSearchBar = false, LockOffscreen = true, NewElements = true, Size = UDim2.fromOffset(740, 520),
+    DescriptionMode = 'Tooltip', ContentPaddingTop = 10, HideSearchBar = false, LockOffscreen = true, NewElements = true, Size = UDim2.fromOffset(740, 520),
 })
 -- Register immediately: even a later setup error remains cleanable on rerun.
 Env.WindUIForkDemo = { Library = WindUI, Window = Window }
@@ -69,7 +69,7 @@ local Themes = Appearance:Tab({ Title = 'Themes', Icon = 'palette' })
 local Calls = {}
 Player:Section({ Title = 'Player settings' })
 local Big = Player:Slider({
-    Title = 'Distance', Icon = 'ruler', IconSize = 24, IconOffset = Vector2.new(4,-3), Desc = 'Compact display, numeric callback.',
+    Title = 'Distance', Icon = 'ruler', IconSize = 24, Desc = 'Set the maximum player display distance. Large values are compact; focus the value to edit the full number.',
     Value = { Min = 0, Max = 1e9, Default = 500000 }, Step = 1, IsTooltip = true,
     Callback = function(value) Calls.Distance = value end,
 })
@@ -78,7 +78,7 @@ local Billion = Player:Slider({ Title = 'Budget', Icon = 'wallet', IconSize = 24
 local Fine = Player:Slider({ Title = 'Precision', Width = 170, ValueWidth = 72,
     Value = { Min = -1, Max = 1, Default = .12345 }, Step = .00001,
     Callback = function(value) Calls.Fine = value end })
-Player:Toggle({ Title = 'Show players', Value = true, Callback = function() end })
+local ShowPlayers = Player:Toggle({ Title = 'Show players', Flag = 'show_players', Desc = 'Show player overlays. Right-click to manage multiple hotkeys. K toggles; L applies Enabled while held.', Value = true, Hotkeys = { { Key = 'K', Mode = 'Toggle', Value = true }, { Key = 'L', Mode = 'Hold', Value = true } }, Callback = function(value) Calls.ShowPlayers = value end })
 Player:Button({ Title = 'Reset distance', Callback = function() Big:Set(500000) end })
 
 World:Section({ Title = 'World settings' })
@@ -87,9 +87,9 @@ local Balance = World:ProgressBar({ Title = 'Balance', DisplayMode = 'Value',
     Value = { Min = 0, Max = 1e9, Default = 500000 } })
 local Collection = World:ProgressBar({ Title = 'Collection', DisplayMode = 'Fraction', Width = 210,
     Value = { Min = 0, Max = 1e9, Default = 250000000 } })
-World:Toggle({ Title = 'Shadows', Value = true, Callback = function() end })
+World:Toggle({ Title = 'Shadows', Flag = 'world_shadows', Value = true, Callback = function() end })
 
-General:Toggle({ Title = 'Lock Offscreen', Value = true,
+General:Toggle({ Title = 'Lock Offscreen', Flag = 'lock_offscreen', Value = true,
     Callback = function(value) Window:SetLockOffscreen(value) end })
 General:Paragraph({ Title = 'Nested tabs', Desc = 'Click Visuals to expand Player and World. Each child has its own page; the last selected child is remembered.' })
 General:Slider({ Title = 'Unshortened', Compact = false, Width = 170, ValueWidth = 72,
@@ -98,7 +98,7 @@ General:Slider({ Title = 'Locked', Locked = true, Value = { Min = 0, Max = 1e6, 
 General:Slider({ Title = 'Fixed range', Value = { Min = 5, Max = 5, Default = 5 } })
 Themes:Dropdown({ Title = 'Theme', Values = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' }, Value = 'Dark',
     Callback = function(theme) WindUI:SetTheme(theme) end })
-Themes:Toggle({ Title = 'Preview toggle', Value = true, Callback = function() end })
+Themes:Toggle({ Title = 'Preview toggle', Flag = 'preview_toggle', Value = true, Callback = function() end })
 Themes:Slider({ Title = 'Preview slider', Value = { Min = 0, Max = 1e6, Default = 500000 }, IsTooltip = true })
 Themes:Button({ Title = 'Preview button' })
 Themes:Input({ Title = 'Preview input', Placeholder = 'Type here…', Callback = function() end })
@@ -107,6 +107,7 @@ local Profile = Window:CreateProfile({
     Themes = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' },
     OnThemeChanged = function(theme) Themes.Elements[1]:Select(theme) end,
     History = {
+        { Version = '1.6.66-fork.9', Date = '2026-10-19', Title = 'Descriptions & hotkeys', Description = 'Themed hover descriptions and right-click multi-hotkey editor, global list and config persistence. Toggle, Hold and Always with explicit boolean Value.' },
         { Version = '1.6.66-fork.8', Date = '2026-10-18', Title = 'Transparency & interaction', Description = 'Background-only transparency now includes themed panels and surfaces. Time-based smooth dragging and an optional filled white cursor with lifecycle cleanup.' },
         { Version = '1.6.66-fork.7', Date = '2026-10-18', Title = 'Search & transparency', Description = 'Original WindUI Search above COMMON. Longer preferences menu, clean Style row and thumb-free Transparency bar with a hover-only value.' },
         { Version = '1.6.66-fork.6', Date = '2026-10-18', Title = 'Profile & preferences', Description = 'Themed profile menu, subscription display, Renew, menu scaling, Style and scrollable update history. Animated Appearance tab section and centred title icons.' },
@@ -116,10 +117,12 @@ local Profile = Window:CreateProfile({
         { Version = '1.6.66-fork.2', Date = '2026-10-18', Title = 'Original WindUI layout', Description = 'Original inline controls and resize behavior, nested Player/World pages and optional Lock Offscreen.' },
     },
 })
+local DemoConfig = Window.ConfigManager and Window.ConfigManager:CreateConfig('fork-example-hotkeys')
+Env.WindUIForkDemoConfig = DemoConfig
 Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 
 Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
-    Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
+    ShowPlayers = ShowPlayers, Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
     World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile }
 Env.__WindUIForkPendingLibrary = nil
 return Window

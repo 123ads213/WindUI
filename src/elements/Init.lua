@@ -81,9 +81,11 @@ return {
 				if frame then
 					content.ElementFrame = frame.UIElements.Main
 					function content:SetTitle(title)
+                        content.Title=title
 						return frame.SetTitle and frame:SetTitle(title)
 					end
 					function content:SetDesc(desc)
+                        content.Desc=desc
 						return frame.SetDesc and frame:SetDesc(desc)
 					end
 					function content:SetImage(image, size)
@@ -98,12 +100,20 @@ return {
 					function content:Destroy()
 						frame:Destroy()
 
-						table.remove(Window.AllElements, config.GlobalIndex)
-						table.remove(tbl.Elements, config.Index)
-						table.remove(Tab.Elements, config.Index)
+                        -- A Tab may be both tbl and Tab; remove by identity once,
+                        -- not by a stale creation index after other deletions.
+                        local function removeFrom(list)
+                            local index=table.find(list,content)
+                            if index then table.remove(list,index)end
+                        end
+                        removeFrom(Window.AllElements)
+                        removeFrom(tbl.Elements)
+                        if Tab and Tab.Elements~=tbl.Elements then removeFrom(Tab.Elements)end
 						tbl:UpdateAllElementShapes(tbl)
 					end
 				end
+
+				if frame and Window.FeatureUI then Window.FeatureUI:Register(content,frame,config)end
 
 				Window.AllElements[config.Index] = content
 				tbl.Elements[config.Index] = content

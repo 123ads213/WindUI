@@ -3,7 +3,7 @@
 return [[
 {
     "name": "windui",
-    "version": "1.6.66-fork.8",
+    "version": "1.6.66-fork.9",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -18,7 +18,7 @@ return [[
         "live-build": "concurrently \"npm run live\" \"npm run watch --\"",
         "example-live-build": "INPUT_FILE=main_example.lua npm run live-build",
         "updater": "python3 updater/main.py",
-        "test": "luau tests/NumberFormat.luau && luau tests/TabTree.luau"
+        "test": "luau tests/NumberFormat.luau && luau tests/TabTree.luau && luau tests/HotkeyModel.luau"
     },
     "keywords": [
         "ui-library",

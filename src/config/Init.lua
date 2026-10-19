@@ -12,6 +12,10 @@ ConfigManager = {
     Path = nil,
     Configs = {},
     Parser = {
+        Button = {
+            Save = function(obj)return {__type=obj.__type}end,
+            Load = function()end,
+        },
         Colorpicker = {
             Save = function(obj)
                 return {
@@ -93,6 +97,22 @@ ConfigManager = {
         },
     }
 }
+
+-- Extend existing records, retaining every legacy element value/parser.
+for _,parser in pairs(ConfigManager.Parser)do
+ local save,load=parser.Save,parser.Load
+ parser.Save=function(element)
+  local data=save(element)
+  if element.GetHotkeys then data.hotkeys=element:GetHotkeys()end
+  return data
+ end
+ parser.Load=function(element,data)
+  local binds=element and element.SetHotkeys and data.hotkeys
+  if binds~=nil then element:SetHotkeys({})end
+  load(element,data)
+  if binds~=nil then element:SetHotkeys(binds)end
+ end
+end
 
 function ConfigManager:Init(WindowTable)
     if not WindowTable.Folder then

@@ -156,10 +156,11 @@ return function(Config)
 
 	local Title = CreateText(Element.Title, "Title")
 	local Desc = CreateText(Element.Desc, "Desc")
+    local tooltipDesc=(Config.ParentConfig.DescMode or Config.Window.DescriptionMode)=="Tooltip"
 	if not Element.Title or Element.Title == "" then
 		Desc.Visible = false
 	end
-	if not Element.Desc or Element.Desc == "" then
+	if tooltipDesc or not Element.Desc or Element.Desc == "" then
 		Desc.Visible = false
 	end
 
@@ -485,7 +486,7 @@ return function(Config)
 	function Element:SetDesc(text)
 		Element.Desc = text
 		Desc.Text = text or ""
-		if not text then
+		if tooltipDesc or not text or text=="" then
 			Desc.Visible = false
 		elseif not Desc.Visible then
 			Desc.Visible = true
