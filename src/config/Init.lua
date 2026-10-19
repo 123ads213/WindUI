@@ -205,6 +205,7 @@ function ConfigManager:CreateConfig(configFilename, autoload)
             end
         end
         
+        if Window.HUD and not Window.HUD.Destroyed then saveData.__hud=Window.HUD:Export()end
         local jsonData = HttpService:JSONEncode(saveData)
         if writefile then 
             writefile(ConfigModule.Path, jsonData)
@@ -253,6 +254,7 @@ function ConfigManager:CreateConfig(configFilename, autoload)
             end
         end
         
+        if loadData.__hud and Window.HUD and not Window.HUD.Destroyed then Window.HUD:Import(loadData.__hud)end
         ConfigModule.CustomData = loadData.__custom or {}
         
         return ConfigModule.CustomData

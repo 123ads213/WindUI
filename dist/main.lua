@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.10  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.11  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -26857,7 +26857,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.10",
+    "version": "1.6.66-fork.11",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -26872,7 +26872,7 @@ return[[
         "live-build": "concurrently \"npm run live\" \"npm run watch --\"",
         "example-live-build": "INPUT_FILE=main_example.lua npm run live-build",
         "updater": "python3 updater/main.py",
-        "test": "luau tests/NumberFormat.luau && luau tests/TabTree.luau && luau tests/HotkeyModel.luau"
+        "test": "luau tests/NumberFormat.luau && luau tests/TabTree.luau && luau tests/HotkeyModel.luau && luau tests/HUDGeometry.luau"
     },
     "keywords": [
         "ui-library",
@@ -29351,6 +29351,7 @@ ak.__elements[tostring(al)]=ae.Parser[am.__type].Save(am)
 end
 end
 
+if ad.HUD and not ad.HUD.Destroyed then ak.__hud=ad.HUD:Export()end
 local al=ac:JSONEncode(ak)
 if writefile then
 writefile(ai.Path,al)
@@ -29399,6 +29400,7 @@ end)
 end
 end
 
+if al.__hud and ad.HUD and not ad.HUD.Destroyed then ad.HUD:Import(al.__hud)end
 ai.CustomData=al.__custom or{}
 
 return ai.CustomData
@@ -33935,24 +33937,25 @@ return aa end function a._():typeof(__modImpl())local aa=a.cache._ if not aa the
 
 local aa=a.j()
 local af={}
-function af.New(ag)
-local ai=aa.New('ImageLabel',{Name=ag.Name..'Shadow',Parent=ag.Parent,Image='rbxassetid://8992230677',BackgroundTransparency=1,
+function af.New(ag,ai)
+ai=ai or{}
+local ak=aa.New('ImageLabel',{Name=ag.Name..'Shadow',Parent=ag.Parent,Image='rbxassetid://8992230677',BackgroundTransparency=1,
 ScaleType='Slice',SliceCenter=Rect.new(99,99,99,99),ImageTransparency=1,ThemeTag={ImageColor3='WindowShadow'},ZIndex=math.max(1,ag.ZIndex-1),Active=false})
-local ak={}
+local al={}
 local function sync()
-if not ai.Parent or not ag.Parent then return end
-ai.AnchorPoint=ag.AnchorPoint
-ai.Position=ag.Position+UDim2.fromOffset(-40+80*ag.AnchorPoint.X,-40+80*ag.AnchorPoint.Y)
-ai.Size=ag.Size+UDim2.fromOffset(80,80)
-ai.Visible=ag.Visible
-local al=ag:IsA'CanvasGroup'and ag.GroupTransparency or 0
+if not ak.Parent or not ag.Parent then return end
+ak.AnchorPoint=ag.AnchorPoint
+ak.Position=ag.Position+UDim2.fromOffset(-40+80*ag.AnchorPoint.X,-40+80*ag.AnchorPoint.Y)
+ak.Size=ag.Size+UDim2.fromOffset(80,80)
+ak.Visible=ag.Visible
+local am=ag:IsA'CanvasGroup'and ag.GroupTransparency or 0
 
-ai.ImageTransparency=1-.4*(1-al)*(1-ag.BackgroundTransparency)
+ak.ImageTransparency=1-(ai.Opacity or.4)*(1-am)*(ai.IgnoreBackground and 1 or(1-ag.BackgroundTransparency))
 end
-for al,am in ipairs{'Position','Size','Visible','AnchorPoint','BackgroundTransparency'}do ak[#ak+1]=ag:GetPropertyChangedSignal(am):Connect(sync)end
-if ag:IsA'CanvasGroup'then ak[#ak+1]=ag:GetPropertyChangedSignal'GroupTransparency':Connect(sync)end
-ak[#ak+1]=ag.Destroying:Connect(function()for al,am in ipairs(ak)do am:Disconnect()end;ai:Destroy()end)
-sync();return ai
+for am,an in ipairs{'Position','Size','Visible','AnchorPoint','BackgroundTransparency'}do al[#al+1]=ag:GetPropertyChangedSignal(an):Connect(sync)end
+if ag:IsA'CanvasGroup'then al[#al+1]=ag:GetPropertyChangedSignal'GroupTransparency':Connect(sync)end
+al[#al+1]=ag.Destroying:Connect(function()for am,an in ipairs(al)do an:Disconnect()end;ak:Destroy()end)
+sync();return ak
 end
 return af end function a.aa():typeof(__modImpl())local aa=a.cache.aa if not aa then aa={c=__modImpl()}a.cache.aa=aa end return aa.c end end do local function __modImpl()
 
@@ -37672,6 +37675,339 @@ return an end function a.ar():typeof(__modImpl())local aa=a.cache.ar if not aa t
 
 
 local aa={}
+local function clamp(af,ag,ai)return math.clamp(af,ag,math.max(ag,ai))end
+function aa.Clamp(af,ag,ai,ak,al,am)return clamp(af,0,al-ai),clamp(ag,0,am-ak)end
+function aa.Position(af,ag,ai,ak,al)
+return aa.Clamp((af.X or 0)*ak-(af.Anchor or 0)*ag,(af.Y or 0)*al,ag,ai,ak,al)
+end
+function aa.Store(af,ag,ai,ak,al,am,an)
+af,ag=aa.Clamp(af,ag,ai,ak,al,am);an=an or 0
+return{X=clamp((af+an*ai)/math.max(al,1),0,1),Y=clamp(ag/math.max(am,1),0,1),Anchor=an}
+end
+function aa.Release(af,ag,ai,ak,al,am,an)
+local ao=an and math.clamp(math.floor((af+ai*.5)/math.max(al/3,1)),0,2)/2 or 0
+return aa.Store(af,ag,ai,ak,al,am,ao)
+end
+function aa.Snap(af,ag,ai,ak,al,am,an)
+local ao={Center=false,Top=false,Bottom=false}
+if not an then
+if math.abs(af+ai/2-al/2)<10 then af=al/2-ai/2;ao.Center=true end
+if math.abs(ag+ak/2-32)<10 then ag=32-ak/2;ao.Top=true
+elseif math.abs(ag+ak/2-(am-32))<10 then ag=am-32-ak/2;ao.Bottom=true end
+end
+af,ag=aa.Clamp(af,ag,ai,ak,al,am);return af,ag,ao
+end
+function aa.Valid(af)
+local function finite(ag)return type(ag)=='number'and ag==ag and math.abs(ag)<math.huge end
+return type(af)=='table'and finite(af.X)and finite(af.Y)and af.X>=0 and af.X<=1 and af.Y>=0 and af.Y<=1 and(af.Anchor==0 or af.Anchor==.5 or af.Anchor==1)
+end
+return aa end function a.as():typeof(__modImpl())local aa=a.cache.as if not aa then aa={c=__modImpl()}a.cache.as=aa end return aa.c end end do local function __modImpl()
+
+
+
+local aa=a.j()
+local af=a.as()
+local ag=game:GetService'UserInputService'
+local ai=game:GetService'RunService'
+local ak={}
+function ak.New(al,am,an)
+local ao={Widgets={},Active=nil,Destroyed=false,UIElements={}}
+local ap={}
+local function connect(aq,ar)local as=aq:Connect(ar);ap[#ap+1]=as;return as end
+local function menuOpen()return not al.Destroyed and not al.Closed and am.ScreenGui.Enabled and al.UIElements.Main.Visible and al.UIElements.Main.Main.Visible end
+local aq={}
+local function size()local ar=an.AbsoluteSize;return ar.X,ar.Y end
+local function point(ar)
+local as=ar and Vector2.new(ar.Position.X,ar.Position.Y)or(ag:GetMouseLocation()+an.AbsolutePosition)
+return as-an.AbsolutePosition
+end
+local function inside(ar,as)
+local at,au=ar.AbsolutePosition-an.AbsolutePosition,ar.AbsoluteSize
+return as.X>=at.X and as.Y>=at.Y and as.X<=at.X+au.X and as.Y<=at.Y+au.Y
+end
+local ar={}
+for as,at in ipairs{'Center','Top','Bottom'}do
+ar[at]=aa.New('Frame',{Parent=an,Name='HUDGuide'..at,BackgroundTransparency=1,ThemeTag={BackgroundColor3='Text'},BorderSizePixel=0,ZIndex=1})
+end
+ao.UIElements.Guides=ar
+local function cancel()
+if ao.Active then
+local as=ao.Active;local at,au=size();local av=as.Frame.Position;local aw=as.Frame.AbsoluteSize
+as.State=af.Release(av.X.Offset,av.Y.Offset,aw.X,aw.Y,at,au,as.Align)
+if as.OnChange then as.OnChange(as.State)end
+end
+ao.Active=nil;ao.Input=nil;ao.Hits=nil
+if am.CurrentInput==aq then am.CurrentInput=nil end
+end
+function ao.Layout(as,at)
+local au,av=size();local aw=at.Frame.AbsoluteSize
+local ax,ay=af.Position(at.State,aw.X,aw.Y,au,av)
+at.Frame.Position=UDim2.fromOffset(math.round(ax),math.round(ay))
+end
+function ao.Add(as,at,au,av,aw,ax)
+local ay={Id=at,Frame=au,State=av,Align=aw,OnChange=ax,Hover=0,Held=0}
+as.Widgets[at]=ay
+local az=aa.New('Frame',{Parent=an,Name=at..'DragHighlight',BackgroundTransparency=1,ThemeTag={BackgroundColor3='Text'},BorderSizePixel=0,ZIndex=1})
+aa.New('UICorner',{Parent=az,CornerRadius=UDim.new(0,9)})
+ay.Highlight=az
+connect(au.InputBegan,function(aA)
+if aA.UserInputType~=Enum.UserInputType.MouseButton1 and aA.UserInputType~=Enum.UserInputType.Touch then return end
+if not menuOpen()or not au.Visible or as.Active or am.CurrentInput or ag:GetFocusedTextBox()then return end
+local aB=point(aA);if inside(al.UIElements.Main,aB)then return end
+local aC=au.AbsolutePosition-an.AbsolutePosition
+as.Active=ay;as.Input=aA;as.Offset=aB-aC;am.CurrentInput=aq
+local aD,aE=size();ay.State=af.Store(aC.X,aC.Y,au.AbsoluteSize.X,au.AbsoluteSize.Y,aD,aE,0)
+end)
+connect(au:GetPropertyChangedSignal'AbsoluteSize',function()if as.Active~=ay then as:Layout(ay)end end)
+as:Layout(ay);return ay
+end
+connect(ag.InputChanged,function(as)
+local at=ao.Active;if not at then return end
+if not menuOpen()then cancel();return end
+if not((ao.Input.UserInputType==Enum.UserInputType.Touch and as==ao.Input)or(ao.Input.UserInputType==Enum.UserInputType.MouseButton1 and as.UserInputType==Enum.UserInputType.MouseMovement))then return end
+local au=point(as)-ao.Offset;local av=at.Frame.AbsoluteSize;local aw,ax=size();local ay,az=au.X,au.Y
+if at.Align then ay,az,ao.Hits=af.Snap(ay,az,av.X,av.Y,aw,ax,ag:IsKeyDown(Enum.KeyCode.LeftControl)or ag:IsKeyDown(Enum.KeyCode.RightControl))
+else ay,az=af.Clamp(ay,az,av.X,av.Y,aw,ax);ao.Hits=nil end
+at.State=af.Store(ay,az,av.X,av.Y,aw,ax,0);ao:Layout(at)
+end)
+connect(ag.InputEnded,function(as)if ao.Active and(as==ao.Input or(ao.Input.UserInputType==Enum.UserInputType.MouseButton1 and as.UserInputType==Enum.UserInputType.MouseButton1))then cancel()end end)
+connect(ag.WindowFocusReleased,cancel)
+connect(an:GetPropertyChangedSignal'AbsoluteSize',function()cancel();for as,at in pairs(ao.Widgets)do ao:Layout(at)end end)
+connect(ai.RenderStepped,function(as)
+if ao.Destroyed then return end
+local at=menuOpen();if ao.Active and(not at or not ao.Active.Frame.Visible)then cancel()end
+local au=point();local av=1-math.exp(-4*math.min(as,.1))
+for aw,ax in pairs(ao.Widgets)do
+local ay=ax.Frame.Visible and ax.Frame.GroupTransparency<.99
+local az=at and ay and not inside(al.UIElements.Main,au)and(inside(ax.Frame,au)or ao.Active==ax)
+ax.Hover+=((az and 1 or 0)-ax.Hover)*av
+ax.Held+=((ao.Active==ax and 1 or 0)-ax.Held)*av
+ax.Frame.Active=at and ay
+local aA,aB=ax.Frame.Position,ax.Frame.AbsoluteSize
+ax.Highlight.Position=aA-UDim2.fromOffset(3,3);ax.Highlight.Size=UDim2.fromOffset(aB.X+6,aB.Y+6)
+ax.Highlight.Visible=at and ay
+ax.Highlight.BackgroundTransparency=1-(12+24*ax.Hover)/255*(1-ax.Frame.GroupTransparency)
+end
+local aw,ax=size()
+ar.Center.Position=UDim2.fromOffset(math.floor(aw/2),0);ar.Center.Size=UDim2.fromOffset(1,ax)
+ar.Top.Position=UDim2.fromOffset(0,32);ar.Top.Size=UDim2.fromOffset(aw,1)
+ar.Bottom.Position=UDim2.fromOffset(0,ax-32);ar.Bottom.Size=UDim2.fromOffset(aw,1)
+for ay,az in pairs(ar)do
+local aA=ao.Active and ao.Active.Align and not ag:IsKeyDown(Enum.KeyCode.LeftControl)and not ag:IsKeyDown(Enum.KeyCode.RightControl)
+local aB=aA and(ao.Hits and ao.Hits[ay]and.45 or.1)or 0
+local aC=1-az.BackgroundTransparency;az.BackgroundTransparency=1-(aC+(aB-aC)*(1-math.exp(-8*math.min(as,.1))))
+end
+end)
+function ao.SetState(as,at,au)
+local av=as.Widgets[at];if not av or not af.Valid(au)then return false end
+if as.Active==av then cancel()end
+av.State={X=au.X,Y=au.Y,Anchor=au.Anchor};as:Layout(av);return true
+end
+function ao.GetState(as,at)local au=as.Widgets[at].State;return{X=au.X,Y=au.Y,Anchor=au.Anchor}end
+function ao.Cancel(as)cancel()end
+function ao.Destroy(as)
+if as.Destroyed then return end;cancel();as.Destroyed=true
+for at,au in ipairs(ap)do au:Disconnect()end
+for at,au in pairs(as.Widgets)do au.Highlight:Destroy()end
+for at,au in pairs(ar)do au:Destroy()end
+end
+return ao
+end
+return ak end function a.at():typeof(__modImpl())local aa=a.cache.at if not aa then aa={c=__modImpl()}a.cache.at=aa end return aa.c end end do local function __modImpl()
+
+
+
+local aa=a.j()
+local af=a.as()
+local ag=a.at()
+local ai=a.aa()
+local ak=game:GetService'RunService'
+local al=game:GetService'Players'
+local am=game:GetService'Stats'
+local an=aa.New
+local ao={}
+function ao.New(ap,aq,ar)
+ar=ar or{}
+local as={Destroyed=false,WatermarkEnabled=ar.Watermark~=false,KeylistEnabled=ar.Keylist~=false,Rows={},Metrics={FPS=0,VAR=0}}
+local at={}
+local function connect(au,av)local aw=au:Connect(av);at[#at+1]=aw;return aw end
+local au=an('ScreenGui',{Name='WindUI/HUD',Parent=aq.ScreenGui.Parent,IgnoreGuiInset=true,ScreenInsets='None',DisplayOrder=aq.ScreenGui.DisplayOrder-1,Enabled=aq.ScreenGui.Enabled})
+local function corner(av,aw)an('UICorner',{Parent=av,CornerRadius=UDim.new(0,aw)})end
+local function text(av,aw,ax,ay,az,aA,aB,aC,aD,aE)
+return an('TextLabel',{Parent=av,Name=aw,Text=ax,Position=UDim2.fromOffset(ay,az),Size=UDim2.fromOffset(aA,aB),BackgroundTransparency=1,BorderSizePixel=0,TextStrokeTransparency=1,TextSize=aC or 14,TextXAlignment='Left',TextTruncate='AtEnd',FontFace=Font.new(aa.Font,aE and Enum.FontWeight.SemiBold or Enum.FontWeight.Medium),ThemeTag={TextColor3=aD and'Placeholder'or'Text'},ZIndex=5})
+end
+local function icon(av,aw,ax,ay,az)
+local aA=aa.Image(aw,aw,0,ap.Folder,'HUDIcon',true,false,'Primary');aA.Parent=av;aA.Position=UDim2.fromOffset(ax,ay);aA.Size=UDim2.fromOffset(az,az);aA.ZIndex=5;aA.ImageLabel.ZIndex=5;return aA
+end
+local av=an('CanvasGroup',{Parent=au,Name='Watermark',Size=UDim2.fromOffset(640,34),GroupTransparency=1,Visible=false,BackgroundTransparency=.18,ThemeTag={BackgroundColor3='Dialog'},ZIndex=3});corner(av,17);ai.New(av)
+local aw=an('Frame',{Parent=av,Name='Content',Position=UDim2.fromOffset(12,0),Size=UDim2.new(1,-24,1,0),BackgroundTransparency=1,ZIndex=4})
+an('UIListLayout',{Parent=aw,FillDirection='Horizontal',VerticalAlignment='Center',Padding=UDim.new(0,12),SortOrder='LayoutOrder'})
+local ax={}
+local function cell(ay,az,aA)
+local aB=an('Frame',{Parent=aw,Name=ay,Size=UDim2.fromOffset(80,34),LayoutOrder=#ax+1,BackgroundTransparency=1,ZIndex=4})
+if az then icon(aB,az,0,9,16)end
+local aC=text(aB,'Value',aA,az and 22 or 0,0,120,34,14,true,false)
+local aD={Frame=aB,Label=aC,Symbol=az,Text=''};ax[#ax+1]=aD;return aD
+end
+local ay=cell('FPS','chart-no-axes-column-increasing','— FPS')
+local az=cell('Ping','signal','— MS')
+local aA=cell('Variance','activity','— VAR')
+local aB=cell('Loss','wifi','— LOSS')
+local aC=cell('Timeout','unplug','— TIMEOUT')
+local aD=ar.Name or al.LocalPlayer.DisplayName
+local aE=cell('Username','user-round',aD)
+local aF=an('TextLabel',{Parent=aw,Name='Platform',Text='RB',Size=UDim2.fromOffset(24,34),LayoutOrder=20,BackgroundTransparency=1,TextStrokeTransparency=1,TextSize=15,FontFace=Font.new(aa.Font,Enum.FontWeight.Bold),ThemeTag={TextColor3='Primary'},ZIndex=5})
+local aG=an('ImageLabel',{Parent=aw,Name='Avatar',Image='rbxthumb://type=AvatarHeadShot&id='..al.LocalPlayer.UserId..'&w=150&h=150',Size=UDim2.fromOffset(24,24),LayoutOrder=21,BackgroundTransparency=1,ZIndex=5});corner(aG,12)
+local aH=an('CanvasGroup',{Parent=au,Name='Keylist',Size=UDim2.fromOffset(180,34),BackgroundTransparency=1,GroupTransparency=1,Visible=false,ZIndex=3})
+local aI=an('Frame',{Parent=aH,Name='Header',Size=UDim2.new(1,0,0,34),BackgroundTransparency=.18,ThemeTag={BackgroundColor3='Dialog'},ZIndex=4});corner(aI,9)
+icon(aI,'list-tree',12,8,18);text(aI,'Title',ar.KeylistTitle or'Hotkeys',40,0,128,34,17,false,true)
+local aJ=an('Frame',{Parent=aH,Name='Body',Position=UDim2.fromOffset(0,38),Size=UDim2.fromOffset(180,0),BackgroundTransparency=.3,ThemeTag={BackgroundColor3='Dialog'},ClipsDescendants=true,ZIndex=4});corner(aJ,8)
+
+ai.New(aH,{IgnoreBackground=true})
+as.UIElements={Gui=au,Watermark=av,Content=aw,Cells=ax,Keylist=aH,Header=aI,Body=aJ,Avatar=aG,Badge=aF}
+local aK=ag.New(ap,aq,au);as.Drag=aK
+local aL={Watermark={X=.985,Y=.025,Anchor=1},Keylist={X=.08,Y=.38,Anchor=0}}
+aK:Add('Watermark',av,aL.Watermark,true)
+aK:Add('Keylist',aH,aL.Keylist,false)
+local aM,aN={},{}
+local function measure(aO,aP,aQ)
+local aR=aO..'/'..aP..tostring(aQ)
+if aM[aR]then return aM[aR]end
+if not aN[aR]then
+aN[aR]=true
+task.spawn(function()
+local b=Instance.new'GetTextBoundsParams';b.Text=aO;b.Font=Font.new(aa.Font,aQ and Enum.FontWeight.SemiBold or Enum.FontWeight.Medium);b.Size=aP;b.Width=10000
+local d,f=pcall(function()return game:GetService'TextService':GetTextBoundsAsync(b)end)
+aM[aR]=d and math.ceil(f.X)or math.ceil(#aO*aP*.58)
+aN[aR]=nil
+end)
+end
+return math.ceil(#aO*aP*.58)
+end
+local function setCell(aO,aP,aQ)
+if aO.Text~=aP then aO.Text=aP;aO.Label.Text=aP end
+local aR=math.min(aQ or 180,measure(aP,14,false))
+aO.Label.Size=UDim2.fromOffset(aR,34);aO.Frame.Size=UDim2.fromOffset(aR+(aO.Symbol and 22 or 0),34)
+end
+local function resizeWatermark()
+local aO=72+12*(#ax+1)
+for aP,aQ in ipairs(ax)do aO+=aQ.Frame.Size.X.Offset end
+local aP=math.clamp((au.AbsoluteSize.X-24)/math.max(aO-24,1),.05,1)
+local aQ=aw:FindFirstChildOfClass'UIScale'
+if not aQ then aQ=an('UIScale',{Parent=aw})end;aQ.Scale=aP
+av.Size=UDim2.fromOffset(math.ceil((aO-24)*aP+24),34*aP)
+aw.Size=UDim2.new(1,-24,0,34);aK:Layout(aK.Widgets.Watermark)
+end
+local function readPing()
+local aO,aP=pcall(function()return am.Network.ServerStatsItem['Data Ping']:GetValue()end)
+if aO and type(aP)=='number'and aP>=0 and aP<math.huge then return aP end
+aO,aP=pcall(function()return al.LocalPlayer:GetNetworkPing()*1000 end)
+if aO and type(aP)=='number'and aP>=0 and aP<math.huge then return aP end
+end
+local function finite(aO)return type(aO)=='number'and aO==aO and aO>=0 and aO<math.huge end
+function as.UpdateMetrics(aO)
+if aO.Destroyed then return end
+local aP=aO.Metrics;aP.Ping=readPing();aP.Loss=nil;aP.Timeout=nil
+if type(ar.MetricsProvider)=='function'then
+local aQ,aR=pcall(ar.MetricsProvider)
+if aQ and type(aR)=='table'then for b,d in ipairs{'Ping','Loss','Timeout'}do if finite(aR[d])then aP[d]=aR[d]end end end
+end
+setCell(ay,string.format('%d FPS',math.floor(aP.FPS+.5)))
+setCell(az,aP.Ping and string.format('%d MS',math.floor(aP.Ping+.5))or'— MS')
+setCell(aA,string.format('%.1f VAR',aP.VAR))
+setCell(aB,aP.Loss and string.format('%.1f%% LOSS',aP.Loss)or'— LOSS')
+setCell(aC,aP.Timeout and string.format('%.1fs TIMEOUT',aP.Timeout)or'— TIMEOUT')
+setCell(aE,aD,132);resizeWatermark()
+end
+local function rowFor(aO,aP,aQ)
+local aR=as.Rows[aO];if aR then return aR end
+local b=an('CanvasGroup',{Parent=aJ,Name='Binding_'..aO,Size=UDim2.new(1,0,0,26),BackgroundTransparency=1,GroupTransparency=1,ZIndex=5})
+local d=text(b,'Feature',aP.Owner.Title or'Feature',12,0,126,26,15,false,false)
+local f=an('Frame',{Parent=b,Name='Value',Position=UDim2.new(1,-34,0,7),Size=UDim2.fromOffset(22,12),BackgroundTransparency=0,ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(f,6)
+local g=an('Frame',{Parent=f,Name='Thumb',Size=UDim2.fromOffset(8,8),Position=UDim2.fromOffset(12,2),ThemeTag={BackgroundColor3='Dialog'},ZIndex=7});corner(g,4)
+aR={Frame=b,Label=d,Track=f,Thumb=g,Progress=0,Entry=aP,Binding=aQ}
+as.Rows[aO]=aR;return aR
+end
+local function active(aO,aP,aQ)
+if aO.Available and not aO.Available()then return false end
+local aR=aP.Active
+if aP.Mode=='Always'then
+aR=true;for b=aQ+1,#aO.Bindings do if aO.Bindings[b].Mode=='Always'then aR=false;break end end
+end
+if not aR then return false end
+if aO.Read and aO.Read()~=aP.Value then return false end
+return true
+end
+local aO,aP,aQ=0,0,0
+local aR={};local b=0
+connect(ak.RenderStepped,function(d)
+if as.Destroyed then return end
+d=math.max(d,.000001);aP+=d;aQ+=1;aO+=d
+b=b%60+1;aR[b]=d*1000
+if aO>=.25 then
+as.Metrics.FPS=aQ/aP
+local f=0;for g,h in ipairs(aR)do f+=h end;local g=f/#aR;local h=0;for i,l in ipairs(aR)do h+=(l-g)^2 end
+as.Metrics.VAR=math.sqrt(h/#aR);aO=0;aP=0;aQ=0
+as:UpdateMetrics()
+end
+local f=not ap.Closed and ap.UIElements.Main.Visible and ap.UIElements.Main.Main.Visible
+local g,h={},{};local i=0;local l=180
+for m,p in ipairs(ap.FeatureUI.Model.Entries)do for r,u in ipairs(p.Bindings)do
+local v=tostring(u.Id);h[v]=true;local x=rowFor(v,p,u);local z=active(p,u,r)
+x.Progress+=((z and 1 or 0)-x.Progress)*(1-math.exp(-12*math.min(d,.1)))
+if z then i+=1 end
+x.Label.Text=p.Owner.Title or'Feature';x.Label.Size=UDim2.new(1,-58,0,26)
+if x.Progress>.003 then l=math.max(l,math.min(300,measure(x.Label.Text,15,false)+58))end
+x.Frame.GroupTransparency=1-x.Progress
+x.Thumb.Position=UDim2.fromOffset(u.Value and 12 or 2,2)
+g[#g+1]=x
+end end
+for m,p in pairs(as.Rows)do if not h[m]then p.Frame:Destroy();as.Rows[m]=nil end end
+local m=0;for p,r in ipairs(g)do r.Frame.Position=UDim2.fromOffset(0,m);m+=26*r.Progress;r.Frame.Visible=r.Progress>.003 end
+l=math.min(l,math.max(80,au.AbsoluteSize.X-16))
+aJ.Size=UDim2.fromOffset(l,m);aJ.Visible=m>.1
+aH.Size=UDim2.fromOffset(l,34+(m>.1 and 4+m or 0))
+local p=1-math.exp(-10*math.min(d,.1))
+local function fade(r,u)
+if u then r.Visible=true end
+r.GroupTransparency+=((u and 0 or 1)-r.GroupTransparency)*p
+if not u and r.GroupTransparency>.995 then r.Visible=false end
+end
+fade(av,as.WatermarkEnabled)
+fade(aH,as.KeylistEnabled and(f or i>0 or m>.1))
+aK:Layout(aK.Widgets.Keylist)
+end)
+connect(aq.ScreenGui:GetPropertyChangedSignal'Enabled',function()au.Enabled=aq.ScreenGui.Enabled;if not au.Enabled then aK:Cancel()end end)
+connect(au:GetPropertyChangedSignal'AbsoluteSize',function()resizeWatermark()end)
+function as.SetWatermarkEnabled(d,f)d.WatermarkEnabled=f==true;return d end
+function as.SetKeylistEnabled(d,f)d.KeylistEnabled=f==true;return d end
+function as.ResetPositions(d)for f,g in pairs(aL)do aK:SetState(f,g)end;return d end
+function as.Export(d)return{Version=1,Watermark=d.WatermarkEnabled,Keylist=d.KeylistEnabled,Positions={Watermark=aK:GetState'Watermark',Keylist=aK:GetState'Keylist'}}end
+function as.Import(d,f)
+if type(f)~='table'then return false,'Invalid HUD config'end
+if f.Positions~=nil then
+if type(f.Positions)~='table'then return false,'Invalid HUD positions'end
+for g,h in pairs(f.Positions)do if not aL[g]or not af.Valid(h)then return false,'Invalid HUD anchor'end end
+end
+if f.Watermark~=nil and type(f.Watermark)~='boolean'then return false,'Invalid watermark state'end
+if f.Keylist~=nil and type(f.Keylist)~='boolean'then return false,'Invalid keylist state'end
+if f.Positions then for g,h in pairs(f.Positions)do aK:SetState(g,h)end end
+if f.Watermark~=nil then d.WatermarkEnabled=f.Watermark end
+if f.Keylist~=nil then d.KeylistEnabled=f.Keylist end;return true
+end
+function as.GetMetrics(d)local f={};for g,h in pairs(d.Metrics)do f[g]=h end;return f end
+function as.Destroy(d)
+if d.Destroyed then return end;d.Destroyed=true
+for f,g in ipairs(at)do g:Disconnect()end;aK:Destroy();au:Destroy()
+end
+connect(ap.UIElements.Main.Destroying,function()as:Destroy()end)
+as:UpdateMetrics()
+return as
+end
+return ao end function a.au():typeof(__modImpl())local aa=a.cache.au if not aa then aa={c=__modImpl()}a.cache.au=aa end return aa.c end end do local function __modImpl()
+
+
+local aa={}
 function aa.New(af,ag,ai)
 local ak=game:GetService'UserInputService'
 local al=game:GetService'RunService'
@@ -37725,7 +38061,7 @@ connect(ag.ScreenGui:GetPropertyChangedSignal'Enabled',update)
 connect(af.UIElements.Main.Destroying,function()am:Destroy()end)
 return am
 end
-return aa end function a.as():typeof(__modImpl())local aa=a.cache.as if not aa then aa={c=__modImpl()}a.cache.as=aa end return aa.c end end do local function __modImpl()
+return aa end function a.av():typeof(__modImpl())local aa=a.cache.av if not aa then aa={c=__modImpl()}a.cache.av=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -40005,11 +40341,17 @@ end
 av.DescriptionMode=au.DescriptionMode or"Inline"
 av.FeatureUI=a.ar().New(av,au.WindUI)
 function av.ShowHotkeys(v)av.FeatureUI:ShowAll();return av end
-av.Cursor=a.as().New(av,au.WindUI,am)
+function av.CreateHUD(v,x)
+if av.HUD and not av.HUD.Destroyed then return av.HUD end
+av.HUD=a.au().New(av,au.WindUI,x)
+return av.HUD
+end
+if au.HUD then av:CreateHUD(type(au.HUD)=='table'and au.HUD or{})end
+av.Cursor=a.av().New(av,au.WindUI,am)
 function av.SetCustomCursor(v,x)av.Cursor:Set(x);return av end
 av:SetCustomCursor(au.CustomCursor or false)
 return av
-end end function a.at():typeof(__modImpl())local aa=a.cache.at if not aa then aa={c=__modImpl()}a.cache.at=aa end return aa.c end end end
+end end function a.aw():typeof(__modImpl())local aa=a.cache.aw if not aa then aa={c=__modImpl()}a.cache.aw=aa end return aa.c end end end
 
 local aa={
 Window=nil,
@@ -40318,7 +40660,7 @@ aa:SetTheme"Dark"
 aa:SetLanguage(ar.Language)
 
 function aa.CreateWindow(ay,az)
-local aA=a.at()
+local aA=a.aw()
 
 if not al:IsStudio()and writefile then
 if not isfolder"WindUI"then

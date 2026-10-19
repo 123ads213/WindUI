@@ -4,7 +4,7 @@ Fork of [WindUI by Footagesus](https://github.com/Footagesus/WindUI), based on u
 
 ## Scope
 
-The original WindUI element layout, slider position, buttons, window sizing, sidebar sections and horizontal containers are retained. No layout based on the second reference image is applied. Changes are limited to compact numeric displays, nested tabs, numerical/interaction fixes needed by those features, curated themes, optional offscreen locking, animated subtab/section expansion, optional profile preferences and theme-aware notification icons.
+The original WindUI element layout, slider position, buttons, window sizing, sidebar sections and horizontal containers are retained. No layout based on the second reference image is applied. Changes are limited to compact numeric displays, nested tabs, numerical/interaction fixes needed by those features, curated themes, optional offscreen locking, animated subtab/section expansion, optional profile preferences, theme-aware notification icons, a compact gradient editor, per-feature hotkeys and optional watermark/keylist overlays.
 
 ## Run
 
@@ -360,3 +360,26 @@ color:Reset() -- restores the construction-time default and invokes callback
 Runtime QA: `tests/ForkColors.lua` checks format/alpha round trips, invalid input, 16-stop limits, UI signals, actual disk Save/Load, legacy solid configs, default reset, popup bounds at 0.75/1/1.25 scale, cursor-near hotkeys, and full-transparency shadow. `tests/ForkHotkeys.lua` retains the previous editor/persistence/lifecycle regression coverage. These are synthetic signal/API checks; screenshots are captured separately from the real Roblox window.
 
 Paste regression: `tests/ForkPaste.lua` covers menu-local cross-editor copy/paste with exact alpha, selected-stop isolation, HEX/RGBA auto-detection, visible invalid-input feedback, deferred focus/selection, context dismissal, and actual keyboard Enter events. The test does not overwrite the user’s OS clipboard.
+
+## Watermark and active keylist (revision 11)
+
+```lua
+local HUD = Window:CreateHUD({Watermark = true, Keylist = true})
+-- Or pass HUD = {Watermark = true, Keylist = true} to CreateWindow.
+HUD:SetWatermarkEnabled(false)
+HUD:SetKeylistEnabled(true)
+HUD:ResetPositions()
+local state = HUD:Export()
+HUD:Import(state) -- validates the complete state before applying it
+local telemetry = HUD:GetMetrics()
+```
+
+The example exposes **General → Watermark / Keylist / Reset widget positions**. It uses the existing native Inter font, theme Dialog/Text/Primary colors, rounded translucent surfaces and sliced dark shadows. Changing themes updates both widgets without recreating them. `RB` and the actual local player's display name/avatar replace the other game's branding.
+
+- Watermark: live RenderStepped FPS, client Data Ping (fallback GetNetworkPing), frame-time standard deviation in milliseconds (`VAR`, up to 60 recent frames), username and avatar. Metrics refresh four times per second. Roblox does not provide a reliable public per-client packet-loss/timeout measurement here: these fields show `—`, not fictional zeroes. An optional `MetricsProvider = function() return {Ping=..., Loss=..., Timeout=...} end` may supply genuine values in milliseconds, percent and seconds respectively. No other-game APIs or gameplay logic are executed.
+- Keylist: actual active per-feature Toggle/Hold/Always bindings from `Window.FeatureUI.Model`, with the real feature title and boolean-value indicator. Rows fade/resize on activation and release. Only the last Always binding on a feature takes precedence, and unavailable/locked features are omitted. With the menu open, the empty header remains available for dragging; with the menu closed and no active bindings, the list fades out. Closing the menu does not hide active bindings or stop telemetry.
+- Dragging follows the supplied `drag_widget` behavior, reimplemented for Roblox GUI input: menu-open only, direct grab offset without smoothing/jumps, one shared input capture, screen clamping and cancellation on focus loss or menu close. The watermark shows center/top/bottom rulers, snaps within 10 px to center X and center Y 32 px from the top/bottom, and bypasses snapping/rulers while Ctrl is held. On release, its horizontal anchor becomes left/center/right according to the widget center's screen third. Keylist uses the same direct drag and bounds without watermark rulers. Hover/held highlights and guides are time-based animations.
+- Positions are normalized, so a right/center-anchored watermark stays aligned as its text width or viewport changes. The watermark scales down to fit narrow viewports. HUD has a separate overlay lifecycle and is destroyed with the window, rather than disappearing when the menu is merely closed.
+- Ordinary ConfigManager `Save()` / `Load()` now includes `__hud`: both visibility flags and normalized positions. Legacy configs without `__hud` keep the configured defaults. As with other settings, changes persist to disk when the config is explicitly saved; this feature does not silently overwrite a user's config.
+
+QA: `tests/HUDGeometry.luau` adds 31 pure geometry assertions to `npm test`. `tests/ForkHUD.lua` passed 43 live API/synthetic-signal checks: telemetry, unknown fields, font, active/disabled-value bindings, Always precedence, menu visibility, drag offsets/edges/rulers/release, focus cancellation, atomic config validation, actual disk Save/Load, and all seven themes. Real VirtualInputManager mouse input additionally verified exact movement (-120, +110 px) with successful capture/release. Separate OS screenshots were inspected in Dark and Light, including active rows. These checks do not execute the supplied game's script.

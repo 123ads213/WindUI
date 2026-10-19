@@ -63,6 +63,7 @@ local Visuals = Window:Tab({ Title = 'Visuals', Icon = 'image' })
 local Player = Visuals:Tab({ Title = 'Player', Icon = 'user' })
 local World = Visuals:Tab({ Title = 'World', Icon = 'globe' })
 local General = Window:Tab({ Title = 'General', Icon = 'settings-2' })
+local HUD=Window:CreateHUD({Watermark=true,Keylist=true})
 local Appearance = Window:Section({ Title = 'APPEARANCE', Opened = true, HeaderSize = 32 })
 local Themes = Appearance:Tab({ Title = 'Themes', Icon = 'palette' })
 
@@ -89,6 +90,10 @@ local Collection = World:ProgressBar({ Title = 'Collection', DisplayMode = 'Frac
     Value = { Min = 0, Max = 1e9, Default = 250000000 } })
 World:Toggle({ Title = 'Shadows', Flag = 'world_shadows', Value = true, Callback = function() end })
 
+General:Section({ Title = 'On-screen widgets' })
+General:Toggle({ Title = 'Watermark', Flag = 'hud_watermark', Value = true, Hotkeys=false, Callback=function(value)HUD:SetWatermarkEnabled(value)end })
+General:Toggle({ Title = 'Keylist', Flag = 'hud_keylist', Value = true, Hotkeys=false, Callback=function(value)HUD:SetKeylistEnabled(value)end })
+General:Button({Title='Reset widget positions',Callback=function()HUD:ResetPositions()end})
 General:Toggle({ Title = 'Lock Offscreen', Flag = 'lock_offscreen', Value = true,
     Callback = function(value) Window:SetLockOffscreen(value) end })
 General:Paragraph({ Title = 'Nested tabs', Desc = 'Click Visuals to expand Player and World. Each child has its own page; the last selected child is remembered.' })
@@ -114,6 +119,7 @@ local Profile = Window:CreateProfile({
     Themes = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' },
     OnThemeChanged = function(theme) Themes.Elements[1]:Select(theme) end,
     History = {
+        {Version='1.6.66-fork.11',Date='2026-10-19',Title='Watermark & keylist',Description='Live Roblox telemetry and an active-hotkey HUD. Reference-style dragging, snap rulers, normalized anchors, theme sync and config persistence.'},
         { Version = '1.6.66-fork.10', Date = '2026-10-19', Title = 'Gradients & popup polish', Description = 'Multi-color gradients, per-stop opacity, Hex/RGB/HSV/HSL formats, copy/paste and reset. Soft popup shadows and cursor-near hotkeys. Legacy Keybind removed.' },
         { Version = '1.6.66-fork.9', Date = '2026-10-19', Title = 'Descriptions & hotkeys', Description = 'Themed hover descriptions and right-click multi-hotkey editor, global list and config persistence. Toggle, Hold and Always with explicit boolean Value.' },
         { Version = '1.6.66-fork.8', Date = '2026-10-18', Title = 'Transparency & interaction', Description = 'Background-only transparency now includes themed panels and surfaces. Time-based smooth dragging and an optional filled white cursor with lifecycle cleanup.' },
@@ -131,6 +137,6 @@ Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 
 Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
     ShowPlayers = ShowPlayers, Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
-    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile, SolidColor = SolidColor, GradientColor = GradientColor }
+    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile, HUD = HUD, SolidColor = SolidColor, GradientColor = GradientColor }
 Env.__WindUIForkPendingLibrary = nil
 return Window
