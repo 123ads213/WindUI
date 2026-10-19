@@ -33907,7 +33907,7 @@ return'#'..af:ToHex():upper()..string.format('%02X',math.round(ak*255))
 end
 function aa.Parse(af,ag)
 if type(af)~='string'then return nil,nil,'Enter a color'end
-af=af:match'^%s*(.-)%s*$';local ai=af:match'^#(%x+)$'or((ag=='HEX'and af:match'^%x+$')and af)
+af=af:match'^%s*(.-)%s*$';local ai=af:match'^#(%x+)$'or af:match'^%x+$'
 if ai then
 if#ai==3 or#ai==4 then local ak='';for al=1,#ai do local am=ai:sub(al,al);ak..=am..am end;ai=ak end
 if#ai~=6 and#ai~=8 then return nil,nil,'Use #RGB, #RGBA, #RRGGBB or #RRGGBBAA'end
@@ -34111,20 +34111,51 @@ end
 function aq.ApplyText(O,P)
 local Q,R,S=af.Parse(P,O.Format)
 if not Q then l.Text=S or'Invalid color';return false end
-commit(Q,R);h.Text=af.Format(Q,R==nil and an:GetValue().Stops[O.Selected].Transparency or R,O.Format);return true
+local T=an:GetValue().Stops[O.Selected]
+local U=R==nil and T.Transparency or R
+
+if Q~=T.Color or math.abs(U-T.Transparency)>1e-6 then commit(Q,U)end
+h.Text=af.Format(Q,U,O.Format);l.Text='';return true
 end
-connect(h.FocusLost,function()if aq.Opened then aq:ApplyText(h.Text)end end)
+function aq.CommitText(O)return O:ApplyText(h.Text)end
+connect(h.FocusLost,function()if aq.Opened then aq:CommitText()end end)
+connect(h.InputBegan,function(O)
+if aq.Opened and(O.KeyCode==Enum.KeyCode.Return or O.KeyCode==Enum.KeyCode.KeypadEnter)then aq:CommitText()end
+end)
 connect(i.FocusLost,function()
 local O=tonumber((i.Text:gsub('%%','')));if O and O==O and O>=0 and O<=100 then commit(nil,1-O/100)else l.Text='Opacity must be 0–100%'end
 end)
-function aq.Copy(O)
-local P=an:GetValue().Stops[O.Selected];local Q=af.Format(P.Color,P.Transparency,O.Format);local R=setclipboard or toclipboard
-if R then local S=pcall(R,Q);l.Text=S and'Color copied'or'Clipboard unavailable';return S end
-h:CaptureFocus();h.SelectionStart=1;h.CursorPosition=#h.Text+1;l.Text='Press Ctrl+C to copy';return false
+function aq.Copy(O,P)
+local Q=an:GetValue().Stops[O.Selected]
+local R=af.Format(Q.Color,Q.Transparency,O.Format)
+
+ap.ColorClipboard={Color=Q.Color,Transparency=Q.Transparency}
+local S=setclipboard or toclipboard
+local T=false
+if not P and type(S)=='function'then T=pcall(S,R)end
+l.Text=T and'Color copied'or'Color copied in menu'
+return true
 end
-function aq.Paste(O)
-if getclipboard then local P,Q=pcall(getclipboard);if P and type(Q)=='string'then return O:ApplyText(Q)end end
-h:CaptureFocus();h.SelectionStart=1;h.CursorPosition=#h.Text+1;l.Text='Paste with Ctrl+V, then press Enter';return false
+function aq.Paste(O,P)
+if type(P)=='string'then return O:ApplyText(P)end
+local Q=getclipboard or get_clipboard or readclipboard or(type(syn)=='table'and syn.read_clipboard)
+if type(Q)=='function'then
+local R,S=pcall(Q)
+if R and type(S)=='string'and S:match'%S'then return O:ApplyText(S)end
+end
+local R=ap.ColorClipboard
+if type(R)=='table'and typeof(R.Color)=='Color3'and type(R.Transparency)=='number'then
+commit(R.Color,R.Transparency)
+h.Text=af.Format(R.Color,R.Transparency,O.Format)
+return true
+end
+
+l.Text='External color: Ctrl+V here, then Enter'
+task.defer(function()
+if O.Destroyed or not O.Opened then return end
+h:CaptureFocus();h.CursorPosition=#h.Text+1;h.SelectionStart=1
+end)
+return false,'keyboard-paste-required'
 end
 local O={}
 local function stopDrag()F=nil;G=nil;if ap.CurrentInput==O then ap.CurrentInput=nil end end

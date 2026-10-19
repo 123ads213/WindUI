@@ -153,20 +153,51 @@ function Popup.New(Element,Window,WindUI)
  function self:ApplyText(text)
   local color,t,err=CV.Parse(text,self.Format)
   if not color then status.Text=err or'Invalid color';return false end
-  commit(color,t);input.Text=CV.Format(color,t==nil and Element:GetValue().Stops[self.Selected].Transparency or t,self.Format);return true
+  local stop=Element:GetValue().Stops[self.Selected]
+  local alpha=t==nil and stop.Transparency or t
+  -- Enter and FocusLost may both fire; apply an actual change only once.
+  if color~=stop.Color or math.abs(alpha-stop.Transparency)>1e-6 then commit(color,alpha)end
+  input.Text=CV.Format(color,alpha,self.Format);status.Text='';return true
  end
- connect(input.FocusLost,function()if self.Opened then self:ApplyText(input.Text)end end)
+ function self:CommitText()return self:ApplyText(input.Text)end
+ connect(input.FocusLost,function()if self.Opened then self:CommitText()end end)
+ connect(input.InputBegan,function(key)
+  if self.Opened and(key.KeyCode==Enum.KeyCode.Return or key.KeyCode==Enum.KeyCode.KeypadEnter)then self:CommitText()end
+ end)
  connect(opacity.FocusLost,function()
   local n=tonumber((opacity.Text:gsub('%%','')));if n and n==n and n>=0 and n<=100 then commit(nil,1-n/100)else status.Text='Opacity must be 0–100%'end
  end)
- function self:Copy()
-  local stop=Element:GetValue().Stops[self.Selected];local text=CV.Format(stop.Color,stop.Transparency,self.Format);local copyFn=setclipboard or toclipboard
-  if copyFn then local ok=pcall(copyFn,text);status.Text=ok and'Color copied'or'Clipboard unavailable';return ok end
-  input:CaptureFocus();input.SelectionStart=1;input.CursorPosition=#input.Text+1;status.Text='Press Ctrl+C to copy';return false
+ function self:Copy(localOnly)
+  local stop=Element:GetValue().Stops[self.Selected]
+  local text=CV.Format(stop.Color,stop.Transparency,self.Format)
+  -- Menu-local clipboard works even when the executor cannot read the OS clipboard.
+  WindUI.ColorClipboard={Color=stop.Color,Transparency=stop.Transparency}
+  local copyFn=setclipboard or toclipboard
+  local copied=false
+  if not localOnly and type(copyFn)=='function'then copied=pcall(copyFn,text)end
+  status.Text=copied and'Color copied'or'Color copied in menu'
+  return true
  end
- function self:Paste()
-  if getclipboard then local ok,text=pcall(getclipboard);if ok and type(text)=='string'then return self:ApplyText(text)end end
-  input:CaptureFocus();input.SelectionStart=1;input.CursorPosition=#input.Text+1;status.Text='Paste with Ctrl+V, then press Enter';return false
+ function self:Paste(text)
+  if type(text)=='string'then return self:ApplyText(text)end
+  local reader=getclipboard or get_clipboard or readclipboard or(type(syn)=='table'and syn.read_clipboard)
+  if type(reader)=='function'then
+   local ok,value=pcall(reader)
+   if ok and type(value)=='string'and value:match('%S')then return self:ApplyText(value)end
+  end
+  local cached=WindUI.ColorClipboard
+  if type(cached)=='table'and typeof(cached.Color)=='Color3'and type(cached.Transparency)=='number'then
+   commit(cached.Color,cached.Transparency)
+   input.Text=CV.Format(cached.Color,cached.Transparency,self.Format)
+   return true
+  end
+  -- Defer until the context-menu click has finished so it cannot steal focus.
+  status.Text='External color: Ctrl+V here, then Enter'
+  task.defer(function()
+   if self.Destroyed or not self.Opened then return end
+   input:CaptureFocus();input.CursorPosition=#input.Text+1;input.SelectionStart=1
+  end)
+  return false,'keyboard-paste-required'
  end
  local token={}
  local function stopDrag()drag=nil;dragInput=nil;if WindUI.CurrentInput==token then WindUI.CurrentInput=nil end end

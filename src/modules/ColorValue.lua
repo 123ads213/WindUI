@@ -76,7 +76,7 @@ function C.Format(color,t,format)
 end
 function C.Parse(text,format)
  if type(text)~='string'then return nil,nil,'Enter a color'end
- text=text:match('^%s*(.-)%s*$');local hex=text:match('^#(%x+)$')or((format=='HEX'and text:match('^%x+$'))and text)
+ text=text:match('^%s*(.-)%s*$');local hex=text:match('^#(%x+)$')or text:match('^%x+$')
  if hex then
   if #hex==3 or #hex==4 then local h='';for i=1,#hex do local a=hex:sub(i,i);h..=a..a end;hex=h end
   if #hex~=6 and #hex~=8 then return nil,nil,'Use #RGB, #RGBA, #RRGGBB or #RRGGBBAA'end
