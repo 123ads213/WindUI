@@ -1,11 +1,11 @@
 -- Pure presentation/settings model. No executor calls or game-side actions.
 local M={}
 M.Fields={
- {Id='FPS',Label='FPS',Icon='chart-no-axes-column-increasing',Reserve='9999 FPS',Default=true},
- {Id='Ping',Label='Ping',Icon='signal',Reserve='9999 MS',Default=true},
+ {Id='FPS',Label='FPS',Icon='chart-no-axes-column-increasing',Reserve='888 FPS',Default=true},
+ {Id='Ping',Label='Ping',Icon='signal',Reserve='888 MS',Default=true},
  {Id='Username',Label='Username',Icon='user-round',Default=true},
  {Id='Time',Label='Time',Reserve='00:00',Default=true},
- {Id='Day',Label='Weekday',Reserve='WWW',Default=true},
+ {Id='Day',Label='Weekday',Reserve='Wed',Default=true},
  {Id='Avatar',Label='Avatar',Default=true},
  {Id='Platform',Label='Logo',Reserve='RB',Default=true},
  {Id='Build',Label='Build',Default=true},

@@ -14,7 +14,7 @@ function HUD.New(Window,WindUI,Config)
  Config=Config or {}
  local fields=Model.Defaults()
  if Model.Validate(Config.Fields)then for k,v in pairs(Config.Fields)do fields[k]=v end end
- local self={Destroyed=false,WatermarkEnabled=Config.Watermark~=false,KeylistEnabled=Config.Keylist~=false,Fields=fields,Rows={},Metrics={FPS=0,VAR=0},KeylistMode=Config.KeylistMode=='Key'and'Key'or'Value'}
+ local self={Destroyed=false,WatermarkEnabled=Config.Watermark~=false,KeylistEnabled=Config.Keylist~=false,Fields=fields,Rows={},Metrics={FPS=0,VAR=0},KeylistMode=(Config.KeylistMode=='Key'or Config.KeylistMode=='Value')and Config.KeylistMode or'Classic'}
  local signals={};local player=Players.LocalPlayer;local started=os.clock()
  local function connect(s,f)local c=s:Connect(f);signals[#signals+1]=c;return c end
  local gui=New('ScreenGui',{Name='WindUI/HUD',Parent=WindUI.ScreenGui.Parent,IgnoreGuiInset=true,ScreenInsets='None',DisplayOrder=WindUI.ScreenGui.DisplayOrder-1,Enabled=WindUI.ScreenGui.Enabled})
@@ -22,8 +22,8 @@ function HUD.New(Window,WindUI,Config)
  local function text(p,name,value,x,y,w,h,size,secondary,bold)
   return New('TextLabel',{Parent=p,Name=name,Text=value,Position=UDim2.fromOffset(x,y),Size=UDim2.fromOffset(w,h),BackgroundTransparency=1,BorderSizePixel=0,TextStrokeTransparency=1,TextSize=size or 14,TextXAlignment='Left',TextTruncate='AtEnd',FontFace=Font.new(Creator.Font,bold and Enum.FontWeight.SemiBold or Enum.FontWeight.Medium),ThemeTag={TextColor3=secondary and'Placeholder'or'Text'},ZIndex=5})
  end
- local function icon(p,name,x,y,n)
-  local im=Creator.Image(name,name,0,Window.Folder,'HUDIcon',true,false,'Primary');im.Parent=p;im.Position=UDim2.fromOffset(x,y);im.Size=UDim2.fromOffset(n,n);im.ZIndex=5;im.ImageLabel.ZIndex=5;return im
+ local function icon(p,name,x,y,n,tone)
+  local im=Creator.Image(name,name,0,Window.Folder,'HUDIcon',true,false,tone or'Primary');im.Parent=p;im.Position=UDim2.fromOffset(x,y);im.Size=UDim2.fromOffset(n,n);im.ZIndex=5;im.ImageLabel.ZIndex=5;return im
  end
  local measureCache,pendingMeasure={},{}
  local function measure(value,size,bold)
@@ -39,8 +39,8 @@ function HUD.New(Window,WindUI,Config)
   end
   return math.ceil(#value*size*.55)
  end
- local watermark=New('CanvasGroup',{Parent=gui,Name='Watermark',Size=UDim2.fromOffset(480,34),GroupTransparency=1,Visible=false,BackgroundTransparency=.12,ThemeTag={BackgroundColor3='Dialog'},ZIndex=3});corner(watermark,12);Shadow.New(watermark,{Opacity=.32})
- local content=New('Frame',{Parent=watermark,Name='Content',Position=UDim2.fromOffset(12,0),Size=UDim2.fromOffset(456,34),BackgroundTransparency=1,ZIndex=4})
+ local watermark=New('CanvasGroup',{Parent=gui,Name='Watermark',Size=UDim2.fromOffset(480,34),GroupTransparency=1,Visible=false,BackgroundTransparency=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=3});corner(watermark,7);Shadow.New(watermark,{Opacity=.32})
+ local content=New('Frame',{Parent=watermark,Name='Content',Position=UDim2.fromOffset(8,0),Size=UDim2.fromOffset(464,34),BackgroundTransparency=1,ZIndex=4})
  local contentScale=New('UIScale',{Parent=content,Scale=1})
  local cells,byId={},{}
  local buildName=Model.Build(player.Name,Config.Builds,Config.Build or'Release')
@@ -56,16 +56,17 @@ function HUD.New(Window,WindUI,Config)
   if def.Id=='Avatar'then
    c.Avatar=New('ImageLabel',{Parent=frame,Name='Image',Image='rbxthumb://type=AvatarHeadShot&id='..player.UserId..'&w=150&h=150',Position=UDim2.fromOffset(0,6),Size=UDim2.fromOffset(22,22),BackgroundTransparency=1,ZIndex=5});corner(c.Avatar,11)
   else
-   if def.Icon then icon(frame,def.Icon,0,10,14)end
-   c.Label=text(frame,'Value',values[def.Id],def.Icon and 19 or 0,0,160,34,14,def.Id=='Build',def.Id=='Platform')
-   if def.Id=='Platform'then Creator.AddThemeObject(c.Label,{TextColor3='Primary'})end
+   if def.Icon then icon(frame,def.Icon,0,10,14,'Placeholder')end
+   c.Label=text(frame,'Value',values[def.Id],def.Icon and 17 or 0,0,160,34,14,def.Id=='Build',def.Id=='Platform')
+   c.Label.TextTransparency=.12
+   if def.Id=='Platform'then Creator.AddThemeObject(c.Label,{TextColor3='Text'})end
   end
   cells[#cells+1]=c;byId[def.Id]=c
  end
  local keylist=New('CanvasGroup',{Parent=gui,Name='Keylist',Size=UDim2.fromOffset(164,30),BackgroundTransparency=1,GroupTransparency=1,Visible=false,ZIndex=3})
  local header=New('Frame',{Parent=keylist,Name='Header',Size=UDim2.fromOffset(118,30),BackgroundTransparency=.12,ThemeTag={BackgroundColor3='Dialog'},ZIndex=4});corner(header,9)
- icon(header,'list-tree',11,8,14);text(header,'Title',Config.KeylistTitle or'Hotkeys',33,0,78,30,14,false,false)
- local body=New('Frame',{Parent=keylist,Name='Body',Position=UDim2.fromOffset(0,35),Size=UDim2.fromOffset(164,0),BackgroundTransparency=1,ClipsDescendants=true,ZIndex=4})
+ local headerIcon=icon(header,'list-tree',11,8,14);text(header,'Title',Config.KeylistTitle or'Hotkeys',33,0,78,30,14,false,false)
+ local body=New('Frame',{Parent=keylist,Name='Body',Position=UDim2.fromOffset(0,35),Size=UDim2.fromOffset(164,0),BackgroundTransparency=1,ClipsDescendants=true,ZIndex=4});corner(body,8)
  local keyShadowProxy=New('CanvasGroup',{Parent=gui,Name='KeylistShadowSurface',BackgroundTransparency=1,GroupTransparency=1,Visible=false,Size=UDim2.fromOffset(118,30),ZIndex=2,Active=false})
  Shadow.New(keyShadowProxy,{IgnoreBackground=true,Opacity=.22})
  self.UIElements={Gui=gui,Watermark=watermark,Content=content,Cells=cells,Fields=byId,Keylist=keylist,Header=header,Body=body,Avatar=byId.Avatar.Avatar,Badge=byId.Platform.Label}
@@ -98,8 +99,10 @@ function HUD.New(Window,WindUI,Config)
    if c.Label then
     local val=values[c.Id];c.Label.Text=val
     local reserve=c.Def.Reserve or val
+    local number=c.Id=='FPS'and m.DisplayFPS or c.Id=='Ping'and m.DisplayPing
+    if number and number>=1000 then reserve=string.rep('8',math.min(6,#tostring(math.floor(number))))..(c.Id=='FPS'and' FPS'or' MS')end
     local cap=c.Id=='Username'and 154 or c.Id=='Executor'and 112 or 180
-    c.TargetWidth=math.min(cap,measure(reserve,14,c.Id=='Platform'))+(c.Def.Icon and 19 or 0)+2
+    c.TargetWidth=math.min(cap,measure(reserve,14,c.Id=='Platform'))+(c.Def.Icon and 17 or 0)+2
    else c.TargetWidth=22 end
   end
  end
@@ -126,9 +129,11 @@ function HUD.New(Window,WindUI,Config)
   local frame=New('CanvasGroup',{Parent=body,Name='Binding_'..id,Size=UDim2.new(1,0,0,25),BackgroundTransparency=.94,ThemeTag={BackgroundColor3='Dialog'},GroupTransparency=1,ClipsDescendants=true,ZIndex=5});corner(frame,5)
   local value=text(frame,'Value','',8,0,30,25,13,true,false)
   local label=text(frame,'Feature','',42,0,120,25,14,false,false)
-  row={Frame=frame,Label=label,Value=value,Progress=0,Leaving=false};self.Rows[id]=row;return row
+  local track=New('Frame',{Parent=frame,Name='Indicator',Position=UDim2.fromOffset(8,8),Size=UDim2.fromOffset(14,8),ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(track,4)
+  local thumb=New('Frame',{Parent=track,Name='Thumb',Size=UDim2.fromOffset(4,4),Position=UDim2.fromOffset(8,2),ThemeTag={BackgroundColor3='Dialog'},ZIndex=7});corner(thumb,2)
+  row={Frame=frame,Label=label,Value=value,Track=track,Thumb=thumb,Progress=0,Leaving=false};self.Rows[id]=row;return row
  end
- local elapsed,frameElapsed,frameCount=0,0,0;local samples={};local sampleIndex=0;local wmAlpha,keyAlpha=0,0;local keyWidth=164
+ local elapsed,frameElapsed,frameCount=0,0,0;local samples={};local sampleIndex=0;local wmAlpha,keyAlpha=0,0;local keyWidth=180;local lastClassic
  connect(Run.RenderStepped,function(dt)
   if self.Destroyed then return end
   dt=math.max(dt,.000001);frameElapsed+=dt;frameCount+=1;elapsed+=dt
@@ -144,23 +149,41 @@ function HUD.New(Window,WindUI,Config)
    any=any or shown;c.Progress=Model.Ease(c.Progress,shown and 1 or 0,dt,13);c.Width=Model.Ease(c.Width,c.TargetWidth,dt,15)
    local width=c.Width*c.Progress
    c.Frame.Position=UDim2.fromOffset(x,0);c.Frame.Size=UDim2.fromOffset(width,34);c.Frame.GroupTransparency=1-c.Progress;c.Frame.Visible=c.Progress>0
-   if c.Label then c.Label.Size=UDim2.fromOffset(math.max(0,c.Width-(c.Def.Icon and 19 or 0)),34)end
-   x+=(c.Width+10)*c.Progress
+   if c.Label then c.Label.Size=UDim2.fromOffset(math.max(0,c.Width-(c.Def.Icon and 17 or 0)),34)end
+   x+=(c.Width+6)*c.Progress
   end
-  local width=math.max(24,x-10+24)
+  local width=math.max(16,x-6+16)
   wmAlpha=Model.Ease(wmAlpha,self.WatermarkEnabled and any and 1 or 0,dt,13)
   local fit=math.min(1,math.max(.05,(gui.AbsoluteSize.X-16)/width));local scale=fit*(.96+.04*wmAlpha)
-  contentScale.Scale=scale;content.Position=UDim2.fromOffset(12*scale,-3*(1-wmAlpha));content.Size=UDim2.fromOffset(width-24,34)
+  contentScale.Scale=scale;content.Position=UDim2.fromOffset(8*scale,-3*(1-wmAlpha));content.Size=UDim2.fromOffset(width-16,34)
   watermark.Size=UDim2.fromOffset(width*scale,34*scale);watermark.GroupTransparency=1-wmAlpha;watermark.Visible=wmAlpha>0;drag:Layout(drag.Widgets.Watermark)
+  local themeName=WindUI:GetCurrentTheme();local theme=WindUI:GetThemes()[themeName]
+  local surfaceColor=themeName=='Dark'and Color3.new(0,0,0)or theme.Dialog
+  watermark.BackgroundColor3=surfaceColor;watermark.BackgroundTransparency=0
+  local classic=self.KeylistMode=='Classic'
+  header.BackgroundColor3=surfaceColor;header.BackgroundTransparency=classic and 1 or 0
+  body.BackgroundColor3=surfaceColor;body.BackgroundTransparency=1
+  if lastClassic~=classic then
+   header.Size=classic and UDim2.new(1,0,0,24)or UDim2.fromOffset(118,30)
+   header.Title.Position=UDim2.fromOffset(classic and 30 or 33,0);header.Title.Size=classic and UDim2.new(1,-38,0,24)or UDim2.fromOffset(78,30)
+   header.Title.TextSize=classic and 12 or 14;header.Title.FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium)
+   headerIcon.Position=UDim2.fromOffset(classic and 6 or 11,classic and 5 or 8);headerIcon.Size=UDim2.fromOffset(14,14)
+   Creator.AddThemeObject(headerIcon.ImageLabel,{ImageColor3=classic and'Placeholder'or'Primary'})
+   body.Position=UDim2.fromOffset(0,classic and 30 or 35);lastClassic=classic
+  end
   local open=not Window.Closed and Window.UIElements.Main.Visible and Window.UIElements.Main.Main.Visible
-  local ordered,seen={},{};local count=0;local targetWidth=148
+  local ordered,seen={},{};local count=0;local targetWidth=classic and 140 or 148
   for _,e in ipairs(Window.FeatureUI.Model.Entries)do for i,b in ipairs(e.Bindings)do
    local id=tostring(b.Id);seen[id]=true;local row=rowFor(id);local target=active(e,b,i)
    row.Progress=Model.Ease(row.Progress,target and 1 or 0,dt,13);if target then count+=1 end
    row.Label.Text=e.Owner.Title or'Feature';row.Value.Text=bindingValue(e,b)
+   row.Track.Visible=classic;row.Value.Visible=not classic;row.Thumb.Position=UDim2.fromOffset(b.Value and 8 or 2,2)
+   row.Label.TextSize=classic and 12 or 14
    local valueWidth=math.clamp(measure(row.Value.Text,13,false)+4,27,64)
-   row.Value.Size=UDim2.fromOffset(valueWidth,25);row.Label.Position=UDim2.fromOffset(12+valueWidth,0);row.Label.Size=UDim2.new(1,-(20+valueWidth),0,25)
-   if row.Progress>0 then targetWidth=math.max(targetWidth,math.min(300,measure(row.Label.Text,14,false)+20+valueWidth))end
+   row.Value.Size=UDim2.fromOffset(valueWidth,25)
+   row.Label.Position=UDim2.fromOffset(classic and 38 or(12+valueWidth),0)
+   row.Label.Size=UDim2.new(1,classic and -46 or -(20+valueWidth),0,classic and 24 or 25)
+   if row.Progress>0 then targetWidth=math.max(targetWidth,math.min(300,measure(row.Label.Text,classic and 12 or 14,false)+(classic and 46 or(20+valueWidth))))end
    ordered[#ordered+1]=row
   end end
   -- Retain removed bindings until their final fade/height collapse has finished.
@@ -168,15 +191,15 @@ function HUD.New(Window,WindUI,Config)
   keyWidth=Model.Ease(keyWidth,math.min(targetWidth,math.max(80,gui.AbsoluteSize.X-16)),dt,14)
   local surface=header.BackgroundColor3;local rowSurfaceAlpha=(surface.R*.2126+surface.G*.7152+surface.B*.0722)>.65 and .20 or .78
   local y=0;for _,row in ipairs(ordered)do
-   row.Frame.BackgroundTransparency=rowSurfaceAlpha
-   row.Frame.Position=UDim2.fromOffset(6*(1-row.Progress),y);row.Frame.GroupTransparency=1-row.Progress;row.Frame.Size=UDim2.new(1,-6*(1-row.Progress),0,25*row.Progress);row.Frame.Visible=row.Progress>0;y+=28*row.Progress
+   row.Frame.BackgroundTransparency=classic and 1 or rowSurfaceAlpha
+   row.Frame.Position=UDim2.fromOffset(6*(1-row.Progress),y);row.Frame.GroupTransparency=1-row.Progress;row.Frame.Size=UDim2.new(1,-6*(1-row.Progress),0,(classic and 24 or 25)*row.Progress);row.Frame.Visible=row.Progress>0;y+=(classic and 31 or 28)*row.Progress
   end
-  local maxBody=math.max(0,gui.AbsoluteSize.Y-51);local height=math.min(math.max(0,y-3),maxBody)
+  local maxBody=math.max(0,gui.AbsoluteSize.Y-51);local height=math.min(math.max(0,y-(classic and 7 or 3)),maxBody)
   body.Size=UDim2.fromOffset(keyWidth,height);body.Visible=height>0
-  keylist.Size=UDim2.fromOffset(keyWidth,30+(height>0 and 5+height or 0))
+  keylist.Size=UDim2.fromOffset(keyWidth,(classic and 24 or 30)+(height>0 and (classic and 6 or 5)+height or 0))
   keyAlpha=Model.Ease(keyAlpha,self.KeylistEnabled and(open or count>0)and 1 or 0,dt,12)
   keylist.GroupTransparency=1-keyAlpha;keylist.Visible=keyAlpha>0;drag:Layout(drag.Widgets.Keylist)
-  keyShadowProxy.Position=keylist.Position;keyShadowProxy.GroupTransparency=1-keyAlpha;keyShadowProxy.Visible=keylist.Visible
+  keyShadowProxy.Size=classic and keylist.Size or UDim2.fromOffset(118,30);keyShadowProxy.Position=keylist.Position;keyShadowProxy.GroupTransparency=1-keyAlpha;keyShadowProxy.Visible=keylist.Visible and not classic
  end)
  connect(WindUI.ScreenGui:GetPropertyChangedSignal('Enabled'),function()gui.Enabled=WindUI.ScreenGui.Enabled;if not gui.Enabled then drag:Cancel()end end)
  local function changed()if type(self.OnChanged)=='function'then pcall(self.OnChanged,self)end end
@@ -193,7 +216,7 @@ function HUD.New(Window,WindUI,Config)
  function self:GetFields()return Model.Selected(self.Fields)end
  function self:GetAvailableFields()local out={};for _,f in ipairs(Model.Fields)do out[#out+1]=f.Label end;return out end
  function self:SetKeylistMode(mode)
-  if mode~='Key'and mode~='Value'then return false end
+  if mode~='Key'and mode~='Value'and mode~='Classic'then return false end
   if self.KeylistMode~=mode then self.KeylistMode=mode;changed()end;return true
  end
  function self:ResetPositions()for id,state in pairs(defaults)do drag:SetState(id,state)end;return self end
@@ -210,7 +233,7 @@ function HUD.New(Window,WindUI,Config)
   if data.Watermark~=nil and type(data.Watermark)~='boolean'then return false,'Invalid watermark state'end
   if data.Keylist~=nil and type(data.Keylist)~='boolean'then return false,'Invalid keylist state'end
   if data.Fields~=nil and not Model.Validate(data.Fields)then return false,'Invalid HUD fields'end
-  if data.KeylistMode~=nil and data.KeylistMode~='Key'and data.KeylistMode~='Value'then return false,'Invalid keylist mode'end
+  if data.KeylistMode~=nil and data.KeylistMode~='Key'and data.KeylistMode~='Value'and data.KeylistMode~='Classic'then return false,'Invalid keylist mode'end
   if data.Positions then for id,state in pairs(data.Positions)do drag:SetState(id,state)end end
   if data.Watermark~=nil then self.WatermarkEnabled=data.Watermark end
   if data.Keylist~=nil then self.KeylistEnabled=data.Keylist end

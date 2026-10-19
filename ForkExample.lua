@@ -94,7 +94,7 @@ General:Section({ Title = 'On-screen widgets' })
 local WatermarkToggle=General:Toggle({ Title = 'Watermark', Flag = 'hud_watermark', Value = true, Hotkeys=false, Callback=function(value)HUD:SetWatermarkEnabled(value)end })
 local KeylistToggle=General:Toggle({ Title = 'Keylist', Flag = 'hud_keylist', Value = true, Hotkeys=false, Callback=function(value)HUD:SetKeylistEnabled(value)end })
 local WatermarkFields=General:Dropdown({Title='Watermark elements',Multi=true,AllowNone=true,MenuWidth=240,Values=HUD:GetAvailableFields(),Value=HUD:GetFields(),Callback=function(value)HUD:SetFields(value)end})
-local KeylistMode=General:Dropdown({Title='Keylist labels',Values={'Value','Key'},Value='Value',Callback=function(value)HUD:SetKeylistMode(value)end})
+local KeylistMode=General:Dropdown({Title='Keylist style',Values={'Classic','Value','Key'},Value='Classic',Callback=function(value)HUD:SetKeylistMode(value)end})
 -- HUD config is authoritative; controls mirror Import/Load as well as API changes.
 local syncingHUD=false
 HUD.OnChanged=function(h)
@@ -133,6 +133,7 @@ local Profile = Window:CreateProfile({
     Themes = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' },
     OnThemeChanged = function(theme) Themes.Elements[1]:Select(theme) end,
     History = {
+        {Version='1.6.66-fork.13',Date='2026-10-19',Title='Classic binds & opaque HUD',Description='Reference-size left-side hotkey indicators and compact labels. Solid black Dark-theme watermark with tighter spacing and neutral icons; selectable fields and transitions retained.'},
         {Version='1.6.66-fork.12',Date='2026-10-19',Title='Refined configurable HUD',Description='Selectable fields, stable metric columns, animated reveals, local time/day, executor label and username-based build. Compact value-first Hotkeys without switches.'},
         {Version='1.6.66-fork.11',Date='2026-10-19',Title='Watermark & keylist',Description='Live Roblox telemetry and an active-hotkey HUD. Reference-style dragging, snap rulers, normalized anchors, theme sync and config persistence.'},
         { Version = '1.6.66-fork.10', Date = '2026-10-19', Title = 'Gradients & popup polish', Description = 'Multi-color gradients, per-stop opacity, Hex/RGB/HSV/HSL formats, copy/paste and reset. Soft popup shadows and cursor-near hotkeys. Legacy Keybind removed.' },

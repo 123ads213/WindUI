@@ -13,7 +13,7 @@ local function bounds(frame)
  return p.X>=-1 and p.Y>=-1 and p.X+z.X<=v.X+1 and p.Y+z.Y<=v.Y+1
 end
 local ok,err=pcall(function()
- w:Open();d.Profile:Close();w.FeatureUI:CloseAll();h:SetWatermarkEnabled(true);h:SetKeylistEnabled(true);wait()
+ w:Open();d.Profile:Close();w.FeatureUI:CloseAll();h:SetWatermarkEnabled(true);h:SetKeylistEnabled(true);h:SetKeylistMode('Value');wait()
  local m=h:GetMetrics();check(m.FPS>0 and m.FPS<5000,'live FPS');check(m.VAR>=0,'frame-time variance');check(m.Loss==nil and m.Timeout==nil,'unavailable statistics not fabricated')
  check(u.Fields.Loss==nil and u.Fields.Timeout==nil,'no fake network fields')
  check(m.Build=='Nightly'and u.Fields.Build.Label.Text=='Nightly','username-specific build')
@@ -31,7 +31,7 @@ local ok,err=pcall(function()
  w:Open();wait();d.ShowPlayers:SetHotkeys({{Key='F6',Mode='Hold',Value=true}});d.ShowPlayers:Set(false)
  local model=w.FeatureUI.Model;model:Input('F6',true);wait();local id=tostring(d.ShowPlayers.HotkeyEntry.Bindings[1].Id);local r=h.Rows[id]
  check(r and r.Progress>.95 and r.Frame.Visible,'active hold appears');check(r.Label.Text==saved.Title,'actual feature name')
- check(r.Value.Text=='ON'and r.Track==nil,'clean value-first row without switches');check(u.Header.AbsoluteSize.X==118 and u.Header.AbsoluteSize.Y==30,'compact header dimensions');h:SetKeylistMode('Key');wait();check(r.Value.Text=='F6','key label option');h:SetKeylistMode('Value')
+ check(r.Value.Text=='ON'and not r.Track.Visible,'clean value-first row without switches');check(u.Header.AbsoluteSize.X==118 and u.Header.AbsoluteSize.Y==30,'compact header dimensions');h:SetKeylistMode('Key');wait();check(r.Value.Text=='F6','key label option');h:SetKeylistMode('Value')
  w:Close();wait();check(u.Keylist.Visible and u.Body.Visible,'active key survives menu close')
  model:Input('F6',false);task.wait(1.4);check(not u.Keylist.Visible,'hold release fades out')
  w:Open();wait();d.ShowPlayers:SetHotkeys({{Key='F6',Mode='Toggle',Value=false}});d.ShowPlayers:Set(true);model:Input('F6',true);model:Input('F6',false);wait()
@@ -71,8 +71,9 @@ local ok,err=pcall(function()
  h:ResetPositions();h:SetWatermarkEnabled(false);qa:Load();wait();check(h.WatermarkEnabled and h.Drag:GetState('Watermark').Anchor==.5,'actual config Load restores HUD');check(#d.WatermarkFields.Value==#h:GetFields()and d.KeylistMode.Value==h.KeylistMode,'controls mirror imported HUD config')
  for _,theme in ipairs({'Dark','Light','Ocean','Forest','Ember','Orchid','Paper'})do
   d.Library:SetTheme(theme);task.wait(.12);local t=d.Library:GetThemes()[theme]
-  check(u.Watermark.BackgroundColor3==t.Dialog and u.Header.Title.TextColor3==t.Text,'HUD follows '..theme)
+  check(u.Watermark.BackgroundColor3==(theme=='Dark'and Color3.new(0,0,0)or t.Dialog) and u.Header.Title.TextColor3==t.Text,'HUD follows '..theme)
  end
+ d.Library:SetTheme('Dark');h:SetKeylistMode('Classic');task.wait(.9);check(u.Watermark.BackgroundColor3==Color3.new(0,0,0)and u.Watermark.BackgroundTransparency==0,'opaque black Dark watermark');check(u.Header.AbsoluteSize.X>=139.9 and math.abs(u.Header.AbsoluteSize.Y-24)<.05,'reference header dimensions: '..tostring(u.Header.AbsoluteSize)..' mode '..h.KeylistMode);local classicRow;for _,row in pairs(h.Rows)do if row.Progress>.9 then classicRow=row end end;check(classicRow and classicRow.Track.Visible and not classicRow.Value.Visible and classicRow.Label.Position.X.Offset==38 and classicRow.Track.Position.X.Offset==8 and classicRow.Track.Size.X.Offset==14 and classicRow.Track.Size.Y.Offset==8,'reference left-side indicator restored');check(u.Body.BackgroundTransparency==1 and u.Header.BackgroundTransparency==1,'reference keylist has no heavy plates');
  d.Library:SetTheme('Light');task.wait(.15);check(u.Gui.HUDGuideCenter.BackgroundColor3==Color3.new(1,1,1),'light guides are white');check(h.Drag.Widgets.Watermark.Highlight.BackgroundColor3==Color3.new(1,1,1),'light drag highlight is white')
 end)
 if qa then pcall(function()qa:Delete();w.ConfigManager.Configs[qaName]=nil end);w.CurrentConfig=previousConfig end

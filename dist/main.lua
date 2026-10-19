@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.12  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.13  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -26857,7 +26857,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.12",
+    "version": "1.6.66-fork.13",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -37706,11 +37706,11 @@ return aa end function a.as():typeof(__modImpl())local aa=a.cache.as if not aa t
 
 local aa={}
 aa.Fields={
-{Id='FPS',Label='FPS',Icon='chart-no-axes-column-increasing',Reserve='9999 FPS',Default=true},
-{Id='Ping',Label='Ping',Icon='signal',Reserve='9999 MS',Default=true},
+{Id='FPS',Label='FPS',Icon='chart-no-axes-column-increasing',Reserve='888 FPS',Default=true},
+{Id='Ping',Label='Ping',Icon='signal',Reserve='888 MS',Default=true},
 {Id='Username',Label='Username',Icon='user-round',Default=true},
 {Id='Time',Label='Time',Reserve='00:00',Default=true},
-{Id='Day',Label='Weekday',Reserve='WWW',Default=true},
+{Id='Day',Label='Weekday',Reserve='Wed',Default=true},
 {Id='Avatar',Label='Avatar',Default=true},
 {Id='Platform',Label='Logo',Reserve='RB',Default=true},
 {Id='Build',Label='Build',Default=true},
@@ -37877,7 +37877,7 @@ function aq.New(ar,as,at)
 at=at or{}
 local au=ag.Defaults()
 if ag.Validate(at.Fields)then for av,aw in pairs(at.Fields)do au[av]=aw end end
-local av={Destroyed=false,WatermarkEnabled=at.Watermark~=false,KeylistEnabled=at.Keylist~=false,Fields=au,Rows={},Metrics={FPS=0,VAR=0},KeylistMode=at.KeylistMode=='Key'and'Key'or'Value'}
+local av={Destroyed=false,WatermarkEnabled=at.Watermark~=false,KeylistEnabled=at.Keylist~=false,Fields=au,Rows={},Metrics={FPS=0,VAR=0},KeylistMode=(at.KeylistMode=='Key'or at.KeylistMode=='Value')and at.KeylistMode or'Classic'}
 local aw={};local ax=an.LocalPlayer;local ay=os.clock()
 local function connect(az,aA)local aB=az:Connect(aA);aw[#aw+1]=aB;return aB end
 local az=ap('ScreenGui',{Name='WindUI/HUD',Parent=as.ScreenGui.Parent,IgnoreGuiInset=true,ScreenInsets='None',DisplayOrder=as.ScreenGui.DisplayOrder-1,Enabled=as.ScreenGui.Enabled})
@@ -37885,8 +37885,8 @@ local function corner(aA,aB)ap('UICorner',{Parent=aA,CornerRadius=UDim.new(0,aB)
 local function text(aA,aB,aC,aD,aE,aF,aG,aH,aI,aJ)
 return ap('TextLabel',{Parent=aA,Name=aB,Text=aC,Position=UDim2.fromOffset(aD,aE),Size=UDim2.fromOffset(aF,aG),BackgroundTransparency=1,BorderSizePixel=0,TextStrokeTransparency=1,TextSize=aH or 14,TextXAlignment='Left',TextTruncate='AtEnd',FontFace=Font.new(aa.Font,aJ and Enum.FontWeight.SemiBold or Enum.FontWeight.Medium),ThemeTag={TextColor3=aI and'Placeholder'or'Text'},ZIndex=5})
 end
-local function icon(aA,aB,aC,aD,aE)
-local aF=aa.Image(aB,aB,0,ar.Folder,'HUDIcon',true,false,'Primary');aF.Parent=aA;aF.Position=UDim2.fromOffset(aC,aD);aF.Size=UDim2.fromOffset(aE,aE);aF.ZIndex=5;aF.ImageLabel.ZIndex=5;return aF
+local function icon(aA,aB,aC,aD,aE,aF)
+local aG=aa.Image(aB,aB,0,ar.Folder,'HUDIcon',true,false,aF or'Primary');aG.Parent=aA;aG.Position=UDim2.fromOffset(aC,aD);aG.Size=UDim2.fromOffset(aE,aE);aG.ZIndex=5;aG.ImageLabel.ZIndex=5;return aG
 end
 local aA,aB={},{}
 local function measure(aC,aD,aE)
@@ -37902,8 +37902,8 @@ end)
 end
 return math.ceil(#aC*aD*.55)
 end
-local aC=ap('CanvasGroup',{Parent=az,Name='Watermark',Size=UDim2.fromOffset(480,34),GroupTransparency=1,Visible=false,BackgroundTransparency=.12,ThemeTag={BackgroundColor3='Dialog'},ZIndex=3});corner(aC,12);al.New(aC,{Opacity=.32})
-local aD=ap('Frame',{Parent=aC,Name='Content',Position=UDim2.fromOffset(12,0),Size=UDim2.fromOffset(456,34),BackgroundTransparency=1,ZIndex=4})
+local aC=ap('CanvasGroup',{Parent=az,Name='Watermark',Size=UDim2.fromOffset(480,34),GroupTransparency=1,Visible=false,BackgroundTransparency=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=3});corner(aC,7);al.New(aC,{Opacity=.32})
+local aD=ap('Frame',{Parent=aC,Name='Content',Position=UDim2.fromOffset(8,0),Size=UDim2.fromOffset(464,34),BackgroundTransparency=1,ZIndex=4})
 local aE=ap('UIScale',{Parent=aD,Scale=1})
 local aF,aG={},{}
 local aH=ag.Build(ax.Name,at.Builds,at.Build or'Release')
@@ -37919,174 +37919,197 @@ local aN={Id=aL.Id,Def=aL,Frame=aM,Progress=0,Width=24,TargetWidth=24,Available=
 if aL.Id=='Avatar'then
 aN.Avatar=ap('ImageLabel',{Parent=aM,Name='Image',Image='rbxthumb://type=AvatarHeadShot&id='..ax.UserId..'&w=150&h=150',Position=UDim2.fromOffset(0,6),Size=UDim2.fromOffset(22,22),BackgroundTransparency=1,ZIndex=5});corner(aN.Avatar,11)
 else
-if aL.Icon then icon(aM,aL.Icon,0,10,14)end
-aN.Label=text(aM,'Value',aJ[aL.Id],aL.Icon and 19 or 0,0,160,34,14,aL.Id=='Build',aL.Id=='Platform')
-if aL.Id=='Platform'then aa.AddThemeObject(aN.Label,{TextColor3='Primary'})end
+if aL.Icon then icon(aM,aL.Icon,0,10,14,'Placeholder')end
+aN.Label=text(aM,'Value',aJ[aL.Id],aL.Icon and 17 or 0,0,160,34,14,aL.Id=='Build',aL.Id=='Platform')
+aN.Label.TextTransparency=.12
+if aL.Id=='Platform'then aa.AddThemeObject(aN.Label,{TextColor3='Text'})end
 end
 aF[#aF+1]=aN;aG[aL.Id]=aN
 end
 local aK=ap('CanvasGroup',{Parent=az,Name='Keylist',Size=UDim2.fromOffset(164,30),BackgroundTransparency=1,GroupTransparency=1,Visible=false,ZIndex=3})
 local aL=ap('Frame',{Parent=aK,Name='Header',Size=UDim2.fromOffset(118,30),BackgroundTransparency=.12,ThemeTag={BackgroundColor3='Dialog'},ZIndex=4});corner(aL,9)
-icon(aL,'list-tree',11,8,14);text(aL,'Title',at.KeylistTitle or'Hotkeys',33,0,78,30,14,false,false)
-local aM=ap('Frame',{Parent=aK,Name='Body',Position=UDim2.fromOffset(0,35),Size=UDim2.fromOffset(164,0),BackgroundTransparency=1,ClipsDescendants=true,ZIndex=4})
-local aN=ap('CanvasGroup',{Parent=az,Name='KeylistShadowSurface',BackgroundTransparency=1,GroupTransparency=1,Visible=false,Size=UDim2.fromOffset(118,30),ZIndex=2,Active=false})
-al.New(aN,{IgnoreBackground=true,Opacity=.22})
-av.UIElements={Gui=az,Watermark=aC,Content=aD,Cells=aF,Fields=aG,Keylist=aK,Header=aL,Body=aM,Avatar=aG.Avatar.Avatar,Badge=aG.Platform.Label}
-local aO=ak.New(ar,as,az);av.Drag=aO
-local aP={Watermark={X=.985,Y=.025,Anchor=1},Keylist={X=.08,Y=.38,Anchor=0}}
-aO:Add('Watermark',aC,aP.Watermark,true)
-aO:Add('Keylist',aK,aP.Keylist,false)
-local function finite(aQ)return type(aQ)=='number'and aQ==aQ and aQ>=0 and aQ<math.huge end
+local aM=icon(aL,'list-tree',11,8,14);text(aL,'Title',at.KeylistTitle or'Hotkeys',33,0,78,30,14,false,false)
+local aN=ap('Frame',{Parent=aK,Name='Body',Position=UDim2.fromOffset(0,35),Size=UDim2.fromOffset(164,0),BackgroundTransparency=1,ClipsDescendants=true,ZIndex=4});corner(aN,8)
+local aO=ap('CanvasGroup',{Parent=az,Name='KeylistShadowSurface',BackgroundTransparency=1,GroupTransparency=1,Visible=false,Size=UDim2.fromOffset(118,30),ZIndex=2,Active=false})
+al.New(aO,{IgnoreBackground=true,Opacity=.22})
+av.UIElements={Gui=az,Watermark=aC,Content=aD,Cells=aF,Fields=aG,Keylist=aK,Header=aL,Body=aN,Avatar=aG.Avatar.Avatar,Badge=aG.Platform.Label}
+local aP=ak.New(ar,as,az);av.Drag=aP
+local aQ={Watermark={X=.985,Y=.025,Anchor=1},Keylist={X=.08,Y=.38,Anchor=0}}
+aP:Add('Watermark',aC,aQ.Watermark,true)
+aP:Add('Keylist',aK,aQ.Keylist,false)
+local function finite(aR)return type(aR)=='number'and aR==aR and aR>=0 and aR<math.huge end
 local function readPing()
-local aQ,aR=pcall(function()return ao.Network.ServerStatsItem['Data Ping']:GetValue()end)
-if aQ and finite(aR)then return aR end
-aQ,aR=pcall(function()return ax:GetNetworkPing()*1000 end);if aQ and finite(aR)then return aR end
+local aR,b=pcall(function()return ao.Network.ServerStatsItem['Data Ping']:GetValue()end)
+if aR and finite(b)then return b end
+aR,b=pcall(function()return ax:GetNetworkPing()*1000 end);if aR and finite(b)then return b end
 end
-function av.UpdateMetrics(aQ)
-if aQ.Destroyed then return end
-local aR=aQ.Metrics;aR.Ping=readPing();aR.Executor=aI;aR.Build=aH
-local b,d=pcall(function()return ao:GetTotalMemoryUsageMb()end);aR.Memory=b and finite(d)and d or nil
+function av.UpdateMetrics(aR)
+if aR.Destroyed then return end
+local b=aR.Metrics;b.Ping=readPing();b.Executor=aI;b.Build=aH
+local d,f=pcall(function()return ao:GetTotalMemoryUsageMb()end);b.Memory=d and finite(f)and f or nil
 if type(at.MetricsProvider)=='function'then
-local f,g=pcall(at.MetricsProvider)
-if f and type(g)=='table'then for h,i in ipairs{'FPS','Ping','VAR','Memory'}do if finite(g[i])then aR[i]=g[i]end end end
+local g,h=pcall(at.MetricsProvider)
+if g and type(h)=='table'then for i,l in ipairs{'FPS','Ping','VAR','Memory'}do if finite(h[l])then b[l]=h[l]end end end
 end
 
-aR.DisplayFPS=aR.DisplayFPS and aR.DisplayFPS+(aR.FPS-aR.DisplayFPS)*.35 or aR.FPS
-if aR.Ping then aR.DisplayPing=aR.DisplayPing and aR.DisplayPing+(aR.Ping-aR.DisplayPing)*.3 or aR.Ping end
-aJ.FPS=string.format('%d FPS',math.floor(aR.DisplayFPS+.5));aJ.Ping=aR.DisplayPing and string.format('%d MS',math.floor(aR.DisplayPing+.5))or'— MS'
-aJ.VAR=string.format('%.1f VAR',aR.VAR);aJ.Memory=aR.Memory and string.format('%d MB',math.floor(aR.Memory+.5))or'— MB'
-local f,g=ag.Clock(os.date'*t');aJ.Time=f;aJ.Day=g
-local h=math.floor(os.clock()-ay);aJ.Uptime=string.format('%02d:%02d:%02d',math.floor(h/3600),math.floor(h/60)%60,h%60)
-for i,l in ipairs(aF)do
-if l.Label then
-local m=aJ[l.Id];l.Label.Text=m
-local p=l.Def.Reserve or m
-local r=l.Id=='Username'and 154 or l.Id=='Executor'and 112 or 180
-l.TargetWidth=math.min(r,measure(p,14,l.Id=='Platform'))+(l.Def.Icon and 19 or 0)+2
-else l.TargetWidth=22 end
+b.DisplayFPS=b.DisplayFPS and b.DisplayFPS+(b.FPS-b.DisplayFPS)*.35 or b.FPS
+if b.Ping then b.DisplayPing=b.DisplayPing and b.DisplayPing+(b.Ping-b.DisplayPing)*.3 or b.Ping end
+aJ.FPS=string.format('%d FPS',math.floor(b.DisplayFPS+.5));aJ.Ping=b.DisplayPing and string.format('%d MS',math.floor(b.DisplayPing+.5))or'— MS'
+aJ.VAR=string.format('%.1f VAR',b.VAR);aJ.Memory=b.Memory and string.format('%d MB',math.floor(b.Memory+.5))or'— MB'
+local g,h=ag.Clock(os.date'*t');aJ.Time=g;aJ.Day=h
+local i=math.floor(os.clock()-ay);aJ.Uptime=string.format('%02d:%02d:%02d',math.floor(i/3600),math.floor(i/60)%60,i%60)
+for l,m in ipairs(aF)do
+if m.Label then
+local p=aJ[m.Id];m.Label.Text=p
+local r=m.Def.Reserve or p
+local u=m.Id=='FPS'and b.DisplayFPS or m.Id=='Ping'and b.DisplayPing
+if u and u>=1000 then r=string.rep('8',math.min(6,#tostring(math.floor(u))))..(m.Id=='FPS'and' FPS'or' MS')end
+local v=m.Id=='Username'and 154 or m.Id=='Executor'and 112 or 180
+m.TargetWidth=math.min(v,measure(r,14,m.Id=='Platform'))+(m.Def.Icon and 17 or 0)+2
+else m.TargetWidth=22 end
 end
 end
-local function active(aQ,aR,b)
-if aQ.Available and not aQ.Available()then return false end
-local d=aR.Active
-if aR.Mode=='Always'then d=true;for f=b+1,#aQ.Bindings do if aQ.Bindings[f].Mode=='Always'then d=false;break end end end
-return d and(not aQ.Read or aQ.Read()==aR.Value)
+local function active(aR,b,d)
+if aR.Available and not aR.Available()then return false end
+local f=b.Active
+if b.Mode=='Always'then f=true;for g=d+1,#aR.Bindings do if aR.Bindings[g].Mode=='Always'then f=false;break end end end
+return f and(not aR.Read or aR.Read()==b.Value)
 end
-local function bindingValue(aQ,aR)
-local b=aQ.Owner
-if av.KeylistMode=='Key'then return aR.Key=='Unbound'and'—'or aR.Key:gsub('MouseButton','M')end
-if type(b.HotkeyLabel)=='function'then local d,f=pcall(b.HotkeyLabel,b,aR);if d and f~=nil then return tostring(f)end end
-if type(b.HotkeyLabel)=='string'then return b.HotkeyLabel end
-if b.__type~='Toggle'then
-local d=b.Value
-if type(b.Get)=='function'then local f,g=pcall(b.Get,b);if f then d=g end end
-if type(d)=='number'then return ai.Format(d)elseif type(d)=='string'then return d end
+local function bindingValue(aR,b)
+local d=aR.Owner
+if av.KeylistMode=='Key'then return b.Key=='Unbound'and'—'or b.Key:gsub('MouseButton','M')end
+if type(d.HotkeyLabel)=='function'then local f,g=pcall(d.HotkeyLabel,d,b);if f and g~=nil then return tostring(g)end end
+if type(d.HotkeyLabel)=='string'then return d.HotkeyLabel end
+if d.__type~='Toggle'then
+local f=d.Value
+if type(d.Get)=='function'then local g,h=pcall(d.Get,d);if g then f=h end end
+if type(f)=='number'then return ai.Format(f)elseif type(f)=='string'then return f end
 end
-return aR.Value and'ON'or'OFF'
+return b.Value and'ON'or'OFF'
 end
-local function rowFor(aQ)
-local aR=av.Rows[aQ];if aR then return aR end
-local b=ap('CanvasGroup',{Parent=aM,Name='Binding_'..aQ,Size=UDim2.new(1,0,0,25),BackgroundTransparency=.94,ThemeTag={BackgroundColor3='Dialog'},GroupTransparency=1,ClipsDescendants=true,ZIndex=5});corner(b,5)
-local d=text(b,'Value','',8,0,30,25,13,true,false)
-local f=text(b,'Feature','',42,0,120,25,14,false,false)
-aR={Frame=b,Label=f,Value=d,Progress=0,Leaving=false};av.Rows[aQ]=aR;return aR
+local function rowFor(aR)
+local b=av.Rows[aR];if b then return b end
+local d=ap('CanvasGroup',{Parent=aN,Name='Binding_'..aR,Size=UDim2.new(1,0,0,25),BackgroundTransparency=.94,ThemeTag={BackgroundColor3='Dialog'},GroupTransparency=1,ClipsDescendants=true,ZIndex=5});corner(d,5)
+local f=text(d,'Value','',8,0,30,25,13,true,false)
+local g=text(d,'Feature','',42,0,120,25,14,false,false)
+local h=ap('Frame',{Parent=d,Name='Indicator',Position=UDim2.fromOffset(8,8),Size=UDim2.fromOffset(14,8),ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(h,4)
+local i=ap('Frame',{Parent=h,Name='Thumb',Size=UDim2.fromOffset(4,4),Position=UDim2.fromOffset(8,2),ThemeTag={BackgroundColor3='Dialog'},ZIndex=7});corner(i,2)
+b={Frame=d,Label=g,Value=f,Track=h,Thumb=i,Progress=0,Leaving=false};av.Rows[aR]=b;return b
 end
-local aQ,aR,b=0,0,0;local d={};local f=0;local g,h=0,0;local i=164
-connect(am.RenderStepped,function(l)
+local aR,b,d=0,0,0;local f={};local g=0;local h,i=0,0;local l=180;local m
+connect(am.RenderStepped,function(p)
 if av.Destroyed then return end
-l=math.max(l,.000001);aR+=l;b+=1;aQ+=l
-f=f%60+1;d[f]=l*1000
-if aQ>=.35 then
-av.Metrics.FPS=b/aR
-local m=0;for p,r in ipairs(d)do m+=r end;local p=m/#d;local r=0;for u,v in ipairs(d)do r+=(v-p)^2 end
-av.Metrics.VAR=math.sqrt(r/#d);aQ=0;aR=0;b=0;av:UpdateMetrics()
+p=math.max(p,.000001);b+=p;d+=1;aR+=p
+g=g%60+1;f[g]=p*1000
+if aR>=.35 then
+av.Metrics.FPS=d/b
+local r=0;for u,v in ipairs(f)do r+=v end;local u=r/#f;local v=0;for x,z in ipairs(f)do v+=(z-u)^2 end
+av.Metrics.VAR=math.sqrt(v/#f);aR=0;b=0;d=0;av:UpdateMetrics()
 end
-local m=0;local p=false
-for r,u in ipairs(aF)do
-local v=av.Fields[u.Id]and u.Available
-p=p or v;u.Progress=ag.Ease(u.Progress,v and 1 or 0,l,13);u.Width=ag.Ease(u.Width,u.TargetWidth,l,15)
-local x=u.Width*u.Progress
-u.Frame.Position=UDim2.fromOffset(m,0);u.Frame.Size=UDim2.fromOffset(x,34);u.Frame.GroupTransparency=1-u.Progress;u.Frame.Visible=u.Progress>0
-if u.Label then u.Label.Size=UDim2.fromOffset(math.max(0,u.Width-(u.Def.Icon and 19 or 0)),34)end
-m+=(u.Width+10)*u.Progress
+local r=0;local u=false
+for v,x in ipairs(aF)do
+local z=av.Fields[x.Id]and x.Available
+u=u or z;x.Progress=ag.Ease(x.Progress,z and 1 or 0,p,13);x.Width=ag.Ease(x.Width,x.TargetWidth,p,15)
+local A=x.Width*x.Progress
+x.Frame.Position=UDim2.fromOffset(r,0);x.Frame.Size=UDim2.fromOffset(A,34);x.Frame.GroupTransparency=1-x.Progress;x.Frame.Visible=x.Progress>0
+if x.Label then x.Label.Size=UDim2.fromOffset(math.max(0,x.Width-(x.Def.Icon and 17 or 0)),34)end
+r+=(x.Width+6)*x.Progress
 end
-local r=math.max(24,m-10+24)
-g=ag.Ease(g,av.WatermarkEnabled and p and 1 or 0,l,13)
-local u=math.min(1,math.max(.05,(az.AbsoluteSize.X-16)/r));local v=u*(.96+.04*g)
-aE.Scale=v;aD.Position=UDim2.fromOffset(12*v,-3*(1-g));aD.Size=UDim2.fromOffset(r-24,34)
-aC.Size=UDim2.fromOffset(r*v,34*v);aC.GroupTransparency=1-g;aC.Visible=g>0;aO:Layout(aO.Widgets.Watermark)
-local x=not ar.Closed and ar.UIElements.Main.Visible and ar.UIElements.Main.Main.Visible
-local z,A={},{};local B=0;local C=148
-for F,G in ipairs(ar.FeatureUI.Model.Entries)do for H,J in ipairs(G.Bindings)do
-local L=tostring(J.Id);A[L]=true;local M=rowFor(L);local N=active(G,J,H)
-M.Progress=ag.Ease(M.Progress,N and 1 or 0,l,13);if N then B+=1 end
-M.Label.Text=G.Owner.Title or'Feature';M.Value.Text=bindingValue(G,J)
-local O=math.clamp(measure(M.Value.Text,13,false)+4,27,64)
-M.Value.Size=UDim2.fromOffset(O,25);M.Label.Position=UDim2.fromOffset(12+O,0);M.Label.Size=UDim2.new(1,-(20+O),0,25)
-if M.Progress>0 then C=math.max(C,math.min(300,measure(M.Label.Text,14,false)+20+O))end
-z[#z+1]=M
+local v=math.max(16,r-6+16)
+h=ag.Ease(h,av.WatermarkEnabled and u and 1 or 0,p,13)
+local x=math.min(1,math.max(.05,(az.AbsoluteSize.X-16)/v));local z=x*(.96+.04*h)
+aE.Scale=z;aD.Position=UDim2.fromOffset(8*z,-3*(1-h));aD.Size=UDim2.fromOffset(v-16,34)
+aC.Size=UDim2.fromOffset(v*z,34*z);aC.GroupTransparency=1-h;aC.Visible=h>0;aP:Layout(aP.Widgets.Watermark)
+local A=as:GetCurrentTheme();local B=as:GetThemes()[A]
+local C=A=='Dark'and Color3.new(0,0,0)or B.Dialog
+aC.BackgroundColor3=C;aC.BackgroundTransparency=0
+local F=av.KeylistMode=='Classic'
+aL.BackgroundColor3=C;aL.BackgroundTransparency=F and 1 or 0
+aN.BackgroundColor3=C;aN.BackgroundTransparency=1
+if m~=F then
+aL.Size=F and UDim2.new(1,0,0,24)or UDim2.fromOffset(118,30)
+aL.Title.Position=UDim2.fromOffset(F and 30 or 33,0);aL.Title.Size=F and UDim2.new(1,-38,0,24)or UDim2.fromOffset(78,30)
+aL.Title.TextSize=F and 12 or 14;aL.Title.FontFace=Font.new(aa.Font,Enum.FontWeight.Medium)
+aM.Position=UDim2.fromOffset(F and 6 or 11,F and 5 or 8);aM.Size=UDim2.fromOffset(14,14)
+aa.AddThemeObject(aM.ImageLabel,{ImageColor3=F and'Placeholder'or'Primary'})
+aN.Position=UDim2.fromOffset(0,F and 30 or 35);m=F
+end
+local G=not ar.Closed and ar.UIElements.Main.Visible and ar.UIElements.Main.Main.Visible
+local H,J={},{};local L=0;local M=F and 140 or 148
+for N,O in ipairs(ar.FeatureUI.Model.Entries)do for P,Q in ipairs(O.Bindings)do
+local R=tostring(Q.Id);J[R]=true;local S=rowFor(R);local T=active(O,Q,P)
+S.Progress=ag.Ease(S.Progress,T and 1 or 0,p,13);if T then L+=1 end
+S.Label.Text=O.Owner.Title or'Feature';S.Value.Text=bindingValue(O,Q)
+S.Track.Visible=F;S.Value.Visible=not F;S.Thumb.Position=UDim2.fromOffset(Q.Value and 8 or 2,2)
+S.Label.TextSize=F and 12 or 14
+local U=math.clamp(measure(S.Value.Text,13,false)+4,27,64)
+S.Value.Size=UDim2.fromOffset(U,25)
+S.Label.Position=UDim2.fromOffset(F and 38 or(12+U),0)
+S.Label.Size=UDim2.new(1,F and-46 or-(20+U),0,F and 24 or 25)
+if S.Progress>0 then M=math.max(M,math.min(300,measure(S.Label.Text,F and 12 or 14,false)+(F and 46 or(20+U))))end
+H[#H+1]=S
 end end
 
-for F,G in pairs(av.Rows)do if not A[F]then G.Progress=ag.Ease(G.Progress,0,l,13);if G.Progress==0 then G.Frame:Destroy();av.Rows[F]=nil else z[#z+1]=G end end end
-i=ag.Ease(i,math.min(C,math.max(80,az.AbsoluteSize.X-16)),l,14)
-local F=aL.BackgroundColor3;local G=(F.R*.2126+F.G*.7152+F.B*.0722)>.65 and.20 or.78
-local H=0;for J,L in ipairs(z)do
-L.Frame.BackgroundTransparency=G
-L.Frame.Position=UDim2.fromOffset(6*(1-L.Progress),H);L.Frame.GroupTransparency=1-L.Progress;L.Frame.Size=UDim2.new(1,-6*(1-L.Progress),0,25*L.Progress);L.Frame.Visible=L.Progress>0;H+=28*L.Progress
+for N,O in pairs(av.Rows)do if not J[N]then O.Progress=ag.Ease(O.Progress,0,p,13);if O.Progress==0 then O.Frame:Destroy();av.Rows[N]=nil else H[#H+1]=O end end end
+l=ag.Ease(l,math.min(M,math.max(80,az.AbsoluteSize.X-16)),p,14)
+local N=aL.BackgroundColor3;local O=(N.R*.2126+N.G*.7152+N.B*.0722)>.65 and.20 or.78
+local P=0;for Q,R in ipairs(H)do
+R.Frame.BackgroundTransparency=F and 1 or O
+R.Frame.Position=UDim2.fromOffset(6*(1-R.Progress),P);R.Frame.GroupTransparency=1-R.Progress;R.Frame.Size=UDim2.new(1,-6*(1-R.Progress),0,(F and 24 or 25)*R.Progress);R.Frame.Visible=R.Progress>0;P+=(F and 31 or 28)*R.Progress
 end
-local J=math.max(0,az.AbsoluteSize.Y-51);local L=math.min(math.max(0,H-3),J)
-aM.Size=UDim2.fromOffset(i,L);aM.Visible=L>0
-aK.Size=UDim2.fromOffset(i,30+(L>0 and 5+L or 0))
-h=ag.Ease(h,av.KeylistEnabled and(x or B>0)and 1 or 0,l,12)
-aK.GroupTransparency=1-h;aK.Visible=h>0;aO:Layout(aO.Widgets.Keylist)
-aN.Position=aK.Position;aN.GroupTransparency=1-h;aN.Visible=aK.Visible
+local Q=math.max(0,az.AbsoluteSize.Y-51);local R=math.min(math.max(0,P-(F and 7 or 3)),Q)
+aN.Size=UDim2.fromOffset(l,R);aN.Visible=R>0
+aK.Size=UDim2.fromOffset(l,(F and 24 or 30)+(R>0 and(F and 6 or 5)+R or 0))
+i=ag.Ease(i,av.KeylistEnabled and(G or L>0)and 1 or 0,p,12)
+aK.GroupTransparency=1-i;aK.Visible=i>0;aP:Layout(aP.Widgets.Keylist)
+aO.Size=F and aK.Size or UDim2.fromOffset(118,30);aO.Position=aK.Position;aO.GroupTransparency=1-i;aO.Visible=aK.Visible and not F
 end)
-connect(as.ScreenGui:GetPropertyChangedSignal'Enabled',function()az.Enabled=as.ScreenGui.Enabled;if not az.Enabled then aO:Cancel()end end)
+connect(as.ScreenGui:GetPropertyChangedSignal'Enabled',function()az.Enabled=as.ScreenGui.Enabled;if not az.Enabled then aP:Cancel()end end)
 local function changed()if type(av.OnChanged)=='function'then pcall(av.OnChanged,av)end end
-function av.SetWatermarkEnabled(l,m)local p=m==true;if l.WatermarkEnabled~=p then l.WatermarkEnabled=p;changed()end;return l end
-function av.SetKeylistEnabled(l,m)local p=m==true;if l.KeylistEnabled~=p then l.KeylistEnabled=p;changed()end;return l end
-function av.SetField(l,m,p)
-if not ag.ById[m]or type(p)~='boolean'then return false end
-if l.Fields[m]~=p then l.Fields[m]=p;changed()end;return true
+function av.SetWatermarkEnabled(p,r)local u=r==true;if p.WatermarkEnabled~=u then p.WatermarkEnabled=u;changed()end;return p end
+function av.SetKeylistEnabled(p,r)local u=r==true;if p.KeylistEnabled~=u then p.KeylistEnabled=u;changed()end;return p end
+function av.SetField(p,r,u)
+if not ag.ById[r]or type(u)~='boolean'then return false end
+if p.Fields[r]~=u then p.Fields[r]=u;changed()end;return true
 end
-function av.SetFields(l,m)
-local p=ag.FromSelection(m);if not p then return false end
-for r,u in ipairs(ag.Fields)do if p[u.Id]~=l.Fields[u.Id]then l.Fields=p;changed();return true end end;return true
+function av.SetFields(p,r)
+local u=ag.FromSelection(r);if not u then return false end
+for v,x in ipairs(ag.Fields)do if u[x.Id]~=p.Fields[x.Id]then p.Fields=u;changed();return true end end;return true
 end
-function av.GetFields(l)return ag.Selected(l.Fields)end
-function av.GetAvailableFields(l)local m={};for p,r in ipairs(ag.Fields)do m[#m+1]=r.Label end;return m end
-function av.SetKeylistMode(l,m)
-if m~='Key'and m~='Value'then return false end
-if l.KeylistMode~=m then l.KeylistMode=m;changed()end;return true
+function av.GetFields(p)return ag.Selected(p.Fields)end
+function av.GetAvailableFields(p)local r={};for u,v in ipairs(ag.Fields)do r[#r+1]=v.Label end;return r end
+function av.SetKeylistMode(p,r)
+if r~='Key'and r~='Value'and r~='Classic'then return false end
+if p.KeylistMode~=r then p.KeylistMode=r;changed()end;return true
 end
-function av.ResetPositions(l)for m,p in pairs(aP)do aO:SetState(m,p)end;return l end
-function av.Export(l)
-local m={Version=2,Watermark=l.WatermarkEnabled,Keylist=l.KeylistEnabled,KeylistMode=l.KeylistMode,Fields={},Positions={Watermark=aO:GetState'Watermark',Keylist=aO:GetState'Keylist'}}
-for p,r in pairs(l.Fields)do m.Fields[p]=r end;return m
+function av.ResetPositions(p)for r,u in pairs(aQ)do aP:SetState(r,u)end;return p end
+function av.Export(p)
+local r={Version=2,Watermark=p.WatermarkEnabled,Keylist=p.KeylistEnabled,KeylistMode=p.KeylistMode,Fields={},Positions={Watermark=aP:GetState'Watermark',Keylist=aP:GetState'Keylist'}}
+for u,v in pairs(p.Fields)do r.Fields[u]=v end;return r
 end
-function av.Import(l,m)
-if type(m)~='table'then return false,'Invalid HUD config'end
-if m.Positions~=nil then
-if type(m.Positions)~='table'then return false,'Invalid HUD positions'end
-for p,r in pairs(m.Positions)do if not aP[p]or not af.Valid(r)then return false,'Invalid HUD anchor'end end
+function av.Import(p,r)
+if type(r)~='table'then return false,'Invalid HUD config'end
+if r.Positions~=nil then
+if type(r.Positions)~='table'then return false,'Invalid HUD positions'end
+for u,v in pairs(r.Positions)do if not aQ[u]or not af.Valid(v)then return false,'Invalid HUD anchor'end end
 end
-if m.Watermark~=nil and type(m.Watermark)~='boolean'then return false,'Invalid watermark state'end
-if m.Keylist~=nil and type(m.Keylist)~='boolean'then return false,'Invalid keylist state'end
-if m.Fields~=nil and not ag.Validate(m.Fields)then return false,'Invalid HUD fields'end
-if m.KeylistMode~=nil and m.KeylistMode~='Key'and m.KeylistMode~='Value'then return false,'Invalid keylist mode'end
-if m.Positions then for p,r in pairs(m.Positions)do aO:SetState(p,r)end end
-if m.Watermark~=nil then l.WatermarkEnabled=m.Watermark end
-if m.Keylist~=nil then l.KeylistEnabled=m.Keylist end
-if m.Fields then for p,r in pairs(m.Fields)do l.Fields[p]=r end end
-if m.KeylistMode then l.KeylistMode=m.KeylistMode end;changed();return true
+if r.Watermark~=nil and type(r.Watermark)~='boolean'then return false,'Invalid watermark state'end
+if r.Keylist~=nil and type(r.Keylist)~='boolean'then return false,'Invalid keylist state'end
+if r.Fields~=nil and not ag.Validate(r.Fields)then return false,'Invalid HUD fields'end
+if r.KeylistMode~=nil and r.KeylistMode~='Key'and r.KeylistMode~='Value'and r.KeylistMode~='Classic'then return false,'Invalid keylist mode'end
+if r.Positions then for u,v in pairs(r.Positions)do aP:SetState(u,v)end end
+if r.Watermark~=nil then p.WatermarkEnabled=r.Watermark end
+if r.Keylist~=nil then p.KeylistEnabled=r.Keylist end
+if r.Fields then for u,v in pairs(r.Fields)do p.Fields[u]=v end end
+if r.KeylistMode then p.KeylistMode=r.KeylistMode end;changed();return true
 end
-function av.GetMetrics(l)local m={};for p,r in pairs(l.Metrics)do m[p]=r end;return m end
-function av.Destroy(l)
-if l.Destroyed then return end;l.Destroyed=true
-for m,p in ipairs(aw)do p:Disconnect()end;aO:Destroy();az:Destroy()
+function av.GetMetrics(p)local r={};for u,v in pairs(p.Metrics)do r[u]=v end;return r end
+function av.Destroy(p)
+if p.Destroyed then return end;p.Destroyed=true
+for r,u in ipairs(aw)do u:Disconnect()end;aP:Destroy();az:Destroy()
 end
 connect(ar.UIElements.Main.Destroying,function()av:Destroy()end)
-av:UpdateMetrics();for l,m in ipairs(aF)do m.Width=m.TargetWidth end
+av:UpdateMetrics();for p,r in ipairs(aF)do r.Width=r.TargetWidth end
 return av
 end
 return aq end function a.av():typeof(__modImpl())local aa=a.cache.av if not aa then aa={c=__modImpl()}a.cache.av=aa end return aa.c end end do local function __modImpl()
