@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.13  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.14  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -26857,7 +26857,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.13",
+    "version": "1.6.66-fork.14",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -37706,13 +37706,13 @@ return aa end function a.as():typeof(__modImpl())local aa=a.cache.as if not aa t
 
 local aa={}
 aa.Fields={
-{Id='FPS',Label='FPS',Icon='chart-no-axes-column-increasing',Reserve='888 FPS',Default=true},
+{Id='FPS',Label='FPS',Icon='monitor',Reserve='888 FPS',Default=true},
 {Id='Ping',Label='Ping',Icon='signal',Reserve='888 MS',Default=true},
 {Id='Username',Label='Username',Icon='user-round',Default=true},
 {Id='Time',Label='Time',Reserve='00:00',Default=true},
-{Id='Day',Label='Weekday',Reserve='Wed',Default=true},
+{Id='Day',Label='Weekday',Default=true},
 {Id='Avatar',Label='Avatar',Default=true},
-{Id='Platform',Label='Logo',Reserve='RB',Default=true},
+{Id='Platform',Label='Logo',Reserve='Sirius',Default=true},
 {Id='Build',Label='Build',Default=true},
 {Id='Executor',Label='Executor',Icon='terminal'},
 {Id='VAR',Label='Frame variance',Icon='activity',Reserve='99.9 VAR'},
@@ -37745,7 +37745,7 @@ for al,am in pairs(ag or{})do if type(al)=='string'and type(am)=='string'and str
 return ai or'Release'
 end
 function aa.Clock(af)
-return string.format('%02d:%02d',af.hour,af.min),({'Sun','Mon','Tue','Wed','Thu','Fri','Sat'})[af.wday]or'—'
+return string.format('%02d:%02d',af.hour,af.min),({'Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'})[af.wday]or'—'
 end
 return aa end function a.at():typeof(__modImpl())local aa=a.cache.at if not aa then aa={c=__modImpl()}a.cache.at=aa end return aa.c end end do local function __modImpl()
 
@@ -37912,7 +37912,7 @@ do
 local aJ=identifyexecutor or getexecutorname
 if type(aJ)=='function'then local aK,aL=pcall(aJ);if aK and type(aL)=='string'and#aL>0 then aI=aL end end
 end
-local aJ={FPS='— FPS',Ping='— MS',Username=at.Name or ax.DisplayName,Time='00:00',Day='Mon',Build=aH,Platform='RB',Executor=aI or'Unavailable',VAR='— VAR',Memory='— MB',Uptime='00:00:00',Place=tostring(game.PlaceId)}
+local aJ={FPS='— FPS',Ping='— MS',Username=at.Name or ax.DisplayName,Time='00:00',Day='Monday',Build=aH,Platform='Sirius',Executor=aI or'Unavailable',VAR='— VAR',Memory='— MB',Uptime='00:00:00',Place=tostring(game.PlaceId)}
 for aK,aL in ipairs(ag.Fields)do
 local aM=ap('CanvasGroup',{Parent=aD,Name=aL.Id,Size=UDim2.fromOffset(0,34),BackgroundTransparency=1,GroupTransparency=1,Visible=false,ClipsDescendants=true,ZIndex=4})
 local aN={Id=aL.Id,Def=aL,Frame=aM,Progress=0,Width=24,TargetWidth=24,Available=aL.Id~='Executor'or aI~=nil}
@@ -37920,7 +37920,7 @@ if aL.Id=='Avatar'then
 aN.Avatar=ap('ImageLabel',{Parent=aM,Name='Image',Image='rbxthumb://type=AvatarHeadShot&id='..ax.UserId..'&w=150&h=150',Position=UDim2.fromOffset(0,6),Size=UDim2.fromOffset(22,22),BackgroundTransparency=1,ZIndex=5});corner(aN.Avatar,11)
 else
 if aL.Icon then icon(aM,aL.Icon,0,10,14,'Placeholder')end
-aN.Label=text(aM,'Value',aJ[aL.Id],aL.Icon and 17 or 0,0,160,34,14,aL.Id=='Build',aL.Id=='Platform')
+aN.Label=text(aM,'Value',aJ[aL.Id],aL.Icon and 22 or 0,0,160,34,14,aL.Id=='Build',aL.Id=='Platform')
 aN.Label.TextTransparency=.12
 if aL.Id=='Platform'then aa.AddThemeObject(aN.Label,{TextColor3='Text'})end
 end
@@ -37965,7 +37965,7 @@ local r=m.Def.Reserve or p
 local u=m.Id=='FPS'and b.DisplayFPS or m.Id=='Ping'and b.DisplayPing
 if u and u>=1000 then r=string.rep('8',math.min(6,#tostring(math.floor(u))))..(m.Id=='FPS'and' FPS'or' MS')end
 local v=m.Id=='Username'and 154 or m.Id=='Executor'and 112 or 180
-m.TargetWidth=math.min(v,measure(r,14,m.Id=='Platform'))+(m.Def.Icon and 17 or 0)+2
+m.TargetWidth=math.min(v,measure(r,14,m.Id=='Platform'))+(m.Def.Icon and 22 or 0)+2
 else m.TargetWidth=22 end
 end
 end
@@ -38012,7 +38012,7 @@ local z=av.Fields[x.Id]and x.Available
 u=u or z;x.Progress=ag.Ease(x.Progress,z and 1 or 0,p,13);x.Width=ag.Ease(x.Width,x.TargetWidth,p,15)
 local A=x.Width*x.Progress
 x.Frame.Position=UDim2.fromOffset(r,0);x.Frame.Size=UDim2.fromOffset(A,34);x.Frame.GroupTransparency=1-x.Progress;x.Frame.Visible=x.Progress>0
-if x.Label then x.Label.Size=UDim2.fromOffset(math.max(0,x.Width-(x.Def.Icon and 17 or 0)),34)end
+if x.Label then x.Label.Size=UDim2.fromOffset(math.max(0,x.Width-(x.Def.Icon and 22 or 0)),34)end
 r+=(x.Width+6)*x.Progress
 end
 local v=math.max(16,r-6+16)
@@ -38024,8 +38024,8 @@ local A=as:GetCurrentTheme();local B=as:GetThemes()[A]
 local C=A=='Dark'and Color3.new(0,0,0)or B.Dialog
 aC.BackgroundColor3=C;aC.BackgroundTransparency=0
 local F=av.KeylistMode=='Classic'
-aL.BackgroundColor3=C;aL.BackgroundTransparency=F and 1 or 0
-aN.BackgroundColor3=C;aN.BackgroundTransparency=1
+aL.BackgroundColor3=C;aL.BackgroundTransparency=0
+aN.BackgroundColor3=C;aN.BackgroundTransparency=F and 0 or 1
 if m~=F then
 aL.Size=F and UDim2.new(1,0,0,24)or UDim2.fromOffset(118,30)
 aL.Title.Position=UDim2.fromOffset(F and 30 or 33,0);aL.Title.Size=F and UDim2.new(1,-38,0,24)or UDim2.fromOffset(78,30)
@@ -38062,7 +38062,7 @@ aN.Size=UDim2.fromOffset(l,R);aN.Visible=R>0
 aK.Size=UDim2.fromOffset(l,(F and 24 or 30)+(R>0 and(F and 6 or 5)+R or 0))
 i=ag.Ease(i,av.KeylistEnabled and(G or L>0)and 1 or 0,p,12)
 aK.GroupTransparency=1-i;aK.Visible=i>0;aP:Layout(aP.Widgets.Keylist)
-aO.Size=F and aK.Size or UDim2.fromOffset(118,30);aO.Position=aK.Position;aO.GroupTransparency=1-i;aO.Visible=aK.Visible and not F
+aO.Size=F and aK.Size or UDim2.fromOffset(118,30);aO.Position=aK.Position;aO.GroupTransparency=1-i;aO.Visible=aK.Visible
 end)
 connect(as.ScreenGui:GetPropertyChangedSignal'Enabled',function()az.Enabled=as.ScreenGui.Enabled;if not az.Enabled then aP:Cancel()end end)
 local function changed()if type(av.OnChanged)=='function'then pcall(av.OnChanged,av)end end

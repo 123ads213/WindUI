@@ -133,6 +133,7 @@ local Profile = Window:CreateProfile({
     Themes = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' },
     OnThemeChanged = function(theme) Themes.Elements[1]:Select(theme) end,
     History = {
+        {Version='1.6.66-fork.14',Date='2026-10-19',Title='Sirius watermark labels',Description='Distinct FPS monitor icon, 8px icon-to-text gaps, full weekdays, Sirius branding and opaque themed keylist surfaces.'},
         {Version='1.6.66-fork.13',Date='2026-10-19',Title='Classic binds & opaque HUD',Description='Reference-size left-side hotkey indicators and compact labels. Solid black Dark-theme watermark with tighter spacing and neutral icons; selectable fields and transitions retained.'},
         {Version='1.6.66-fork.12',Date='2026-10-19',Title='Refined configurable HUD',Description='Selectable fields, stable metric columns, animated reveals, local time/day, executor label and username-based build. Compact value-first Hotkeys without switches.'},
         {Version='1.6.66-fork.11',Date='2026-10-19',Title='Watermark & keylist',Description='Live Roblox telemetry and an active-hotkey HUD. Reference-style dragging, snap rulers, normalized anchors, theme sync and config persistence.'},

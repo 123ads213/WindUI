@@ -49,7 +49,7 @@ function HUD.New(Window,WindUI,Config)
   local identify=identifyexecutor or getexecutorname
   if type(identify)=='function'then local ok,n=pcall(identify);if ok and type(n)=='string'and #n>0 then executorName=n end end
  end
- local values={FPS='— FPS',Ping='— MS',Username=Config.Name or player.DisplayName,Time='00:00',Day='Mon',Build=buildName,Platform='RB',Executor=executorName or'Unavailable',VAR='— VAR',Memory='— MB',Uptime='00:00:00',Place=tostring(game.PlaceId)}
+ local values={FPS='— FPS',Ping='— MS',Username=Config.Name or player.DisplayName,Time='00:00',Day='Monday',Build=buildName,Platform='Sirius',Executor=executorName or'Unavailable',VAR='— VAR',Memory='— MB',Uptime='00:00:00',Place=tostring(game.PlaceId)}
  for _,def in ipairs(Model.Fields)do
   local frame=New('CanvasGroup',{Parent=content,Name=def.Id,Size=UDim2.fromOffset(0,34),BackgroundTransparency=1,GroupTransparency=1,Visible=false,ClipsDescendants=true,ZIndex=4})
   local c={Id=def.Id,Def=def,Frame=frame,Progress=0,Width=24,TargetWidth=24,Available=def.Id~='Executor'or executorName~=nil}
@@ -57,7 +57,7 @@ function HUD.New(Window,WindUI,Config)
    c.Avatar=New('ImageLabel',{Parent=frame,Name='Image',Image='rbxthumb://type=AvatarHeadShot&id='..player.UserId..'&w=150&h=150',Position=UDim2.fromOffset(0,6),Size=UDim2.fromOffset(22,22),BackgroundTransparency=1,ZIndex=5});corner(c.Avatar,11)
   else
    if def.Icon then icon(frame,def.Icon,0,10,14,'Placeholder')end
-   c.Label=text(frame,'Value',values[def.Id],def.Icon and 17 or 0,0,160,34,14,def.Id=='Build',def.Id=='Platform')
+   c.Label=text(frame,'Value',values[def.Id],def.Icon and 22 or 0,0,160,34,14,def.Id=='Build',def.Id=='Platform')
    c.Label.TextTransparency=.12
    if def.Id=='Platform'then Creator.AddThemeObject(c.Label,{TextColor3='Text'})end
   end
@@ -102,7 +102,7 @@ function HUD.New(Window,WindUI,Config)
     local number=c.Id=='FPS'and m.DisplayFPS or c.Id=='Ping'and m.DisplayPing
     if number and number>=1000 then reserve=string.rep('8',math.min(6,#tostring(math.floor(number))))..(c.Id=='FPS'and' FPS'or' MS')end
     local cap=c.Id=='Username'and 154 or c.Id=='Executor'and 112 or 180
-    c.TargetWidth=math.min(cap,measure(reserve,14,c.Id=='Platform'))+(c.Def.Icon and 17 or 0)+2
+    c.TargetWidth=math.min(cap,measure(reserve,14,c.Id=='Platform'))+(c.Def.Icon and 22 or 0)+2
    else c.TargetWidth=22 end
   end
  end
@@ -149,7 +149,7 @@ function HUD.New(Window,WindUI,Config)
    any=any or shown;c.Progress=Model.Ease(c.Progress,shown and 1 or 0,dt,13);c.Width=Model.Ease(c.Width,c.TargetWidth,dt,15)
    local width=c.Width*c.Progress
    c.Frame.Position=UDim2.fromOffset(x,0);c.Frame.Size=UDim2.fromOffset(width,34);c.Frame.GroupTransparency=1-c.Progress;c.Frame.Visible=c.Progress>0
-   if c.Label then c.Label.Size=UDim2.fromOffset(math.max(0,c.Width-(c.Def.Icon and 17 or 0)),34)end
+   if c.Label then c.Label.Size=UDim2.fromOffset(math.max(0,c.Width-(c.Def.Icon and 22 or 0)),34)end
    x+=(c.Width+6)*c.Progress
   end
   local width=math.max(16,x-6+16)
@@ -161,8 +161,8 @@ function HUD.New(Window,WindUI,Config)
   local surfaceColor=themeName=='Dark'and Color3.new(0,0,0)or theme.Dialog
   watermark.BackgroundColor3=surfaceColor;watermark.BackgroundTransparency=0
   local classic=self.KeylistMode=='Classic'
-  header.BackgroundColor3=surfaceColor;header.BackgroundTransparency=classic and 1 or 0
-  body.BackgroundColor3=surfaceColor;body.BackgroundTransparency=1
+  header.BackgroundColor3=surfaceColor;header.BackgroundTransparency=0
+  body.BackgroundColor3=surfaceColor;body.BackgroundTransparency=classic and 0 or 1
   if lastClassic~=classic then
    header.Size=classic and UDim2.new(1,0,0,24)or UDim2.fromOffset(118,30)
    header.Title.Position=UDim2.fromOffset(classic and 30 or 33,0);header.Title.Size=classic and UDim2.new(1,-38,0,24)or UDim2.fromOffset(78,30)
@@ -199,7 +199,7 @@ function HUD.New(Window,WindUI,Config)
   keylist.Size=UDim2.fromOffset(keyWidth,(classic and 24 or 30)+(height>0 and (classic and 6 or 5)+height or 0))
   keyAlpha=Model.Ease(keyAlpha,self.KeylistEnabled and(open or count>0)and 1 or 0,dt,12)
   keylist.GroupTransparency=1-keyAlpha;keylist.Visible=keyAlpha>0;drag:Layout(drag.Widgets.Keylist)
-  keyShadowProxy.Size=classic and keylist.Size or UDim2.fromOffset(118,30);keyShadowProxy.Position=keylist.Position;keyShadowProxy.GroupTransparency=1-keyAlpha;keyShadowProxy.Visible=keylist.Visible and not classic
+  keyShadowProxy.Size=classic and keylist.Size or UDim2.fromOffset(118,30);keyShadowProxy.Position=keylist.Position;keyShadowProxy.GroupTransparency=1-keyAlpha;keyShadowProxy.Visible=keylist.Visible
  end)
  connect(WindUI.ScreenGui:GetPropertyChangedSignal('Enabled'),function()gui.Enabled=WindUI.ScreenGui.Enabled;if not gui.Enabled then drag:Cancel()end end)
  local function changed()if type(self.OnChanged)=='function'then pcall(self.OnChanged,self)end end

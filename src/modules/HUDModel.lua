@@ -1,13 +1,13 @@
 -- Pure presentation/settings model. No executor calls or game-side actions.
 local M={}
 M.Fields={
- {Id='FPS',Label='FPS',Icon='chart-no-axes-column-increasing',Reserve='888 FPS',Default=true},
+ {Id='FPS',Label='FPS',Icon='monitor',Reserve='888 FPS',Default=true},
  {Id='Ping',Label='Ping',Icon='signal',Reserve='888 MS',Default=true},
  {Id='Username',Label='Username',Icon='user-round',Default=true},
  {Id='Time',Label='Time',Reserve='00:00',Default=true},
- {Id='Day',Label='Weekday',Reserve='Wed',Default=true},
+ {Id='Day',Label='Weekday',Default=true},
  {Id='Avatar',Label='Avatar',Default=true},
- {Id='Platform',Label='Logo',Reserve='RB',Default=true},
+ {Id='Platform',Label='Logo',Reserve='Sirius',Default=true},
  {Id='Build',Label='Build',Default=true},
  {Id='Executor',Label='Executor',Icon='terminal'},
  {Id='VAR',Label='Frame variance',Icon='activity',Reserve='99.9 VAR'},
@@ -40,6 +40,6 @@ function M.Build(username,builds,fallback)
  return fallback or'Release'
 end
 function M.Clock(t)
- return string.format('%02d:%02d',t.hour,t.min),({'Sun','Mon','Tue','Wed','Thu','Fri','Sat'})[t.wday]or'—'
+ return string.format('%02d:%02d',t.hour,t.min),({'Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'})[t.wday]or'—'
 end
 return M
