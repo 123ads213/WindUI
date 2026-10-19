@@ -383,3 +383,29 @@ The example exposes **General → Watermark / Keylist / Reset widget positions**
 - Ordinary ConfigManager `Save()` / `Load()` now includes `__hud`: both visibility flags and normalized positions. Legacy configs without `__hud` keep the configured defaults. As with other settings, changes persist to disk when the config is explicitly saved; this feature does not silently overwrite a user's config.
 
 QA: `tests/HUDGeometry.luau` adds 31 pure geometry assertions to `npm test`. `tests/ForkHUD.lua` passed 43 live API/synthetic-signal checks: telemetry, unknown fields, font, active/disabled-value bindings, Always precedence, menu visibility, drag offsets/edges/rulers/release, focus cancellation, atomic config validation, actual disk Save/Load, and all seven themes. Real VirtualInputManager mouse input additionally verified exact movement (-120, +110 px) with successful capture/release. Separate OS screenshots were inspected in Dark and Light, including active rows. These checks do not execute the supplied game's script.
+
+## Refined configurable HUD (revision 12 — current)
+
+Revision 12 supersedes the fixed telemetry strip and switch-style rows described for revision 11. Default fields are **FPS, Ping, Username, Time, Weekday, Avatar, Logo, Build**; the misleading/unavailable LOSS and TIMEOUT cells are removed entirely.
+
+**General → Watermark elements** is a multi-select with an empty selection allowed. Optional elements include executor name (read once from `identifyexecutor` / `getexecutorname` when exposed), client memory, frame-time variance, session uptime and place ID. Unsupported executor identification is omitted rather than invented. No executor credentials or private files are read. Time/weekday use `os.date` on the client's local machine; session time begins when this HUD is constructed.
+
+```lua
+local HUD=Window:CreateHUD({
+    Watermark=true,Keylist=true,
+    Builds={syntheticplatinum27='Nightly'}, -- cosmetic exact-username allowlist
+    Build='Release',                       -- everyone else's display label
+})
+HUD:SetFields({'FPS','Ping','Username','Time','Weekday','Avatar','Logo','Build'})
+HUD:SetField('Executor',true) -- API uses stable IDs; the multi-select uses labels
+HUD:SetKeylistMode('Value')  -- or 'Key'
+local selected=HUD:GetFields()
+```
+
+- Build lookup uses the real Roblox **Name**, not DisplayName, with exact case-insensitive matching. It is only a display label, not an authentication, entitlement or permission check. The demo assigns this user's requested Nightly label; other users receive Release.
+- Numeric telemetry gets reserved-width columns and mild display smoothing, so FPS/ping changes never resize or shift the watermark. Raw current values remain available via `GetMetrics()`. Field insertion/removal animates clipping, opacity, occupied width and neighboring positions. Whole-widget visibility fades/scales subtly, with no per-update width tween resets. Transitions use delta-time exponential interpolation, not frame counts.
+- Current Keylist has a compact 118×30 header and lightly tinted, value-first rows, not switches or a full card behind every label. Numeric features show their actual value on the left; booleans use ON/OFF. **General → Keylist labels** can show the bound key instead. `HotkeyLabel` may be a string or `(owner,binding)` formatter for integrations that need a specialized actual value. Removing a binding retains its row until the opacity/height collapse finishes, then destroys it.
+- Rulers/drag hover highlights follow the theme Accent surface: white in Light, dark in Dark. Hover highlighting is only visible while hovered/held, not as a permanent rectangular slab. Direct dragging and reference snap/release behavior are retained; fractional positions avoid artificial whole-pixel stepping during size transitions.
+- HUD state version 2 persists selected fields and Keylist mode in `__hud`, alongside existing visibility/anchors. Version-1 HUD configs still load without losing the new default field selection. The demo's settings mirror API/Import/Load changes via `HUD.OnChanged`; field/mode widgets have a single config source of truth rather than conflicting duplicate flags.
+
+QA: `HUDModel.luau` adds 80 pure assertions for defaults, selection validation, exact build identity, clock formatting and frame-rate-independent monotonic animation. Updated `ForkHUD.lua` passed 62 live checks, including stable width during real telemetry updates, interpolated selection, empty selection, executor identity, Nightly, local time/day, actual numeric values, removal fade/cleanup, settings mirroring, disk persistence, and white Light-theme guides. All earlier geometry/hotkey/number tests remain enabled.

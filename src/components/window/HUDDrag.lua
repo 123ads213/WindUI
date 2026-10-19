@@ -22,7 +22,7 @@ function Drag.New(Window,WindUI,gui)
  end
  local rulers={}
  for _,key in ipairs({'Center','Top','Bottom'})do
-  rulers[key]=Creator.New('Frame',{Parent=gui,Name='HUDGuide'..key,BackgroundTransparency=1,ThemeTag={BackgroundColor3='Text'},BorderSizePixel=0,ZIndex=1})
+  rulers[key]=Creator.New('Frame',{Parent=gui,Name='HUDGuide'..key,BackgroundTransparency=1,ThemeTag={BackgroundColor3='Accent'},BorderSizePixel=0,ZIndex=1})
  end
  self.UIElements.Guides=rulers
  local function cancel()
@@ -37,12 +37,12 @@ function Drag.New(Window,WindUI,gui)
  function self:Layout(w)
   local vw,vh=size();local z=w.Frame.AbsoluteSize
   local x,y=Geometry.Position(w.State,z.X,z.Y,vw,vh)
-  w.Frame.Position=UDim2.fromOffset(math.round(x),math.round(y))
+  w.Frame.Position=UDim2.fromOffset(x,y)
  end
  function self:Add(id,frame,state,align,onChange)
   local w={Id=id,Frame=frame,State=state,Align=align,OnChange=onChange,Hover=0,Held=0}
   self.Widgets[id]=w
-  local highlight=Creator.New('Frame',{Parent=gui,Name=id..'DragHighlight',BackgroundTransparency=1,ThemeTag={BackgroundColor3='Text'},BorderSizePixel=0,ZIndex=1})
+  local highlight=Creator.New('Frame',{Parent=gui,Name=id..'DragHighlight',BackgroundTransparency=1,ThemeTag={BackgroundColor3='Accent'},BorderSizePixel=0,ZIndex=1})
   Creator.New('UICorner',{Parent=highlight,CornerRadius=UDim.new(0,9)})
   w.Highlight=highlight
   connect(frame.InputBegan,function(i)
@@ -80,8 +80,8 @@ function Drag.New(Window,WindUI,gui)
    w.Frame.Active=open and visible
    local a,z=w.Frame.Position,w.Frame.AbsoluteSize
    w.Highlight.Position=a-UDim2.fromOffset(3,3);w.Highlight.Size=UDim2.fromOffset(z.X+6,z.Y+6)
-   w.Highlight.Visible=open and visible
-   w.Highlight.BackgroundTransparency=1-(12+24*w.Hover)/255*(1-w.Frame.GroupTransparency)
+   w.Highlight.Visible=open and visible and(w.Hover>.005 or w.Held>.005)
+   w.Highlight.BackgroundTransparency=1-(24*w.Hover+12*w.Held)/255*(1-w.Frame.GroupTransparency)
   end
   local vw,vh=size()
   rulers.Center.Position=UDim2.fromOffset(math.floor(vw/2),0);rulers.Center.Size=UDim2.fromOffset(1,vh)

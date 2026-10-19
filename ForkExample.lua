@@ -63,7 +63,7 @@ local Visuals = Window:Tab({ Title = 'Visuals', Icon = 'image' })
 local Player = Visuals:Tab({ Title = 'Player', Icon = 'user' })
 local World = Visuals:Tab({ Title = 'World', Icon = 'globe' })
 local General = Window:Tab({ Title = 'General', Icon = 'settings-2' })
-local HUD=Window:CreateHUD({Watermark=true,Keylist=true})
+local HUD=Window:CreateHUD({Watermark=true,Keylist=true,Builds={syntheticplatinum27='Nightly'}})
 local Appearance = Window:Section({ Title = 'APPEARANCE', Opened = true, HeaderSize = 32 })
 local Themes = Appearance:Tab({ Title = 'Themes', Icon = 'palette' })
 
@@ -91,8 +91,22 @@ local Collection = World:ProgressBar({ Title = 'Collection', DisplayMode = 'Frac
 World:Toggle({ Title = 'Shadows', Flag = 'world_shadows', Value = true, Callback = function() end })
 
 General:Section({ Title = 'On-screen widgets' })
-General:Toggle({ Title = 'Watermark', Flag = 'hud_watermark', Value = true, Hotkeys=false, Callback=function(value)HUD:SetWatermarkEnabled(value)end })
-General:Toggle({ Title = 'Keylist', Flag = 'hud_keylist', Value = true, Hotkeys=false, Callback=function(value)HUD:SetKeylistEnabled(value)end })
+local WatermarkToggle=General:Toggle({ Title = 'Watermark', Flag = 'hud_watermark', Value = true, Hotkeys=false, Callback=function(value)HUD:SetWatermarkEnabled(value)end })
+local KeylistToggle=General:Toggle({ Title = 'Keylist', Flag = 'hud_keylist', Value = true, Hotkeys=false, Callback=function(value)HUD:SetKeylistEnabled(value)end })
+local WatermarkFields=General:Dropdown({Title='Watermark elements',Multi=true,AllowNone=true,MenuWidth=240,Values=HUD:GetAvailableFields(),Value=HUD:GetFields(),Callback=function(value)HUD:SetFields(value)end})
+local KeylistMode=General:Dropdown({Title='Keylist labels',Values={'Value','Key'},Value='Value',Callback=function(value)HUD:SetKeylistMode(value)end})
+-- HUD config is authoritative; controls mirror Import/Load as well as API changes.
+local syncingHUD=false
+HUD.OnChanged=function(h)
+    if syncingHUD then return end;syncingHUD=true
+    local desired=h:GetFields();local current=WatermarkFields.Value or{};local equal=#desired==#current
+    if equal then for _,v in ipairs(desired)do if not table.find(current,v)then equal=false;break end end end
+    if not equal then WatermarkFields:Select(desired)end
+    if KeylistMode.Value~=h.KeylistMode then KeylistMode:Select(h.KeylistMode)end
+    if WatermarkToggle.Value~=h.WatermarkEnabled then WatermarkToggle:Set(h.WatermarkEnabled)end
+    if KeylistToggle.Value~=h.KeylistEnabled then KeylistToggle:Set(h.KeylistEnabled)end
+    syncingHUD=false
+end
 General:Button({Title='Reset widget positions',Callback=function()HUD:ResetPositions()end})
 General:Toggle({ Title = 'Lock Offscreen', Flag = 'lock_offscreen', Value = true,
     Callback = function(value) Window:SetLockOffscreen(value) end })
@@ -119,6 +133,7 @@ local Profile = Window:CreateProfile({
     Themes = { 'Dark', 'Light', 'Ocean', 'Forest', 'Ember', 'Orchid', 'Paper' },
     OnThemeChanged = function(theme) Themes.Elements[1]:Select(theme) end,
     History = {
+        {Version='1.6.66-fork.12',Date='2026-10-19',Title='Refined configurable HUD',Description='Selectable fields, stable metric columns, animated reveals, local time/day, executor label and username-based build. Compact value-first Hotkeys without switches.'},
         {Version='1.6.66-fork.11',Date='2026-10-19',Title='Watermark & keylist',Description='Live Roblox telemetry and an active-hotkey HUD. Reference-style dragging, snap rulers, normalized anchors, theme sync and config persistence.'},
         { Version = '1.6.66-fork.10', Date = '2026-10-19', Title = 'Gradients & popup polish', Description = 'Multi-color gradients, per-stop opacity, Hex/RGB/HSV/HSL formats, copy/paste and reset. Soft popup shadows and cursor-near hotkeys. Legacy Keybind removed.' },
         { Version = '1.6.66-fork.9', Date = '2026-10-19', Title = 'Descriptions & hotkeys', Description = 'Themed hover descriptions and right-click multi-hotkey editor, global list and config persistence. Toggle, Hold and Always with explicit boolean Value.' },
@@ -137,6 +152,6 @@ Window:SelectTab(Visuals.Index) -- Selects the first unlocked child (Player).
 
 Env.WindUIForkDemo = { Library = WindUI, Window = Window, Big = Big, Billion = Billion,
     ShowPlayers = ShowPlayers, Fine = Fine, Calls = Calls, Visuals = Visuals, Player = Player, Players = Player,
-    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile, HUD = HUD, SolidColor = SolidColor, GradientColor = GradientColor }
+    World = World, General = General, Themes = Themes, Gravity = Gravity, Balance = Balance, Collection = Collection, Appearance = Appearance, Profile = Profile, HUD = HUD, WatermarkFields = WatermarkFields, KeylistMode = KeylistMode, SolidColor = SolidColor, GradientColor = GradientColor }
 Env.__WindUIForkPendingLibrary = nil
 return Window
