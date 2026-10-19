@@ -127,12 +127,12 @@ function HUD.New(Window,WindUI,Config)
  local function rowFor(id)
   local row=self.Rows[id];if row then return row end
   local frame=New('CanvasGroup',{Parent=body,Name='Binding_'..id,Size=UDim2.new(1,0,0,25),BackgroundTransparency=.94,ThemeTag={BackgroundColor3='Dialog'},GroupTransparency=1,ClipsDescendants=true,ZIndex=5});corner(frame,5)
-  local indicatorBack=New('Frame',{Parent=frame,Name='IndicatorSurface',Size=UDim2.fromOffset(30,30),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(indicatorBack,7)
-  local nameBack=New('Frame',{Parent=frame,Name='NameSurface',Position=UDim2.fromOffset(34,0),Size=UDim2.fromOffset(100,30),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(nameBack,7)
+  local indicatorBack=New('Frame',{Parent=frame,Name='IndicatorSurface',Size=UDim2.fromOffset(26,26),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(indicatorBack,7)
+  local nameBack=New('Frame',{Parent=frame,Name='NameSurface',Position=UDim2.fromOffset(30,0),Size=UDim2.fromOffset(100,26),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(nameBack,7)
   local value=text(frame,'Value','',8,0,30,25,13,true,false)
   local label=text(frame,'Feature','',42,0,120,25,14,false,false)
-  local track=New('Frame',{Parent=frame,Name='Indicator',Position=UDim2.fromOffset(6,10),Size=UDim2.fromOffset(18,10),ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(track,5)
-  local thumb=New('Frame',{Parent=track,Name='Thumb',Size=UDim2.fromOffset(6,6),Position=UDim2.fromOffset(10,2),ThemeTag={BackgroundColor3='Dialog'},ZIndex=7});corner(thumb,2)
+  local track=New('Frame',{Parent=frame,Name='Indicator',Position=UDim2.fromOffset(5,9),Size=UDim2.fromOffset(16,8),ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(track,4)
+  local thumb=New('Frame',{Parent=track,Name='Thumb',Size=UDim2.fromOffset(4,4),Position=UDim2.fromOffset(10,2),ThemeTag={BackgroundColor3='Dialog'},ZIndex=7});corner(thumb,2)
   row={Frame=frame,Label=label,IndicatorSurface=indicatorBack,NameSurface=nameBack,Value=value,Track=track,Thumb=thumb,Progress=0,Leaving=false};self.Rows[id]=row;return row
  end
  local elapsed,frameElapsed,frameCount=0,0,0;local samples={};local sampleIndex=0;local wmAlpha,keyAlpha=0,0;local keyWidth=180;local lastClassic
@@ -181,15 +181,15 @@ function HUD.New(Window,WindUI,Config)
    row.Progress=Model.Ease(row.Progress,target and 1 or 0,dt,13);if target then count+=1 end
    row.Label.Text=e.Owner.Title or'Feature';row.Value.Text=bindingValue(e,b)
    row.Track.Visible=classic;row.Value.Visible=not classic;row.Thumb.Position=UDim2.fromOffset(b.Value and 10 or 2,2)
-   row.Label.TextSize=14
+   row.Label.TextSize=13
    row.IndicatorSurface.BackgroundColor3=surfaceColor;row.NameSurface.BackgroundColor3=surfaceColor
-   local nameWidth=math.min(250,measure(row.Label.Text,14,false))+16
-   row.NameSurface.Size=UDim2.fromOffset(nameWidth,30)
+   local nameWidth=math.min(254,measure(row.Label.Text,13,false))+16
+   row.NameSurface.Size=UDim2.fromOffset(nameWidth,26)
    local valueWidth=math.clamp(measure(row.Value.Text,13,false)+4,27,64)
    row.Value.Size=UDim2.fromOffset(valueWidth,25)
-   row.Label.Position=UDim2.fromOffset(classic and 42 or(12+valueWidth),0)
-   row.Label.Size=UDim2.fromOffset(nameWidth-16,30);row.Label.ZIndex=6
-   if row.Progress>0 then targetWidth=math.max(targetWidth,math.min(300,measure(row.Label.Text,14,false)+(classic and 50 or(20+valueWidth))))end
+   row.Label.Position=UDim2.fromOffset(classic and 38 or(12+valueWidth),0)
+   row.Label.Size=UDim2.fromOffset(nameWidth-16,26);row.Label.ZIndex=6
+   if row.Progress>0 then targetWidth=math.max(targetWidth,math.min(300,measure(row.Label.Text,13,false)+(classic and 46 or(20+valueWidth))))end
    ordered[#ordered+1]=row
   end end
   -- Retain removed bindings until their final fade/height collapse has finished.
@@ -198,9 +198,9 @@ function HUD.New(Window,WindUI,Config)
   local surface=header.BackgroundColor3;local rowSurfaceAlpha=(surface.R*.2126+surface.G*.7152+surface.B*.0722)>.65 and .20 or .78
   local y=0;for _,row in ipairs(ordered)do
    row.Frame.BackgroundTransparency=classic and 1 or rowSurfaceAlpha
-   row.Frame.Position=UDim2.fromOffset(6*(1-row.Progress),y);row.Frame.GroupTransparency=1-row.Progress;row.Frame.Size=UDim2.new(1,-6*(1-row.Progress),0,(classic and 30 or 25)*row.Progress);row.Frame.Visible=row.Progress>0;y+=(classic and 36 or 28)*row.Progress
+   row.Frame.Position=UDim2.fromOffset(6*(1-row.Progress),y);row.Frame.GroupTransparency=1-row.Progress;row.Frame.Size=UDim2.new(1,-6*(1-row.Progress),0,(classic and 26 or 25)*row.Progress);row.Frame.Visible=row.Progress>0;y+=(classic and 31 or 28)*row.Progress
   end
-  local maxBody=math.max(0,gui.AbsoluteSize.Y-51);local height=math.min(math.max(0,y-(classic and 6 or 3)),maxBody)
+  local maxBody=math.max(0,gui.AbsoluteSize.Y-51);local height=math.min(math.max(0,y-(classic and 5 or 3)),maxBody)
   body.Size=UDim2.fromOffset(keyWidth,height);body.Visible=height>0
   keylist.Size=UDim2.fromOffset(keyWidth,(30)+(height>0 and (classic and 2 or 5)+height or 0))
   keyAlpha=Model.Ease(keyAlpha,self.KeylistEnabled and(open or count>0)and 1 or 0,dt,12)

@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66-fork.16  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
+    v1.6.66-fork.17  |  2026-10-19  |  WindUI by Footagesus — original layout with compact values, nested tabs and curated themes.
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -26857,7 +26857,7 @@ New=a.q().New
 return[[
 {
     "name": "windui",
-    "version": "1.6.66-fork.16",
+    "version": "1.6.66-fork.17",
     "main": "./dist/main.lua",
     "repository": "https://github.com/123ads213/WindUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
@@ -38037,12 +38037,12 @@ end
 local function rowFor(aR)
 local b=av.Rows[aR];if b then return b end
 local d=ap('CanvasGroup',{Parent=aN,Name='Binding_'..aR,Size=UDim2.new(1,0,0,25),BackgroundTransparency=.94,ThemeTag={BackgroundColor3='Dialog'},GroupTransparency=1,ClipsDescendants=true,ZIndex=5});corner(d,5)
-local f=ap('Frame',{Parent=d,Name='IndicatorSurface',Size=UDim2.fromOffset(30,30),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(f,7)
-local g=ap('Frame',{Parent=d,Name='NameSurface',Position=UDim2.fromOffset(34,0),Size=UDim2.fromOffset(100,30),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(g,7)
+local f=ap('Frame',{Parent=d,Name='IndicatorSurface',Size=UDim2.fromOffset(26,26),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(f,7)
+local g=ap('Frame',{Parent=d,Name='NameSurface',Position=UDim2.fromOffset(30,0),Size=UDim2.fromOffset(100,26),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(g,7)
 local h=text(d,'Value','',8,0,30,25,13,true,false)
 local i=text(d,'Feature','',42,0,120,25,14,false,false)
-local l=ap('Frame',{Parent=d,Name='Indicator',Position=UDim2.fromOffset(6,10),Size=UDim2.fromOffset(18,10),ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(l,5)
-local m=ap('Frame',{Parent=l,Name='Thumb',Size=UDim2.fromOffset(6,6),Position=UDim2.fromOffset(10,2),ThemeTag={BackgroundColor3='Dialog'},ZIndex=7});corner(m,2)
+local l=ap('Frame',{Parent=d,Name='Indicator',Position=UDim2.fromOffset(5,9),Size=UDim2.fromOffset(16,8),ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(l,4)
+local m=ap('Frame',{Parent=l,Name='Thumb',Size=UDim2.fromOffset(4,4),Position=UDim2.fromOffset(10,2),ThemeTag={BackgroundColor3='Dialog'},ZIndex=7});corner(m,2)
 b={Frame=d,Label=i,IndicatorSurface=f,NameSurface=g,Value=h,Track=l,Thumb=m,Progress=0,Leaving=false};av.Rows[aR]=b;return b
 end
 local aR,b,d=0,0,0;local f={};local g=0;local h,i=0,0;local l=180;local m
@@ -38091,15 +38091,15 @@ local R=tostring(Q.Id);J[R]=true;local S=rowFor(R);local T=active(O,Q,P)
 S.Progress=ag.Ease(S.Progress,T and 1 or 0,p,13);if T then L+=1 end
 S.Label.Text=O.Owner.Title or'Feature';S.Value.Text=bindingValue(O,Q)
 S.Track.Visible=F;S.Value.Visible=not F;S.Thumb.Position=UDim2.fromOffset(Q.Value and 10 or 2,2)
-S.Label.TextSize=14
+S.Label.TextSize=13
 S.IndicatorSurface.BackgroundColor3=C;S.NameSurface.BackgroundColor3=C
-local U=math.min(250,measure(S.Label.Text,14,false))+16
-S.NameSurface.Size=UDim2.fromOffset(U,30)
+local U=math.min(254,measure(S.Label.Text,13,false))+16
+S.NameSurface.Size=UDim2.fromOffset(U,26)
 local V=math.clamp(measure(S.Value.Text,13,false)+4,27,64)
 S.Value.Size=UDim2.fromOffset(V,25)
-S.Label.Position=UDim2.fromOffset(F and 42 or(12+V),0)
-S.Label.Size=UDim2.fromOffset(U-16,30);S.Label.ZIndex=6
-if S.Progress>0 then M=math.max(M,math.min(300,measure(S.Label.Text,14,false)+(F and 50 or(20+V))))end
+S.Label.Position=UDim2.fromOffset(F and 38 or(12+V),0)
+S.Label.Size=UDim2.fromOffset(U-16,26);S.Label.ZIndex=6
+if S.Progress>0 then M=math.max(M,math.min(300,measure(S.Label.Text,13,false)+(F and 46 or(20+V))))end
 H[#H+1]=S
 end end
 
@@ -38108,9 +38108,9 @@ l=ag.Ease(l,math.min(M,math.max(80,az.AbsoluteSize.X-16)),p,14)
 local N=aL.BackgroundColor3;local O=(N.R*.2126+N.G*.7152+N.B*.0722)>.65 and.20 or.78
 local P=0;for Q,R in ipairs(H)do
 R.Frame.BackgroundTransparency=F and 1 or O
-R.Frame.Position=UDim2.fromOffset(6*(1-R.Progress),P);R.Frame.GroupTransparency=1-R.Progress;R.Frame.Size=UDim2.new(1,-6*(1-R.Progress),0,(F and 30 or 25)*R.Progress);R.Frame.Visible=R.Progress>0;P+=(F and 36 or 28)*R.Progress
+R.Frame.Position=UDim2.fromOffset(6*(1-R.Progress),P);R.Frame.GroupTransparency=1-R.Progress;R.Frame.Size=UDim2.new(1,-6*(1-R.Progress),0,(F and 26 or 25)*R.Progress);R.Frame.Visible=R.Progress>0;P+=(F and 31 or 28)*R.Progress
 end
-local Q=math.max(0,az.AbsoluteSize.Y-51);local R=math.min(math.max(0,P-(F and 6 or 3)),Q)
+local Q=math.max(0,az.AbsoluteSize.Y-51);local R=math.min(math.max(0,P-(F and 5 or 3)),Q)
 aN.Size=UDim2.fromOffset(l,R);aN.Visible=R>0
 aK.Size=UDim2.fromOffset(l,(30)+(R>0 and(F and 2 or 5)+R or 0))
 i=ag.Ease(i,av.KeylistEnabled and(G or L>0)and 1 or 0,p,12)

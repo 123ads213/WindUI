@@ -433,3 +433,7 @@ FPS now uses Lucide `monitor`, visually distinct from Ping's signal bars. Icon-b
 - Color input has a dedicated ellipsized, clipped preview for HEX/RGB/HSV/HSL. Full TextBox text stays intact; focusing switches to editable full data, and Enter/FocusLost/paste preserve existing parsing behavior.
 - Classic header extended to at least 140px; body starts at y32 (2px gap). Each binding uses a separate rounded 30×30 indicator plate and a label plate measured to text +16px padding, themed opaque black/white.
 - Live Roblox QA: ForkHotkeys 51, ForkMotion 33, ForkHUD 81 and ForkPaste 18 checks passed. Inspected Dark HSV ellipsis, soft panel shadows, and separate Dark/Light keylist plates.
+
+### fork.17 — subordinate binding size
+- Header stays 14px / 30px high. Bindings reduced to 13px / 26px high, 26px square indicator plates and 16×8px switches. Name plates retain measured widths; 5px row gap. Header/row gap stays 2px.
+- Live HUD regression: 81 checks passed, including explicit header > binding font/height comparisons. Actual game screenshot inspected.

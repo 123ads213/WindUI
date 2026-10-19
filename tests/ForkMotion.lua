@@ -37,7 +37,7 @@ local ok,err=pcall(function()
  local h=d.HUD;local r=h.Rows[tostring(t.HotkeyEntry.Bindings[1].Id)]
  check(h.UIElements.Header.Size.X.Offset>=140,'header extended')
  check(h.UIElements.Body.Position.Y.Offset==32,'rows moved closer to header')
- check(r.IndicatorSurface.Size==UDim2.fromOffset(30,30)and r.NameSurface.Position.X.Offset==34,'separate indicator square and name plate')
+ check(r.IndicatorSurface.Size==UDim2.fromOffset(26,26)and r.NameSurface.Position.X.Offset==30,'separate indicator square and name plate')
  check(r.NameSurface.Size.X.Offset==r.Label.Size.X.Offset+16,'name plate fits text with padding')
  check(r.IndicatorSurface.BackgroundColor3==Color3.new(0,0,0)and r.NameSurface.BackgroundColor3==Color3.new(0,0,0),'dark surfaces are black')
  d.Library:SetTheme('Light');task.wait(.15);check(r.IndicatorSurface.BackgroundColor3==d.Library:GetThemes().Light.Dialog,'surfaces follow Light theme')
