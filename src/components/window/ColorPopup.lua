@@ -17,7 +17,7 @@ function Popup.New(Element,Window,WindUI)
  local function icon(p,name,x,y,size)
   local im=Creator.Image(name,name,0,Window.Folder,'ColorIcon',true,false,'Icon');im.Parent=p;im.Position=UDim2.fromOffset(x,y);im.Size=UDim2.fromOffset(size,size);im.ZIndex=705;im.ImageLabel.ZIndex=705;return im
  end
- local panel=New('CanvasGroup',{Parent=host,Name='GradientColorpicker',Size=UDim2.fromOffset(292,396),BackgroundTransparency=0,ThemeTag={BackgroundColor3='Dialog'},GroupTransparency=1,Visible=false,ZIndex=700,Active=true});corner(panel,14);Shadow.New(panel)
+ local panel=New('CanvasGroup',{Parent=host,Name='GradientColorpicker',Size=UDim2.fromOffset(292,396),BackgroundTransparency=0,ThemeTag={BackgroundColor3='Dialog'},GroupTransparency=1,Visible=false,ZIndex=700,Active=true});corner(panel,14);Shadow.New(panel,{Opacity=.6})
  local function button(parent,name,title,x,y,w,h,fn,symbol)
   local b=New('TextButton',{Parent=parent,Name=name,Text='',Position=UDim2.fromOffset(x,y),Size=UDim2.fromOffset(w,h),BackgroundTransparency=1,BorderSizePixel=0,TextStrokeTransparency=1,AutoButtonColor=false,ThemeTag={BackgroundColor3='ElementBackground'},ZIndex=703});corner(b,7)
   if title~=''then local t=label(b,'Label',title,8,0,w-16,h,14);t.TextXAlignment='Center'end
@@ -47,12 +47,22 @@ function Popup.New(Element,Window,WindUI)
  local format=button(panel,'Format','HEX',14,356,54,32,function()self:ShowFormats(true)end)
  local arrow=icon(format,'chevron-down',0,8,16)
  format.Label.Position=UDim2.fromOffset(18,0);format.Label.Size=UDim2.new(1,-18,1,0);format.Label.TextSize=14;format.Label.TextTransparency=.12
- local input=New('TextBox',{Parent=panel,Name='ColorText',Position=UDim2.fromOffset(72,356),Size=UDim2.fromOffset(132,32),BackgroundTransparency=.45,BorderSizePixel=0,TextStrokeTransparency=1,ThemeTag={BackgroundColor3='LabelBackground',TextColor3='Text',PlaceholderColor3='Placeholder'},ClearTextOnFocus=false,FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium),TextSize=14,Text='',TextXAlignment='Left',ZIndex=704});corner(input,6);New('UIPadding',{Parent=input,PaddingLeft=UDim.new(0,7),PaddingRight=UDim.new(0,5)})
- local opacity=New('TextBox',{Parent=panel,Name='Opacity',Position=UDim2.fromOffset(208,356),Size=UDim2.fromOffset(44,32),BackgroundTransparency=.45,BorderSizePixel=0,TextStrokeTransparency=1,ThemeTag={BackgroundColor3='LabelBackground',TextColor3='Text'},ClearTextOnFocus=false,FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium),TextSize=14,Text='',ZIndex=704});corner(opacity,6)
+ local input=New('TextBox',{Parent=panel,Name='ColorText',Position=UDim2.fromOffset(72,356),Size=UDim2.fromOffset(132,32),BackgroundTransparency=.45,BorderSizePixel=0,TextStrokeTransparency=1,ThemeTag={BackgroundColor3='LabelBackground',TextColor3='Text',PlaceholderColor3='Placeholder'},ClipsDescendants=true,ClearTextOnFocus=false,FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium),TextSize=14,Text='',TextXAlignment='Left',ZIndex=704});corner(input,6);New('UIPadding',{Parent=input,PaddingLeft=UDim.new(0,7),PaddingRight=UDim.new(0,5)})
+ local opacity=New('TextBox',{Parent=panel,Name='Opacity',Position=UDim2.fromOffset(208,356),Size=UDim2.fromOffset(44,32),BackgroundTransparency=.45,BorderSizePixel=0,TextStrokeTransparency=1,ThemeTag={BackgroundColor3='LabelBackground',TextColor3='Text'},ClipsDescendants=true,ClearTextOnFocus=false,FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium),TextSize=14,Text='',ZIndex=704});corner(opacity,6)
+ -- Unfocused preview is ellipsized, while the TextBox always retains full editable data.
+ local preview=label(input,'Preview','',0,0,0,32,14,false)
+ preview.Size=UDim2.fromScale(1,1);preview.ClipsDescendants=true;preview.ZIndex=705
+ local function previewText()
+  preview.Text=input.Text;preview.Visible=not input:IsFocused()
+  input.TextTransparency=preview.Visible and 1 or 0
+ end
+ connect(input:GetPropertyChangedSignal('Text'),previewText)
+ connect(input.Focused,previewText);connect(input.FocusLost,function()task.defer(previewText)end)
+ previewText()
  local status=label(panel,'Status','',14,396,264,20,14,true);status.Visible=false
  local reset=button(panel,'Reset','',256,356,22,32,function()Element:Reset();self.Selected=1;self:Refresh()end,'rotate-ccw')
- local formats=New('CanvasGroup',{Parent=host,Name='ColorFormats',Size=UDim2.fromOffset(100,140),GroupTransparency=1,Visible=false,BackgroundTransparency=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=710,Active=true});corner(formats,9);Shadow.New(formats)
- local context=New('CanvasGroup',{Parent=host,Name='ColorActions',Size=UDim2.fromOffset(148,116),GroupTransparency=1,Visible=false,BackgroundTransparency=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=720,Active=true});corner(context,9);Shadow.New(context)
+ local formats=New('CanvasGroup',{Parent=host,Name='ColorFormats',Size=UDim2.fromOffset(100,140),GroupTransparency=1,Visible=false,BackgroundTransparency=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=710,Active=true});corner(formats,9);Shadow.New(formats,{Opacity=.6})
+ local context=New('CanvasGroup',{Parent=host,Name='ColorActions',Size=UDim2.fromOffset(148,116),GroupTransparency=1,Visible=false,BackgroundTransparency=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=720,Active=true});corner(context,9);Shadow.New(context,{Opacity=.6})
  local copy=button(context,'Copy','Copy',6,6,136,32,function()self:Copy();self:ShowActions(false)end,'copy')
  local paste=button(context,'Paste','Paste',6,42,136,32,function()self:Paste();self:ShowActions(false)end,'clipboard-paste')
  local remove=button(context,'Remove','Delete color',6,78,136,32,function()self:RemoveStop();self:ShowActions(false)end,'trash-2')
@@ -263,7 +273,7 @@ function Popup.New(Element,Window,WindUI)
   for _,t in pairs(tweens)do t:Cancel()end;panel:Destroy();formats:Destroy();context:Destroy()
  end
  connect(Window.UIElements.Main.Destroying,function()self:Destroy()end)
- self.UIElements={Panel=panel,Stops=stops,Add=add,SV=map,Cursor=cursor,Hue=hue,Alpha=alpha,ColorText=input,Opacity=opacity,Format=format,Formats=formats,Status=status,Reset=reset,Copy=copy,Paste=paste,Remove=remove,Actions=context}
+ self.UIElements={Panel=panel,Stops=stops,Add=add,SV=map,Cursor=cursor,Hue=hue,Alpha=alpha,ColorText=input,ColorPreview=preview,Opacity=opacity,Format=format,Formats=formats,Status=status,Reset=reset,Copy=copy,Paste=paste,Remove=remove,Actions=context}
  return self
 end
 return Popup

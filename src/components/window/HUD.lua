@@ -127,11 +127,13 @@ function HUD.New(Window,WindUI,Config)
  local function rowFor(id)
   local row=self.Rows[id];if row then return row end
   local frame=New('CanvasGroup',{Parent=body,Name='Binding_'..id,Size=UDim2.new(1,0,0,25),BackgroundTransparency=.94,ThemeTag={BackgroundColor3='Dialog'},GroupTransparency=1,ClipsDescendants=true,ZIndex=5});corner(frame,5)
+  local indicatorBack=New('Frame',{Parent=frame,Name='IndicatorSurface',Size=UDim2.fromOffset(30,30),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(indicatorBack,7)
+  local nameBack=New('Frame',{Parent=frame,Name='NameSurface',Position=UDim2.fromOffset(34,0),Size=UDim2.fromOffset(100,30),BorderSizePixel=0,ThemeTag={BackgroundColor3='Dialog'},ZIndex=5});corner(nameBack,7)
   local value=text(frame,'Value','',8,0,30,25,13,true,false)
   local label=text(frame,'Feature','',42,0,120,25,14,false,false)
-  local track=New('Frame',{Parent=frame,Name='Indicator',Position=UDim2.fromOffset(8,10),Size=UDim2.fromOffset(18,10),ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(track,5)
+  local track=New('Frame',{Parent=frame,Name='Indicator',Position=UDim2.fromOffset(6,10),Size=UDim2.fromOffset(18,10),ThemeTag={BackgroundColor3='Text'},ZIndex=6});corner(track,5)
   local thumb=New('Frame',{Parent=track,Name='Thumb',Size=UDim2.fromOffset(6,6),Position=UDim2.fromOffset(10,2),ThemeTag={BackgroundColor3='Dialog'},ZIndex=7});corner(thumb,2)
-  row={Frame=frame,Label=label,Value=value,Track=track,Thumb=thumb,Progress=0,Leaving=false};self.Rows[id]=row;return row
+  row={Frame=frame,Label=label,IndicatorSurface=indicatorBack,NameSurface=nameBack,Value=value,Track=track,Thumb=thumb,Progress=0,Leaving=false};self.Rows[id]=row;return row
  end
  local elapsed,frameElapsed,frameCount=0,0,0;local samples={};local sampleIndex=0;local wmAlpha,keyAlpha=0,0;local keyWidth=180;local lastClassic
  connect(Run.RenderStepped,function(dt)
@@ -164,14 +166,14 @@ function HUD.New(Window,WindUI,Config)
   header.BackgroundColor3=surfaceColor;header.BackgroundTransparency=0
   body.BackgroundColor3=surfaceColor;body.BackgroundTransparency=1
   if lastClassic~=classic then
-   header.Size=UDim2.fromOffset(measure(header.Title.Text,14,false)+42,30)
+   header.Size=UDim2.fromOffset(math.max(140,measure(header.Title.Text,14,false)+42),30)
    header.Title.Position=UDim2.fromOffset(classic and 34 or 33,0);header.Title.Size=classic and UDim2.new(1,-42,0,30)or UDim2.fromOffset(78,30)
    header.Title.TextSize=14;header.Title.FontFace=Font.new(Creator.Font,Enum.FontWeight.Medium)
    headerIcon.Position=UDim2.fromOffset(classic and 8 or 11,8);headerIcon.Size=UDim2.fromOffset(16,16)
    Creator.AddThemeObject(headerIcon.ImageLabel,{ImageColor3=classic and'Placeholder'or'Primary'})
-   body.Position=UDim2.fromOffset(0,classic and 36 or 35);lastClassic=classic
+   body.Position=UDim2.fromOffset(0,classic and 32 or 35);lastClassic=classic
   end
-  header.Size=UDim2.fromOffset(measure(header.Title.Text,14,false)+42,30)
+  header.Size=UDim2.fromOffset(math.max(140,measure(header.Title.Text,14,false)+42),30)
   local open=not Window.Closed and Window.UIElements.Main.Visible and Window.UIElements.Main.Main.Visible
   local ordered,seen={},{};local count=0;local targetWidth=classic and 160 or 148
   for _,e in ipairs(Window.FeatureUI.Model.Entries)do for i,b in ipairs(e.Bindings)do
@@ -180,10 +182,13 @@ function HUD.New(Window,WindUI,Config)
    row.Label.Text=e.Owner.Title or'Feature';row.Value.Text=bindingValue(e,b)
    row.Track.Visible=classic;row.Value.Visible=not classic;row.Thumb.Position=UDim2.fromOffset(b.Value and 10 or 2,2)
    row.Label.TextSize=14
+   row.IndicatorSurface.BackgroundColor3=surfaceColor;row.NameSurface.BackgroundColor3=surfaceColor
+   local nameWidth=math.min(250,measure(row.Label.Text,14,false))+16
+   row.NameSurface.Size=UDim2.fromOffset(nameWidth,30)
    local valueWidth=math.clamp(measure(row.Value.Text,13,false)+4,27,64)
    row.Value.Size=UDim2.fromOffset(valueWidth,25)
    row.Label.Position=UDim2.fromOffset(classic and 42 or(12+valueWidth),0)
-   row.Label.Size=UDim2.new(1,classic and -50 or -(20+valueWidth),0,classic and 30 or 25)
+   row.Label.Size=UDim2.fromOffset(nameWidth-16,30);row.Label.ZIndex=6
    if row.Progress>0 then targetWidth=math.max(targetWidth,math.min(300,measure(row.Label.Text,14,false)+(classic and 50 or(20+valueWidth))))end
    ordered[#ordered+1]=row
   end end
@@ -197,7 +202,7 @@ function HUD.New(Window,WindUI,Config)
   end
   local maxBody=math.max(0,gui.AbsoluteSize.Y-51);local height=math.min(math.max(0,y-(classic and 6 or 3)),maxBody)
   body.Size=UDim2.fromOffset(keyWidth,height);body.Visible=height>0
-  keylist.Size=UDim2.fromOffset(keyWidth,(30)+(height>0 and (classic and 6 or 5)+height or 0))
+  keylist.Size=UDim2.fromOffset(keyWidth,(30)+(height>0 and (classic and 2 or 5)+height or 0))
   keyAlpha=Model.Ease(keyAlpha,self.KeylistEnabled and(open or count>0)and 1 or 0,dt,12)
   keylist.GroupTransparency=1-keyAlpha;keylist.Visible=keyAlpha>0;drag:Layout(drag.Widgets.Keylist)
   keyShadowProxy.Size=header.Size;keyShadowProxy.Position=keylist.Position;keyShadowProxy.GroupTransparency=1-keyAlpha;keyShadowProxy.Visible=keylist.Visible

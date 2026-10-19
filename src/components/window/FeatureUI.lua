@@ -21,7 +21,7 @@ function FeatureUI.New(Window,WindUI)
  end
  local function panel(name,width,height)
   local f=New('CanvasGroup',{Parent=host,Name=name,Size=UDim2.fromOffset(width,height),Visible=false,GroupTransparency=1,ThemeTag={BackgroundColor3='Dialog'},ZIndex=500,Active=true})
-  corner(f,12);Shadow.New(f)
+  corner(f,12);Shadow.New(f,{Opacity=.65})
   return f
  end
  local tweens,targets={},{}
@@ -144,24 +144,59 @@ function FeatureUI.New(Window,WindUI)
   if activeEntry then self.Model:Reset(activeEntry);self:CancelCapture();activeBinding=nil;show(editor,false);show(modes,false);rebuildContext();refreshAll()end
  end)
  local sep=New('Frame',{Parent=context,Name='Separator',Size=UDim2.new(1,-28,0,1),Position=UDim2.fromOffset(14,132),BackgroundTransparency=.93,BorderSizePixel=0,ThemeTag={BackgroundColor3='Text'},ZIndex=502})
+ -- Retain row instances through edits; fade and collapse only removed bindings.
+ local contextRows,contextOrder={},{}
+ local contextOwner
+ local emptyContext=label(contextList,'Empty','No hotkeys yet',20,0,-40,38,14,true)
+ self.UIElements.ContextRows=contextRows
  rebuildContext=function()
-  clearChildren(contextList)
   if not activeEntry then return end
-  local count=#activeEntry.Bindings;local visible=math.min(5,math.max(1,count));local listHeight=visible*38
-  context.Size=UDim2.fromOffset(232,listHeight+150);contextList.Size=UDim2.new(1,0,0,listHeight)
-  allButton.Position=UDim2.fromOffset(8,listHeight+12);newButton.Position=UDim2.fromOffset(8,listHeight+54)
-  sep.Position=UDim2.fromOffset(14,listHeight+100);resetButton.Position=UDim2.fromOffset(8,listHeight+106)
-  if count==0 then label(contextList,'Empty','No hotkeys yet',20,0,-40,38,14,true)end
-  for i,b in ipairs(activeEntry.Bindings)do
-   local row=button(contextList,'Binding_'..b.Id,b.Key,'keyboard',0)
-   row.Position=UDim2.fromOffset(8,(i-1)*38)
-   icon(row,'chevron-right',190,11,16)
-   row.MouseEnter:Connect(function()self:Edit(activeEntry,b,row)end)
-   row.MouseButton1Click:Connect(function()self:Edit(activeEntry,b,row)end)
+  if contextOwner~=activeEntry then
+   for id,r in pairs(contextRows)do r.Frame:Destroy();contextRows[id]=nil end
+   table.clear(contextOrder);contextOwner=activeEntry;contextList.CanvasPosition=Vector2.zero
   end
-  -- Recreated rows may invalidate the anchor; retain editor selection without jumping.
+  for _,r in pairs(contextRows)do r.Removing=true end
+  for _,binding in ipairs(activeEntry.Bindings)do
+   local b=binding;local r=contextRows[b.Id]
+   if not r then
+    local frame=New('CanvasGroup',{Parent=contextList,Name='Binding_'..b.Id,Size=UDim2.new(1,0,0,0),BackgroundTransparency=1,GroupTransparency=1,ClipsDescendants=true,ZIndex=501})
+    local row=button(frame,'Action',b.Key,'keyboard',0)
+    icon(row,'chevron-right',190,11,16)
+    r={Frame=frame,Button=row,Progress=0,Removing=false};contextRows[b.Id]=r;contextOrder[#contextOrder+1]=b.Id
+    frame.MouseEnter:Connect(function()if not r.Removing then self:Edit(contextOwner,b,frame)end end)
+    row.MouseButton1Click:Connect(function()if not r.Removing then self:Edit(contextOwner,b,frame)end end)
+   end
+   r.Removing=false;r.Button.Label.Text=b.Key
+  end
   if activeBinding then activeRow=contextList:FindFirstChild('Binding_'..activeBinding.Id)end
  end
+ connect(Run.RenderStepped,function(dt)
+  if self.Destroyed or not contextOwner then return end
+  local y=0;local alpha=1-math.exp(-14*math.min(dt,.1))
+  for i=#contextOrder,1,-1 do
+   local id=contextOrder[i];local r=contextRows[id]
+   local target=r.Removing and 0 or 1
+   r.Progress+=(target-r.Progress)*alpha
+   if math.abs(r.Progress-target)<.002 then r.Progress=target end
+   if r.Removing and r.Progress==0 then r.Frame:Destroy();contextRows[id]=nil;table.remove(contextOrder,i)end
+  end
+  for _,id in ipairs(contextOrder)do
+   local r=contextRows[id];local p=r.Progress
+   r.Frame.Position=UDim2.fromOffset(6*(1-p),y);r.Frame.Size=UDim2.new(1,0,0,38*p)
+   r.Frame.GroupTransparency=1-p;r.Frame.Visible=p>0;r.Button.Interactable=not r.Removing
+   y+=38*p
+  end
+  local height=math.clamp(y,38,190)
+  emptyContext.Visible=y<.2
+  context.Size=UDim2.fromOffset(232,height+150);contextList.Size=UDim2.new(1,0,0,height)
+  allButton.Position=UDim2.fromOffset(8,height+12);newButton.Position=UDim2.fromOffset(8,height+54)
+  sep.Position=UDim2.fromOffset(14,height+100);resetButton.Position=UDim2.fromOffset(8,height+106)
+  if context.Visible then
+   place(context,context.AbsolutePosition.X,context.AbsolutePosition.Y)
+   if activeRow and activeRow.Parent and editor.Visible then beside(editor,activeRow)end
+   if modes.Visible and editor.Visible then beside(modes,editorMode)end
+  end
+ end)
  function self:Open(e,point)
   if Window.ActiveColorPopup then Window.ActiveColorPopup:Close()end
   self:Close();show(all,false);self:HideDescription();activeEntry=e;rebuildContext()

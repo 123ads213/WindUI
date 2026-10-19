@@ -426,3 +426,10 @@ FPS now uses Lucide `monitor`, visually distinct from Ping's signal bars. Icon-b
 - Larger native typography: title and bindings 14px, header/rows 30px, header icon 16px, binding indicators 18×10px; 6px row gap.
 - Drag guides and hover highlights are fixed white, like the supplied drag_widget source, not theme Accent. Keylist hover highlight only covers its header.
 - Live regression: 79 assertions passed, including older configs, content-sized header with long binding, transparent rows, fixed white guides across seven themes. Dark/Light screenshots inspected.
+
+### fork.16 — animated context rows, clipped color previews, split keylist plates
+- Per-feature hotkey context retains row instances. Add/remove animates row opacity, 38px occupancy, sibling flow and panel height; deleted rows are cleaned only after collapse. Side editor follows its animated anchor; list remains scrollable after five rows.
+- Stronger soft native shadows for context/editor/modes and color panels, outside CanvasGroup clipping.
+- Color input has a dedicated ellipsized, clipped preview for HEX/RGB/HSV/HSL. Full TextBox text stays intact; focusing switches to editable full data, and Enter/FocusLost/paste preserve existing parsing behavior.
+- Classic header extended to at least 140px; body starts at y32 (2px gap). Each binding uses a separate rounded 30×30 indicator plate and a label plate measured to text +16px padding, themed opaque black/white.
+- Live Roblox QA: ForkHotkeys 51, ForkMotion 33, ForkHUD 81 and ForkPaste 18 checks passed. Inspected Dark HSV ellipsis, soft panel shadows, and separate Dark/Light keylist plates.

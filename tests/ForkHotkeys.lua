@@ -9,6 +9,7 @@ local qaConfig
 local previousConfig=w.CurrentConfig
 local cleanupConfig
 local ok,err=pcall(function()
+ t:SetHotkeys({{Key='K',Mode='Toggle',Value=true},{Key='L',Mode='Hold',Value=true}})
  d.Profile:Close();d.Library:SetTheme('Dark');d.Profile:SetTransparency(0);d.Player:Select();task.wait(.3)
  check(not d.Big.SliderFrame.UIElements.Desc.Visible,'inline description removed')
  firesignal(d.Big.ElementFrame.MouseEnter);task.wait(.5)
