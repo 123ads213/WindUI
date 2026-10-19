@@ -24,7 +24,7 @@ if pending and (not previous or pending ~= previous.Library) then disposeLibrary
 if RunId ~= Env.__WindUIForkRunId then disposeLibrary(WindUI);return end
 if not WindUI then
     WindUI = assert(loadstring(game:HttpGet(
-        'https://raw.githubusercontent.com/123ads213/WindUI/511e2b5252cf1c20151ec8ae2ba153f3815225d5/dist/main.lua')))()
+        'https://raw.githubusercontent.com/123ads213/WindUI/c7f006e07e1fcb90a4d77ef89dc1725d80f99a4b/dist/main.lua')))()
 end
 if RunId ~= Env.__WindUIForkRunId then disposeLibrary(WindUI);return end
 Env.__WindUIForkPendingLibrary = WindUI
